@@ -171,8 +171,10 @@ dependencies = [
  "nt-file",
  "nt-memory",
  "nt-object",
+ "nt-sync",
  "nt-thread",
  "ntdll",
+ "tracing",
  "winabi",
 ]
 

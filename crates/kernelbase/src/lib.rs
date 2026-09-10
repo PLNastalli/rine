@@ -98,6 +98,37 @@ pub fn exit_process(code: u32) -> ! {
     ntdll::rtl_exit_user_process(code)
 }
 
+/// `InitializeCriticalSection(cs)`: estado livre canônico.
+/// `cs` já validado (não-nulo) na façade.
+pub fn initialize_critical_section(cs: &mut winabi::CriticalSection) {
+    nt_sync::initialize_cs(cs);
+}
+
+/// `DeleteCriticalSection(cs)`: libera recursos internos (nenhum em v0.2).
+pub fn delete_critical_section(cs: &mut winabi::CriticalSection) {
+    nt_sync::delete_cs(cs);
+}
+
+/// `EnterCriticalSection(cs)`: adquire para a thread corrente.
+/// Contenção real é impossível single-threaded; se um dia ocorrer, o `Err`
+/// interno vira futex/wait (v0.3+) — hoje seria bug interno, então registra.
+pub fn enter_critical_section(cs: &mut winabi::CriticalSection) {
+    let st = nt_sync::enter_cs(cs, nt_thread::current_tid());
+    debug_assert!(
+        st.is_success(),
+        "contenção impossível single-threaded: {st}"
+    );
+}
+
+/// `LeaveCriticalSection(cs)`: libera uma aquisição. Dono errado = bug do
+/// caller (indefinido no Windows); aqui: ignora após registrar, em vez de
+/// corromper estado silenciosamente. SEH futuro pode elevar a exceção.
+pub fn leave_critical_section(cs: &mut winabi::CriticalSection) {
+    if nt_sync::leave_cs(cs, nt_thread::current_tid()).is_error() {
+        tracing::warn!("LeaveCriticalSection sem posse (bug do guest)");
+    }
+}
+
 /// `TlsAlloc() -> índice`: aloca um slot TLS do processo.
 /// Esgotados os 64, `Err(NOT_ENOUGH_MEMORY)` (Windows não documenta
 /// LastError aqui; documentamos a aproximação em vez de inventar valor).

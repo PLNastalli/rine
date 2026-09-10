@@ -106,6 +106,13 @@ thread_local! {
     static LAST_ERROR: Cell<u32> = const { Cell::new(0) };
 }
 
+/// ID da thread corrente para `OwningThread` e afins. Single-threaded v0.2:
+/// constante não-nula (TIDs Windows reais variam por execução; múltiplo de 4
+/// como os reais). Multithread (v0.3+) substitui por ID por-thread de verdade.
+pub fn current_tid() -> u32 {
+    4
+}
+
 pub fn set_last_error(e: Win32Error) {
     LAST_ERROR.with(|c| c.set(e.0));
 }

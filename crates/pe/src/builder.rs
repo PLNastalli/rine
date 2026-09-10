@@ -499,6 +499,10 @@ pub fn build_suite_exe() -> Vec<u8> {
         "TlsSetValue",
         "GetLastError",
         "Sleep",
+        "InitializeCriticalSection",
+        "DeleteCriticalSection",
+        "EnterCriticalSection",
+        "LeaveCriticalSection",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -515,8 +519,15 @@ pub fn build_suite_exe() -> Vec<u8> {
         (r.iat(0), r.iat(1), r.iat(2), r.iat(3), r.iat(4));
     let (i_alloc, i_free, i_prot, i_cmd, i_tls_alloc, i_tls_free) =
         (r.iat(5), r.iat(6), r.iat(7), r.iat(8), r.iat(9), r.iat(10));
-    let (i_tls_get, i_tls_set, i_err, i_sleep, i_exit) =
-        (r.iat(11), r.iat(12), r.iat(13), r.iat(14), r.iat(15));
+    let (i_tls_get, i_tls_set, i_err, i_sleep, i_cs_init, i_cs_del) = (
+        r.iat(11),
+        r.iat(12),
+        r.iat(13),
+        r.iat(14),
+        r.iat(15),
+        r.iat(16),
+    );
+    let (i_cs_enter, i_cs_leave, i_exit) = (r.iat(17), r.iat(18), r.iat(19));
     let (m_start, m_ok, m_fmsg, m_fname) = (
         r.blob("start"),
         r.blob("ok"),
@@ -524,10 +535,10 @@ pub fn build_suite_exe() -> Vec<u8> {
         r.blob("fname"),
     );
     let mut c: Vec<u8> = Vec::new();
-    emit_sub_rsp(&mut c, 0xA8);
-    // Helper local: exit(code) — 5+6 bytes.
-    // (expandido inline abaixo via fail_to.)
-    // --- 1. console ---
+    emit_sub_rsp(&mut c, 0xD8); // frame: shadow + args + locais + CS[0xA8..0xD8]
+                                // Helper local: exit(code) — 5+6 bytes.
+                                // (expandido inline abaixo via fail_to.)
+                                // --- 1. console ---
     c.extend_from_slice(&[0xB9, 0xF5, 0xFF, 0xFF, 0xFF]); // mov ecx,-11
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x89, 0xC3]); // mov rbx,rax
@@ -651,7 +662,35 @@ pub fn build_suite_exe() -> Vec<u8> {
     // --- 7. Sleep(5) retorna (sem assert observável; prova não-trava) ---
     c.extend_from_slice(&[0xB9, 0x05, 0x00, 0x00, 0x00]); // mov ecx,5
     emit_call(&mut c, i_sleep);
-    // --- 8. OK final ---
+    // --- 8. CriticalSection: init → enter → enter → leave → leave → delete,
+    // com leitura dos campos (offsets travados em abi.rs). CS em [rsp+0xA8].
+    // lea rsi,[rsp+0xA8]: modrm 0xB4 (mod=10,reg=rsi,r/m=SIB; 0x8C seria rcx!)
+    c.extend_from_slice(&[0x48, 0x8D, 0xB4, 0x24, 0xA8, 0x00, 0x00, 0x00]);
+    c.extend_from_slice(&[0x48, 0x89, 0xF1]); // mov rcx,rsi
+    emit_call(&mut c, i_cs_init);
+    c.extend_from_slice(&[0x83, 0x7E, 0x08, 0xFF]); // cmp dword [rsi+8],-1 (livre)
+    emit_fail_unless_equal(&mut c, i_exit, 69);
+    c.extend_from_slice(&[0x48, 0x89, 0xF1]); // mov rcx,rsi
+    emit_call(&mut c, i_cs_enter);
+    c.extend_from_slice(&[0x48, 0x83, 0x7E, 0x18, 0x00]); // cmp qword [rsi+0x18],0
+    emit_fail_unless_not_equal(&mut c, i_exit, 70); // dono != 0
+    c.extend_from_slice(&[0x48, 0x89, 0xF1]); // mov rcx,rsi
+    emit_call(&mut c, i_cs_enter); // recursão
+    c.extend_from_slice(&[0x83, 0x7E, 0x10, 0x02]); // cmp dword [rsi+0x10],2
+    emit_fail_unless_equal(&mut c, i_exit, 71);
+    c.extend_from_slice(&[0x48, 0x89, 0xF1]); // mov rcx,rsi
+    emit_call(&mut c, i_cs_leave);
+    c.extend_from_slice(&[0x83, 0x7E, 0x10, 0x01]); // cmp dword [rsi+0x10],1
+    emit_fail_unless_equal(&mut c, i_exit, 72);
+    c.extend_from_slice(&[0x48, 0x89, 0xF1]); // mov rcx,rsi
+    emit_call(&mut c, i_cs_leave);
+    c.extend_from_slice(&[0x83, 0x7E, 0x10, 0x00]); // cmp dword [rsi+0x10],0
+    emit_fail_unless_equal(&mut c, i_exit, 73);
+    c.extend_from_slice(&[0x48, 0x83, 0x7E, 0x18, 0x00]); // cmp qword [rsi+0x18],0
+    emit_fail_unless_equal(&mut c, i_exit, 73);
+    c.extend_from_slice(&[0x48, 0x89, 0xF1]); // mov rcx,rsi
+    emit_call(&mut c, i_cs_del);
+    // --- 9. OK final ---
     c.extend_from_slice(&[0xB9, 0xF5, 0xFF, 0xFF, 0xFF]);
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x89, 0xC1]); // mov rcx,rax
@@ -1078,10 +1117,14 @@ mod tests {
                 vec![
                     "CloseHandle",
                     "CreateFileA",
+                    "DeleteCriticalSection",
+                    "EnterCriticalSection",
                     "ExitProcess",
                     "GetCommandLineW",
                     "GetLastError",
                     "GetStdHandle",
+                    "InitializeCriticalSection",
+                    "LeaveCriticalSection",
                     "ReadFile",
                     "Sleep",
                     "TlsAlloc",

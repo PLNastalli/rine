@@ -17,7 +17,8 @@ fn fixture() -> BTreeMap<String, Vec<String>> {
 #[test]
 fn mingw_demand_is_known() {
     // Contagem travada: qualquer mudança no fixture ou no resolve() aparece aqui.
-    // 46 imports − VirtualProtect − TlsGetValue − GetLastError − Sleep = 42 em demanda.
+    // 46 imports − VirtualProtect − TlsGetValue − GetLastError − Sleep
+    // − 4 CriticalSection = 38 em demanda.
     let map = fixture();
     assert_eq!(map.len(), 9);
     let total: usize = map.values().map(|v| v.len()).sum();

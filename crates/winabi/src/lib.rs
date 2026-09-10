@@ -123,6 +123,41 @@ impl Rva {
     }
 }
 
+/// `RTL_CRITICAL_SECTION` x86_64 (48 bytes).
+///
+/// Layout exato do Windows: DebugInfo, LockCount, RecursionCount,
+/// OwningThread, LockSemaphore, SpinCount. Guest aloca (stack/.data) e
+/// passa o ponteiro; o runtime lê/escreve estes campos — qualquer divergência
+/// de offset corrompe memória do guest silenciosamente (travado em abi.rs).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct CriticalSection {
+    pub debug_info: u64,
+    pub lock_count: i32,
+    pub _pad0: u32,
+    pub recursion_count: i32,
+    pub _pad1: u32,
+    pub owning_thread: u64,
+    pub lock_semaphore: u64,
+    pub spin_count: u64,
+}
+
+impl CriticalSection {
+    /// Estado pós-`InitializeCriticalSection` (livre, sem dono).
+    pub const fn unowned() -> Self {
+        Self {
+            debug_info: 0,
+            lock_count: -1,
+            _pad0: 0,
+            recursion_count: 0,
+            _pad1: 0,
+            owning_thread: 0,
+            lock_semaphore: 0,
+            spin_count: 0,
+        }
+    }
+}
+
 bitflags! {
     /// Flags `AllocationType` de `VirtualAlloc` / `NtAllocateVirtualMemory`.
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]

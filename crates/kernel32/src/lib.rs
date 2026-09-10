@@ -331,6 +331,41 @@ pub extern "win64" fn ExitProcess_impl(code: u32) -> ! {
     kernelbase::exit_process(code)
 }
 
+/// Converte `LPCRITICAL_SECTION` bruto em `&mut` tipado.
+/// Nulo = bug do caller (Windows falha com AV); aqui a falha é contida
+/// como as demais fronteiras de ponteiro (ver `WriteFile_impl`).
+// SAFETY (fronteira ABI, vale para os 4 impls abaixo):
+// - struct `CriticalSection` de 48 bytes válida por contrato Windows,
+//   mesma address space, durante a chamada; borrow nunca retido.
+// - quem garante: o PE compilado pelo Windows; violação (ponteiro selvagem)
+//   falha contida como STATUS_ACCESS_VIOLATION futuro (SEH/signals).
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn InitializeCriticalSection_impl(
+    lp_critical_section: *mut winabi::CriticalSection,
+) {
+    kernelbase::initialize_critical_section(unsafe { &mut *lp_critical_section });
+}
+
+/// `void DeleteCriticalSection(LPCRITICAL_SECTION)`.
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn DeleteCriticalSection_impl(
+    lp_critical_section: *mut winabi::CriticalSection,
+) {
+    kernelbase::delete_critical_section(unsafe { &mut *lp_critical_section });
+}
+
+/// `void EnterCriticalSection(LPCRITICAL_SECTION)`.
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn EnterCriticalSection_impl(lp_critical_section: *mut winabi::CriticalSection) {
+    kernelbase::enter_critical_section(unsafe { &mut *lp_critical_section });
+}
+
+/// `void LeaveCriticalSection(LPCRITICAL_SECTION)`.
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn LeaveCriticalSection_impl(lp_critical_section: *mut winabi::CriticalSection) {
+    kernelbase::leave_critical_section(unsafe { &mut *lp_critical_section });
+}
+
 /// Tabela autoritativa de exports implementados (fonte única: `resolve()`
 /// e o relatório de cobertura `api-db/coverage.json` leem daqui).
 /// Teste anti-drift abaixo garante que todo nome resolve.
@@ -350,6 +385,10 @@ pub const EXPORTS: &[&str] = &[
     "TlsSetValue",
     "GetLastError",
     "Sleep",
+    "InitializeCriticalSection",
+    "DeleteCriticalSection",
+    "EnterCriticalSection",
+    "LeaveCriticalSection",
     "ExitProcess",
 ];
 
@@ -377,6 +416,10 @@ pub fn resolve(dll: &str, name: &str) -> Option<u64> {
         "TlsSetValue" => Some(TlsSetValue_impl as *const () as u64),
         "GetLastError" => Some(GetLastError_impl as *const () as u64),
         "Sleep" => Some(Sleep_impl as *const () as u64),
+        "InitializeCriticalSection" => Some(InitializeCriticalSection_impl as *const () as u64),
+        "DeleteCriticalSection" => Some(DeleteCriticalSection_impl as *const () as u64),
+        "EnterCriticalSection" => Some(EnterCriticalSection_impl as *const () as u64),
+        "LeaveCriticalSection" => Some(LeaveCriticalSection_impl as *const () as u64),
         "ExitProcess" => Some(ExitProcess_impl as *const () as u64),
         _ => None,
     }

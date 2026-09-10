@@ -1,8 +1,8 @@
 {
   "provenance": "rine-api-scan coverage (ver api-db/README.md)",
   "totals": {
-    "Missing": 4191,
-    "BehaviorTested": 18
+    "Missing": 4187,
+    "BehaviorTested": 22
   },
   "apis": [
     {
@@ -2434,8 +2434,8 @@
       "name": "DeleteCriticalSection",
       "ordinal": 304,
       "forwarder": "NTDLL!RtlDeleteCriticalSection",
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -2754,8 +2754,8 @@
       "name": "EnterCriticalSection",
       "ordinal": 344,
       "forwarder": "NTDLL!RtlEnterCriticalSection",
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -7346,8 +7346,8 @@
       "name": "InitializeCriticalSection",
       "ordinal": 918,
       "forwarder": "NTDLL!RtlInitializeCriticalSection",
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -8074,8 +8074,8 @@
       "name": "LeaveCriticalSection",
       "ordinal": 1009,
       "forwarder": "NTDLL!RtlLeaveCriticalSection",
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",

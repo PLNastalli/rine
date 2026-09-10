@@ -87,6 +87,10 @@ pub fn behavior_tested() -> Vec<(String, String)> {
         k("TlsSetValue"),
         k("GetLastError"),
         k("Sleep"),
+        k("InitializeCriticalSection"),
+        k("DeleteCriticalSection"),
+        k("EnterCriticalSection"),
+        k("LeaveCriticalSection"),
     ];
     v.push(("ntdll.dll".to_string(), "RtlExitUserProcess".to_string()));
     v.push(("ntdll.dll".to_string(), "NtTerminateProcess".to_string()));

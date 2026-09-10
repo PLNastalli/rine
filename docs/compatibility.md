@@ -18,12 +18,14 @@ existência de símbolos.
 | kernel32 | `TlsGetValue/SetValue` | ✅ (valor 64-bit; inválido → NULL/FALSE) | v03 (suite 64/65/67) |
 | kernel32 | `GetLastError` | ✅ (TLS da thread; provado após erro forçado) | v03 (suite 68) |
 | kernel32 | `Sleep` | ✅ (0 cede; ms dorme; INFINITE fiel — sem teste) | v03 (retorno) |
+| kernel32 | `Initialize/DeleteCriticalSection` | ✅ (estado canônico; delete zera p/ visibilidade) | v03 (suite 69) |
+| kernel32 | `Enter/LeaveCriticalSection` | ✅ (posse + recursão; contenção → `Err` p/ futex futuro) | v03 (suite 70–73) |
 | kernel32 | `ExitProcess` | ✅ (nunca retorna; exit code preservado) | hello (exit 0) |
 
 Cobertura standing: `suite.exe` (todas acima em cadeia, exit 0) e `evil.exe`
 (15 recusas limpas: handle inválido/stale, drive inexistente, disposition
 ruim, alloc size-0/tipo-0, free solto, stdhandle ruim, TLS índice inválido)
-— `tests/suite.rs`.
+— `tests/suite.rs`. CS sem ponteiro inválido no evil (fronteira SEH).
 | ntdll | `RtlExitUserProcess` | ✅ | via `ExitProcess` |
 | ntdll | `NtTerminateProcess` | ✅ (processo atual) | compilado, sem teste E2E ainda |
 | ntdll | `NtWriteFile` (interno) | ✅ | idem `WriteFile` |

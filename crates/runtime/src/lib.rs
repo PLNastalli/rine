@@ -374,11 +374,10 @@ mod tests {
     #[test]
     fn demand_lists_only_unresolved() {
         // PE sintético: 1 import inexistente + 1 existente.
-        let r = pe::builder::build_rdata_generic(
-            "KERNEL32.dll",
-            &["DeleteCriticalSection", "WriteFile"],
-            &[],
-        );
+        // (`DeleteCriticalSection` já foi esse exemplo — virou implementado
+        // em v0.3; `LoadLibraryA` segue em demanda. A troca é intencional.)
+        let r =
+            pe::builder::build_rdata_generic("KERNEL32.dll", &["LoadLibraryA", "WriteFile"], &[]);
         let mut code = vec![0xC3u8];
         while code.len() < 0x200 {
             code.push(0xCC);
@@ -388,10 +387,7 @@ mod tests {
         let missing = missing_imports(&bytes).unwrap();
         assert_eq!(
             missing,
-            vec![(
-                "KERNEL32.dll".to_string(),
-                "DeleteCriticalSection".to_string()
-            )]
+            vec![("KERNEL32.dll".to_string(), "LoadLibraryA".to_string())]
         );
         // WriteFile resolve → fora da lista. Suite real: lista vazia.
         let suite = pe::builder::build_suite_exe();

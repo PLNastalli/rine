@@ -5,7 +5,8 @@ Façade Win32 pública: marshalling ABI → `kernelbase`. NENHUMA lógica aqui.
 - Não é: implementação (qualquer `if` de comportamento é bug de camada).
 - API: `GetStdHandle/WriteFile/ReadFile/CreateFileA/CloseHandle/`
   `VirtualAlloc/VirtualFree/VirtualProtect/GetCommandLineW`
-  `TlsAlloc/TlsFree/TlsGetValue/TlsSetValue/GetLastError/Sleep/ExitProcess_impl`
+  `TlsAlloc/TlsFree/TlsGetValue/TlsSetValue/GetLastError/Sleep`
+  `Initialize/Delete/Enter/LeaveCriticalSection/ExitProcess_impl`
   (`extern "win64"`), `resolve`, `EXPORTS` (tabela autoritativa, anti-drift).
   Deps: `winabi`, `kernelbase`, `ntdll`, `nt-thread`.
   Consumers: `runtime` (resolvedor de imports).
