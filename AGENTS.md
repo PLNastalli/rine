@@ -10,7 +10,7 @@ Runtime de compatibilidade Windows-para-Linux em Rust. PE x86_64 roda o
 **código original direto na CPU** (sem VM, sem emulação, sem Wine).
 Princípio: *Windows por fora, Rust seguro por dentro, Linux nativo embaixo.*
 
-Versão: `0.2.0-alpha.1` (`rine --version`). Semver real: alpha por milestone
+Versão: `0.2.0-alpha.2` (`rine --version`). Semver real: alpha por milestone
 em curso, `0.MINOR.0` ao fechar, `PATCH` só para fixes (`docs/roadmap.md`).
 
 ## Ordem de leitura obrigatória (toda sessão)

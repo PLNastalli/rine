@@ -1,6 +1,6 @@
 # Estado atual
 
-_Data: 2026-09-10 (quinta sessão). Versão: **0.2.0-alpha.1**.
+_Data: 2026-09-10 (quinta sessão). Versão: **0.2.0-alpha.2**.
 Milestone: **v0.2 ~90%** + plataforma de testes diferenciais operacional._
 
 ## Milestone atual

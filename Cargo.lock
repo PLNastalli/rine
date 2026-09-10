@@ -13,7 +13,7 @@ dependencies = [
 
 [[package]]
 name = "api-scan"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "kernel32",
  "ntdll",
@@ -59,7 +59,7 @@ checksum = "9330f8b2ff13f34540b44e946ef35111825727b38d33286ef986142615121801"
 
 [[package]]
 name = "difftest"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "nt-file",
  "nt-memory",
@@ -132,7 +132,7 @@ checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 
 [[package]]
 name = "host-linux"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "libc",
  "thiserror",
@@ -156,7 +156,7 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "kernel32"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "kernelbase",
  "nt-thread",
@@ -166,7 +166,7 @@ dependencies = [
 
 [[package]]
 name = "kernelbase"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "nt-file",
  "nt-memory",
@@ -180,7 +180,7 @@ dependencies = [
 
 [[package]]
 name = "launcher"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "difftest",
  "pe",
@@ -210,7 +210,7 @@ checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
 
 [[package]]
 name = "loader"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "host-linux",
  "nt-loader",
@@ -244,14 +244,14 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "nt-exception"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "winabi",
 ]
 
 [[package]]
 name = "nt-file"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "host-linux",
  "nt-object",
@@ -261,7 +261,7 @@ dependencies = [
 
 [[package]]
 name = "nt-loader"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "pe",
  "thiserror",
@@ -270,7 +270,7 @@ dependencies = [
 
 [[package]]
 name = "nt-memory"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "host-linux",
  "thiserror",
@@ -279,21 +279,21 @@ dependencies = [
 
 [[package]]
 name = "nt-object"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "winabi",
 ]
 
 [[package]]
 name = "nt-process"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "winabi",
 ]
 
 [[package]]
 name = "nt-registry"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "toml",
  "winabi",
@@ -301,28 +301,28 @@ dependencies = [
 
 [[package]]
 name = "nt-security"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "winabi",
 ]
 
 [[package]]
 name = "nt-sync"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "winabi",
 ]
 
 [[package]]
 name = "nt-thread"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "winabi",
 ]
 
 [[package]]
 name = "ntdll"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "nt-file",
  "nt-memory",
@@ -358,7 +358,7 @@ checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 
 [[package]]
 name = "oracle"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "pe",
  "serde",
@@ -368,7 +368,7 @@ dependencies = [
 
 [[package]]
 name = "pe"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "difftest",
  "thiserror",
@@ -378,7 +378,7 @@ dependencies = [
 
 [[package]]
 name = "perf"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "pe",
  "runtime",
@@ -514,7 +514,7 @@ checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
 
 [[package]]
 name = "runtime"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "host-linux",
  "kernel32",
@@ -828,7 +828,7 @@ dependencies = [
 
 [[package]]
 name = "winabi"
-version = "0.2.0-alpha.1"
+version = "0.2.0-alpha.2"
 dependencies = [
  "bitflags",
 ]

@@ -9,7 +9,7 @@
 Run Windows x86_64 executables directly on the CPU —  
 **no Wine, no Proton, no virtual machine, no CPU emulation.**
 
-![Version](https://img.shields.io/badge/version-0.2.0--alpha.1-blue)
+![Version](https://img.shields.io/badge/version-0.2.0--alpha.2-blue)
 ![Rust](https://img.shields.io/badge/Rust-1.80%2B-orange)
 ![Platform](https://img.shields.io/badge/host-Linux-lightgrey)
 ![Guest](https://img.shields.io/badge/guest-Windows%20x86__64-0078D4)
@@ -72,7 +72,7 @@ It is an independent compatibility runtime.
 Current version:
 
 ```text
-0.2.0-alpha.1
+0.2.0-alpha.2
 ```
 
 Already working end-to-end:
@@ -468,7 +468,7 @@ The objective is simple:
 Rine tracks performance from the beginning rather than attempting to recover
 it after the architecture becomes large.
 
-Current `v0.2.0-alpha.1` baseline (median of warmed-up batches):
+Baseline `v0.2.0-alpha.1` (`bench/baselines/`, median of warmed-up batches):
 
 ```text
 pe.parse.hello    2.023 µs/op
