@@ -50,10 +50,9 @@ Nessa ordem (cada um com teste).
 
 ## Blockers
 
-Sem host Windows (diferencial/oracle real). Git local pronto (`main`,
-commit `9aea8fc`, árvore limpa, identidade placeholder `Rine` —
-`git config user.name/email` p/ personalizar); remoto GitHub pendente
-(sem `gh`/token neste ambiente — comandos no relatório da sessão).
+Sem host Windows (diferencial/oracle real). Git pronto: `main` no
+GitHub (`PLNastalli/rine`, árvore limpa); identidade de commit placeholder
+`Rine` — `git config user.name/email` p/ personalizar.
 
 ## APIs faltantes prioritárias
 
