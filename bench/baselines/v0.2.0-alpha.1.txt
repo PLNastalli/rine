@@ -1,0 +1,7 @@
+# Baseline v0.2.0-alpha.1 (dev build, host do dev, 2026-09-10)
+
+```text
+parse+imports+exports[hello]: 1981 ns/op
+parse+imports+exports[suite]: 3394 ns/op
+load[suite]: 14 us/op   (map+relocs+imports+protect, sem enter)
+```

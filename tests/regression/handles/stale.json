@@ -1,0 +1,33 @@
+{
+  "scenario": {
+    "schema": 1,
+    "scenario_id": "handles-cef51ef40390",
+    "target": "handles",
+    "api": "NtCreateFile",
+    "seed": 1005,
+    "params": {
+      "ops": [
+        "Insert",
+        {
+          "Close": {
+            "id": 0
+          }
+        },
+        {
+          "Lookup": {
+            "id": 0
+          }
+        }
+      ]
+    },
+    "environment": {
+      "generator": "corpus-seed-v1"
+    }
+  },
+  "expect": {
+    "exit_code": 0,
+    "stdout_contains": [],
+    "files": {}
+  },
+  "history": "Lookup p\u00f3s-close deve recusar (handles geracionais, ADR-0002)."
+}

@@ -1,0 +1,38 @@
+{
+  "scenario": {
+    "schema": 1,
+    "scenario_id": "fileops-3d53ad06ee16",
+    "target": "fileops",
+    "api": "CreateFileA",
+    "seed": 1002,
+    "params": {
+      "ops": [
+        {
+          "Create": {
+            "access": 1073741824,
+            "disp": 5,
+            "path": "C:\\t.txt"
+          }
+        },
+        "Close"
+      ],
+      "setup": [
+        [
+          "C:\\t.txt",
+          "Hello File\n"
+        ]
+      ]
+    },
+    "environment": {
+      "generator": "corpus-seed-v1"
+    }
+  },
+  "expect": {
+    "exit_code": 0,
+    "stdout_contains": [],
+    "files": {
+      "t.txt": []
+    }
+  },
+  "history": "TRUNCATE_EXISTING parou de truncar numa reescrita (braço disp5 perdido). Pego pela campanha fileops (2026)."
+}

@@ -1,0 +1,15 @@
+{
+  "provenance": {
+    "generator": "rine-api-scan",
+    "generator_version": "0.2.0-alpha.1",
+    "schema": 1,
+    "reference": "/home/plnastalli/Documentos/rine/windows-reference/win11-25h2/System32",
+    "note": "GERADO — não editar; regenerar com `cargo run -p api-scan -- scan`"
+  },
+  "dll_count": 5578,
+  "export_count": 183424,
+  "import_edge_count": 766547,
+  "forwarder_count": 9087,
+  "apiset_files": 111,
+  "skipped_count": 2870
+}

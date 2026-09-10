@@ -1,0 +1,10 @@
+[package]
+name = "nt-security"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "NT security: tokens, SIDs, access checks (stub for v0.1)"
+
+[dependencies]
+winabi.workspace = true

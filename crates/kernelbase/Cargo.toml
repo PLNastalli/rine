@@ -1,0 +1,12 @@
+[package]
+name = "kernelbase"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "kernelbase façade: internal Win32 implementation"
+
+[dependencies]
+winabi.workspace = true
+ntdll.workspace = true
+nt-file.workspace = true

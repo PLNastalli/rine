@@ -1,0 +1,14 @@
+[package]
+name = "ntdll"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "ntdll façade: Nt* implementations over internal subsystems"
+
+[dependencies]
+winabi.workspace = true
+nt-object.workspace = true
+nt-memory.workspace = true
+nt-file.workspace = true
+tracing.workspace = true

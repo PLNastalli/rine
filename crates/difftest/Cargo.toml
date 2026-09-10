@@ -1,0 +1,25 @@
+[package]
+name = "difftest"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Plataforma de testes diferenciais do Rine: cenários, oracles, comparação, shrink, corpus"
+
+[[bin]]
+name = "rine-test"
+path = "src/bin/rine-test.rs"
+
+[dependencies]
+oracle.workspace = true
+pe.workspace = true
+winabi.workspace = true
+nt-object.workspace = true
+nt-memory.workspace = true
+nt-file.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true

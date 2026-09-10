@@ -1,0 +1,10 @@
+[package]
+name = "nt-process"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "NT process model: PEB, parameters, lifecycle"
+
+[dependencies]
+winabi.workspace = true

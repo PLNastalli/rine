@@ -1,0 +1,11 @@
+{
+  "KERNEL32.dll": ["DeleteCriticalSection", "EnterCriticalSection", "FreeLibrary", "GetLastError", "GetModuleHandleA", "GetProcAddress", "InitializeCriticalSection", "LeaveCriticalSection", "LoadLibraryA", "SetUnhandledExceptionFilter", "Sleep", "TlsGetValue", "VirtualProtect", "VirtualQuery"],
+  "api-ms-win-crt-environment-l1-1-0.dll": ["__p__environ"],
+  "api-ms-win-crt-heap-l1-1-0.dll": ["_set_new_mode", "calloc", "free", "malloc"],
+  "api-ms-win-crt-locale-l1-1-0.dll": ["_configthreadlocale"],
+  "api-ms-win-crt-math-l1-1-0.dll": ["__setusermatherr"],
+  "api-ms-win-crt-private-l1-1-0.dll": ["__C_specific_handler", "memcpy"],
+  "api-ms-win-crt-runtime-l1-1-0.dll": ["_set_app_type", "__p___argc", "__p___argv", "_cexit", "_configure_narrow_argv", "_crt_atexit", "_exit", "_initialize_narrow_environment", "_initterm", "_initterm_e", "_set_invalid_parameter_handler", "abort", "exit", "signal"],
+  "api-ms-win-crt-stdio-l1-1-0.dll": ["__acrt_iob_func", "__p__commode", "__p__fmode", "__stdio_common_vfprintf", "fflush", "puts", "setvbuf"],
+  "api-ms-win-crt-string-l1-1-0.dll": ["strlen", "strncmp"]
+}

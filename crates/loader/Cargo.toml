@@ -1,0 +1,16 @@
+[package]
+name = "loader"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "High-level PE image mapper: reserve, map sections, protect"
+
+[dependencies]
+winabi.workspace = true
+pe.workspace = true
+nt-loader.workspace = true
+nt-memory.workspace = true
+host-linux.workspace = true
+tracing.workspace = true
+thiserror.workspace = true

@@ -1,0 +1,97 @@
+{
+  "campaigns": [
+    {
+      "api": "CreateFileA",
+      "crashes": 0,
+      "generated_at_unix": 1789062169,
+      "known_differences": 0,
+      "matches": 200,
+      "mismatches": 0,
+      "rine_version": "0.2.0-alpha.1",
+      "scenarios": 200,
+      "seed": 42,
+      "target": "fileops",
+      "timeouts": 0
+    }
+  ],
+  "entries": [
+    {
+      "rine": {
+        "exit_code": 0,
+        "stdout": "Hello World\n"
+      },
+      "status": "RINE_PASS",
+      "test": "hello.exe",
+      "windows_build": null
+    },
+    {
+      "capsule": {
+        "drives": {
+          "C": "<tmp>"
+        }
+      },
+      "rine": {
+        "exit_code": 11,
+        "files_created": [
+          "v02test.txt"
+        ]
+      },
+      "status": "RINE_PASS",
+      "test": "file.exe",
+      "windows_build": null
+    },
+    {
+      "rine": {
+        "exit_code": 66
+      },
+      "status": "RINE_PASS",
+      "test": "alloc.exe",
+      "windows_build": null
+    },
+    {
+      "rine": {
+        "exit_code": 16
+      },
+      "status": "RINE_PASS",
+      "test": "args.exe foo bar",
+      "windows_build": null
+    },
+    {
+      "capsule": {
+        "drives": {
+          "C": "<tmp>"
+        }
+      },
+      "rine": {
+        "exit_code": 0,
+        "files_created": [
+          "suitetest.txt"
+        ],
+        "stdout_contains": [
+          "RINE-SUITE-START",
+          "RINE-SUITE-OK"
+        ]
+      },
+      "status": "RINE_PASS",
+      "test": "suite.exe",
+      "windows_build": null
+    },
+    {
+      "capsule": {
+        "drives": {
+          "C": "<tmp>"
+        }
+      },
+      "rine": {
+        "exit_code": 0,
+        "files_created": []
+      },
+      "status": "RINE_PASS",
+      "test": "evil.exe",
+      "windows_build": null
+    }
+  ],
+  "note": "Matriz Windows-build x Rine-commit x teste. Valores Rine MEDIDOS (ver tests/); windows_build null = oracle pendente (nunca fictício). Testes: crates/launcher/tests/*.rs.",
+  "rine_version": "0.2.0-alpha.1",
+  "schema": 1
+}

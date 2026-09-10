@@ -1,0 +1,11 @@
+target/
+*.exe
+*.pdb
+.DS_Store
+*.swp
+*~
+.vscode/
+.idea/
+# Referência Windows local (4.4G, oracle de dev): nunca versionar.
+# Localização documentada em AGENTS.md e docs/adr/ADR-0009-*.
+windows-reference/

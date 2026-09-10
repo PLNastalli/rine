@@ -1,0 +1,15 @@
+[package]
+name = "nt-file"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "NT file manager: NtCreateFile semantics over Linux openat2"
+
+[dependencies]
+winabi.workspace = true
+nt-object.workspace = true
+host-linux.workspace = true
+
+[dev-dependencies]
+nt-registry.workspace = true

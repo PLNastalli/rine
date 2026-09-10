@@ -1,0 +1,39 @@
+{
+  "scenario": {
+    "schema": 1,
+    "scenario_id": "memory-b591ad6c41d9",
+    "target": "memory",
+    "api": "VirtualAlloc",
+    "seed": 1004,
+    "params": {
+      "ops": [
+        {
+          "Reserve": {
+            "id": 0,
+            "protect": 2,
+            "size": 4096
+          }
+        },
+        {
+          "Release": {
+            "id": 0
+          }
+        },
+        {
+          "Release": {
+            "id": 0
+          }
+        }
+      ]
+    },
+    "environment": {
+      "generator": "corpus-seed-v1"
+    }
+  },
+  "expect": {
+    "exit_code": 0,
+    "stdout_contains": [],
+    "files": {}
+  },
+  "history": "Release duplo deve recusar a 2ª vez (lifetime correto)."
+}

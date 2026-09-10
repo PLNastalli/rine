@@ -1,0 +1,21 @@
+[package]
+name = "launcher"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "rine launcher binary: load and run a Windows x86_64 PE on Linux"
+
+[[bin]]
+name = "rine"
+path = "src/main.rs"
+
+[dependencies]
+runtime.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+pe.workspace = true
+serde_json.workspace = true
+difftest.workspace = true

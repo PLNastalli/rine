@@ -1,0 +1,10 @@
+[package]
+name = "winabi"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Windows ABI primitives: NTSTATUS, handles, PEB/TEB layouts, x64 calling convention"
+
+[dependencies]
+bitflags.workspace = true

@@ -1,0 +1,5 @@
+# gerado volumoso do scanner (122M+) — regenerar, não versionar
+windows-*/dlls/*
+!windows-*/dlls/KERNEL32.json
+!windows-*/dlls/NTDLL.json
+windows-*/forwarders.json

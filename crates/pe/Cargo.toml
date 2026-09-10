@@ -1,0 +1,17 @@
+[package]
+name = "pe"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "PE32+ parser: headers, sections, imports, exports, relocations, TLS"
+
+[dependencies]
+winabi.workspace = true
+tracing.workspace = true
+thiserror.workspace = true
+
+# Ciclo dev com `difftest` (mutação mora lá; fonte única). Ciclos dev
+# são legais no Cargo e não afetam o grafo normal de dependências.
+[dev-dependencies]
+difftest.workspace = true

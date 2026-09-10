@@ -1,0 +1,33 @@
+{
+  "scenario": {
+    "schema": 1,
+    "scenario_id": "fileops-108e4210a555",
+    "target": "fileops",
+    "api": "CreateFileA",
+    "seed": 1001,
+    "params": {
+      "ops": [
+        {
+          "Create": {
+            "access": 0,
+            "disp": 2,
+            "path": "C:\\q.txt"
+          }
+        },
+        "Close"
+      ],
+      "setup": []
+    },
+    "environment": {
+      "generator": "corpus-seed-v1"
+    }
+  },
+  "expect": {
+    "exit_code": 0,
+    "stdout_contains": [],
+    "files": {
+      "q.txt": []
+    }
+  },
+  "history": "access==0 + CREATE_NEW falhava com EINVAL (O_RDONLY|O_CREAT inválido). Corrigido com two-step em nt_file::create_file (2026)."
+}

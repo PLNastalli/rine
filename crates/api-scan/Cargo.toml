@@ -1,0 +1,20 @@
+[package]
+name = "api-scan"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "rine-api-scan: oracle estrutural da referência Windows (scan + api-db + cobertura)"
+
+[[bin]]
+name = "rine-api-scan"
+path = "src/main.rs"
+
+[dependencies]
+pe.workspace = true
+winabi.workspace = true
+kernel32.workspace = true
+ntdll.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true

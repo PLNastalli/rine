@@ -1,0 +1,1919 @@
+{
+  "api": "CreateFileA",
+  "cases": 200,
+  "cases_per_sec": 3023.027290666054,
+  "coverage": [
+    {
+      "dimension": "access",
+      "seen": 171,
+      "value": "other"
+    },
+    {
+      "dimension": "access",
+      "seen": 160,
+      "value": "read"
+    },
+    {
+      "dimension": "access",
+      "seen": 166,
+      "value": "rw"
+    },
+    {
+      "dimension": "access",
+      "seen": 169,
+      "value": "write"
+    },
+    {
+      "dimension": "disposition",
+      "seen": 121,
+      "value": "always"
+    },
+    {
+      "dimension": "disposition",
+      "seen": 107,
+      "value": "bad"
+    },
+    {
+      "dimension": "disposition",
+      "seen": 122,
+      "value": "existing"
+    },
+    {
+      "dimension": "disposition",
+      "seen": 109,
+      "value": "new"
+    },
+    {
+      "dimension": "disposition",
+      "seen": 117,
+      "value": "open-always"
+    },
+    {
+      "dimension": "disposition",
+      "seen": 90,
+      "value": "truncate"
+    },
+    {
+      "dimension": "op",
+      "seen": 142,
+      "value": "close"
+    },
+    {
+      "dimension": "op",
+      "seen": 195,
+      "value": "read"
+    },
+    {
+      "dimension": "op",
+      "seen": 197,
+      "value": "write"
+    },
+    {
+      "dimension": "path_class",
+      "seen": 81,
+      "value": "drive-missing"
+    },
+    {
+      "dimension": "path_class",
+      "seen": 162,
+      "value": "missing"
+    },
+    {
+      "dimension": "path_class",
+      "seen": 99,
+      "value": "nested"
+    },
+    {
+      "dimension": "path_class",
+      "seen": 84,
+      "value": "relative"
+    },
+    {
+      "dimension": "path_class",
+      "seen": 75,
+      "value": "trailing"
+    },
+    {
+      "dimension": "path_class",
+      "seen": 76,
+      "value": "unc"
+    },
+    {
+      "dimension": "path_class",
+      "seen": 89,
+      "value": "unicode"
+    }
+  ],
+  "generated_at_unix": 1789062314,
+  "per_verdict": {
+    "Match": 200
+  },
+  "records": [
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 0,
+      "scenario_id": "fileops-82b3458e9a63",
+      "seconds": 0.001463761,
+      "seed": 42,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 1,
+      "scenario_id": "fileops-64e85165e9d6",
+      "seconds": 0.001456555,
+      "seed": 11400714819323198527,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 2,
+      "scenario_id": "fileops-81e0f7e6fb44",
+      "seconds": 0.001463349,
+      "seed": 4354685564936845312,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 3,
+      "scenario_id": "fileops-f3ab865a4c19",
+      "seconds": 0.001456067,
+      "seed": 15755400384260043797,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 4,
+      "scenario_id": "fileops-6f0d852b6699",
+      "seconds": 0.00135497,
+      "seed": 8709371129873690750,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 5,
+      "scenario_id": "fileops-b27c83c2bb8c",
+      "seconds": 0.001349828,
+      "seed": 1663341875487337539,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 6,
+      "scenario_id": "fileops-cf14ab88c776",
+      "seconds": 0.001410341,
+      "seed": 13064056694810536020,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 7,
+      "scenario_id": "fileops-ec732cf1b73d",
+      "seconds": 0.001389105,
+      "seed": 6018027440424182969,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 8,
+      "scenario_id": "fileops-c45aaf2b764a",
+      "seconds": 0.00133124,
+      "seed": 17418742259747381378,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 9,
+      "scenario_id": "fileops-c62cefbc5d0c",
+      "seconds": 0.001379598,
+      "seed": 10372713005361028247,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 10,
+      "scenario_id": "fileops-c5a2c456f666",
+      "seconds": 0.00139532,
+      "seed": 3326683750974675192,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 11,
+      "scenario_id": "fileops-c3e5ad48454f",
+      "seconds": 0.001390768,
+      "seed": 14727398570297873613,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 12,
+      "scenario_id": "fileops-618e393e4cca",
+      "seconds": 0.001378531,
+      "seed": 7681369315911520470,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 13,
+      "scenario_id": "fileops-1ff76d0ccb14",
+      "seconds": 0.00136193,
+      "seed": 635340061525167419,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 14,
+      "scenario_id": "fileops-252fe8e0c5bd",
+      "seconds": 0.001314171,
+      "seed": 12036054880848365836,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 15,
+      "scenario_id": "fileops-2ecdcd13d4af",
+      "seconds": 0.001358536,
+      "seed": 4990025626462012689,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 16,
+      "scenario_id": "fileops-3962c2a54265",
+      "seconds": 0.001346911,
+      "seed": 16390740445785211258,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 17,
+      "scenario_id": "fileops-5ff6394cd116",
+      "seconds": 0.001291125,
+      "seed": 9344711191398858063,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 18,
+      "scenario_id": "fileops-26871403f566",
+      "seconds": 0.001368501,
+      "seed": 2298681937012504912,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 19,
+      "scenario_id": "fileops-c078d8812f14",
+      "seconds": 0.001318223,
+      "seed": 13699396756335703461,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 20,
+      "scenario_id": "fileops-062403c6a005",
+      "seconds": 0.001254651,
+      "seed": 6653367501949350286,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 21,
+      "scenario_id": "fileops-163246381641",
+      "seconds": 0.001332673,
+      "seed": 18054082321272548755,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 22,
+      "scenario_id": "fileops-214f37efb5a0",
+      "seconds": 0.001277686,
+      "seed": 11008053066886195684,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 23,
+      "scenario_id": "fileops-ad5e639b22cf",
+      "seconds": 0.001341967,
+      "seed": 3962023812499842505,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 24,
+      "scenario_id": "fileops-6bb8fd758472",
+      "seconds": 0.001256324,
+      "seed": 15362738631823040978,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 25,
+      "scenario_id": "fileops-5046464b1d21",
+      "seconds": 0.001231723,
+      "seed": 8316709377436687911,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 26,
+      "scenario_id": "fileops-0cf6e13de9db",
+      "seconds": 0.001402357,
+      "seed": 1270680123050334728,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 27,
+      "scenario_id": "fileops-bb13794914dc",
+      "seconds": 0.001379443,
+      "seed": 12671394942373533213,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 28,
+      "scenario_id": "fileops-aa1c06169551",
+      "seconds": 0.00131638,
+      "seed": 5625365687987180134,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 29,
+      "scenario_id": "fileops-f561d8cae837",
+      "seconds": 0.001258364,
+      "seed": 17026080507310378571,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 30,
+      "scenario_id": "fileops-e19bc1e0bc38",
+      "seconds": 0.001356083,
+      "seed": 9980051252924025436,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 31,
+      "scenario_id": "fileops-bb3cb282adb6",
+      "seconds": 0.001385459,
+      "seed": 2934021998537672353,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 32,
+      "scenario_id": "fileops-3a863d3158df",
+      "seconds": 0.001318153,
+      "seed": 14334736817860870794,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 33,
+      "scenario_id": "fileops-539c1f1d14e5",
+      "seconds": 0.001253043,
+      "seed": 7288707563474517663,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 34,
+      "scenario_id": "fileops-c0f4684eda2d",
+      "seconds": 0.001249745,
+      "seed": 242678309088164576,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 35,
+      "scenario_id": "fileops-412b3522c386",
+      "seconds": 0.001393388,
+      "seed": 11643393128411363061,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 36,
+      "scenario_id": "fileops-8f8b6079c256",
+      "seconds": 0.001259775,
+      "seed": 4597363874025009886,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 37,
+      "scenario_id": "fileops-1240944c57f6",
+      "seconds": 0.001244085,
+      "seed": 15998078693348208419,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 38,
+      "scenario_id": "fileops-20b5c7ecdeff",
+      "seconds": 0.001250063,
+      "seed": 8952049438961855284,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 39,
+      "scenario_id": "fileops-ed4df7642233",
+      "seconds": 0.001395973,
+      "seed": 1906020184575502105,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 40,
+      "scenario_id": "fileops-3168c34ef28a",
+      "seconds": 0.001252883,
+      "seed": 13306735003898700642,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 41,
+      "scenario_id": "fileops-dfd6ea2925a5",
+      "seconds": 0.001247545,
+      "seed": 6260705749512347511,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 42,
+      "scenario_id": "fileops-9278c7c958d3",
+      "seconds": 0.001264456,
+      "seed": 17661420568835545944,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 43,
+      "scenario_id": "fileops-377cb48460c8",
+      "seconds": 0.001360397,
+      "seed": 10615391314449192877,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 44,
+      "scenario_id": "fileops-da51682172bd",
+      "seconds": 0.001223863,
+      "seed": 3569362060062839734,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 45,
+      "scenario_id": "fileops-a4d108830b88",
+      "seconds": 0.001217883,
+      "seed": 14970076879386038171,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 46,
+      "scenario_id": "fileops-f684934d824d",
+      "seconds": 0.001324669,
+      "seed": 7924047624999685100,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 47,
+      "scenario_id": "fileops-3df1e99b433d",
+      "seconds": 0.001368899,
+      "seed": 878018370613331953,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 48,
+      "scenario_id": "fileops-5b255d0a3747",
+      "seconds": 0.001258819,
+      "seed": 12278733189936530394,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 49,
+      "scenario_id": "fileops-f056b239ad18",
+      "seconds": 0.00125038,
+      "seed": 5232703935550177327,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 50,
+      "scenario_id": "fileops-32a5993b7d20",
+      "seconds": 0.001334167,
+      "seed": 16633418754873375792,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 51,
+      "scenario_id": "fileops-005a8cde2294",
+      "seconds": 0.001381995,
+      "seed": 9587389500487022597,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 52,
+      "scenario_id": "fileops-9ce4a487d7bb",
+      "seconds": 0.001273625,
+      "seed": 2541360246100669550,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 53,
+      "scenario_id": "fileops-985732febf08",
+      "seconds": 0.001233673,
+      "seed": 13942075065423868019,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 54,
+      "scenario_id": "fileops-9dbf545effa7",
+      "seconds": 0.001313251,
+      "seed": 6896045811037514820,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 55,
+      "scenario_id": "fileops-2b8b629f0cb0",
+      "seconds": 0.001341386,
+      "seed": 18296760630360713385,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 56,
+      "scenario_id": "fileops-ff29cb6f6be8",
+      "seconds": 0.001234478,
+      "seed": 11250731375974360242,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 57,
+      "scenario_id": "fileops-c77e6f7c4c08",
+      "seconds": 0.001240585,
+      "seed": 4204702121588007047,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 58,
+      "scenario_id": "fileops-6cde1d4cc301",
+      "seconds": 0.00136491,
+      "seed": 15605416940911205608,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 59,
+      "scenario_id": "fileops-8b0b84e7edc6",
+      "seconds": 0.001233713,
+      "seed": 8559387686524852477,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 60,
+      "scenario_id": "fileops-318e4a73229d",
+      "seconds": 0.001250643,
+      "seed": 1513358432138499270,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 61,
+      "scenario_id": "fileops-4a4b79687716",
+      "seconds": 0.001263648,
+      "seed": 12914073251461697835,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 62,
+      "scenario_id": "fileops-add8a65e40d2",
+      "seconds": 0.001232364,
+      "seed": 5868043997075344700,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 63,
+      "scenario_id": "fileops-bef12c58cf83",
+      "seconds": 0.001236787,
+      "seed": 17268758816398543105,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 64,
+      "scenario_id": "fileops-a0edba650540",
+      "seconds": 0.001225305,
+      "seed": 10222729562012190058,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 65,
+      "scenario_id": "fileops-dd30f2a12db0",
+      "seconds": 0.001242663,
+      "seed": 3176700307625836927,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 66,
+      "scenario_id": "fileops-fff8c2efa13c",
+      "seconds": 0.00123552,
+      "seed": 14577415126949035328,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 67,
+      "scenario_id": "fileops-c5f6aa296d78",
+      "seconds": 0.001221778,
+      "seed": 7531385872562682197,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 68,
+      "scenario_id": "fileops-87395fc15993",
+      "seconds": 0.001235918,
+      "seed": 485356618176329150,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 69,
+      "scenario_id": "fileops-af6271c3b32f",
+      "seconds": 0.001225557,
+      "seed": 11886071437499527555,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 70,
+      "scenario_id": "fileops-572b19b3a73b",
+      "seconds": 0.001246654,
+      "seed": 4840042183113174420,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 71,
+      "scenario_id": "fileops-6ab593d87f52",
+      "seconds": 0.001240691,
+      "seed": 16240757002436372985,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 72,
+      "scenario_id": "fileops-8294e1ed9035",
+      "seconds": 0.001232525,
+      "seed": 9194727748050019778,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 73,
+      "scenario_id": "fileops-81fdc9c8e713",
+      "seconds": 0.001203603,
+      "seed": 2148698493663666647,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 74,
+      "scenario_id": "fileops-4e571f8e6533",
+      "seconds": 0.001241315,
+      "seed": 13549413312986865208,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 75,
+      "scenario_id": "fileops-2ea339955705",
+      "seconds": 0.001266748,
+      "seed": 6503384058600512013,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 76,
+      "scenario_id": "fileops-f91da16c4e22",
+      "seconds": 0.0012433,
+      "seed": 17904098877923710486,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 77,
+      "scenario_id": "fileops-5f1cd1be44c8",
+      "seconds": 0.00124309,
+      "seed": 10858069623537357435,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 78,
+      "scenario_id": "fileops-f14a642f21cf",
+      "seconds": 0.001231353,
+      "seed": 3812040369151004236,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 79,
+      "scenario_id": "fileops-3cc76f77faf9",
+      "seconds": 0.001229985,
+      "seed": 15212755188474202705,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 80,
+      "scenario_id": "fileops-fedd3b6d114e",
+      "seconds": 0.001229311,
+      "seed": 8166725934087849658,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 81,
+      "scenario_id": "fileops-f3593fca33cd",
+      "seconds": 0.001241282,
+      "seed": 1120696679701496463,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 82,
+      "scenario_id": "fileops-fb3ac335ca99",
+      "seconds": 0.001245363,
+      "seed": 12521411499024694928,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 83,
+      "scenario_id": "fileops-74138e236ace",
+      "seconds": 0.001250933,
+      "seed": 5475382244638341861,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 84,
+      "scenario_id": "fileops-6bfc87cd282d",
+      "seconds": 0.001217478,
+      "seed": 16876097063961540302,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 85,
+      "scenario_id": "fileops-54e723d02aa6",
+      "seconds": 0.001275426,
+      "seed": 9830067809575187155,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 86,
+      "scenario_id": "fileops-27089908d049",
+      "seconds": 0.001233585,
+      "seed": 2784038555188834084,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 87,
+      "scenario_id": "fileops-5546231964fd",
+      "seconds": 0.001265612,
+      "seed": 14184753374512032521,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 88,
+      "scenario_id": "fileops-34352c51302a",
+      "seconds": 0.001247178,
+      "seed": 7138724120125679378,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 89,
+      "scenario_id": "fileops-8adc4adea5aa",
+      "seconds": 0.001230324,
+      "seed": 92694865739326311,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 90,
+      "scenario_id": "fileops-62c10e5b0231",
+      "seconds": 0.001244514,
+      "seed": 11493409685062524744,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 91,
+      "scenario_id": "fileops-89793f21cfc2",
+      "seconds": 0.001249188,
+      "seed": 4447380430676171613,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 92,
+      "scenario_id": "fileops-f9914fcfb553",
+      "seconds": 0.001253471,
+      "seed": 15848095249999370150,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 93,
+      "scenario_id": "fileops-0f341e1dbf4d",
+      "seconds": 0.001258815,
+      "seed": 8802065995613016971,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 94,
+      "scenario_id": "fileops-8cf6e22c292c",
+      "seconds": 0.001241981,
+      "seed": 1756036741226663836,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 95,
+      "scenario_id": "fileops-dcb1e67050c7",
+      "seconds": 0.00122898,
+      "seed": 13156751560549862369,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 96,
+      "scenario_id": "fileops-abb28c09d35e",
+      "seconds": 0.001261854,
+      "seed": 6110722306163509194,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 97,
+      "scenario_id": "fileops-0308de0ba4c7",
+      "seconds": 0.0012513,
+      "seed": 17511437125486707679,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 98,
+      "scenario_id": "fileops-9658bbf59934",
+      "seconds": 0.001227154,
+      "seed": 10465407871100354592,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 99,
+      "scenario_id": "fileops-1eafb616a419",
+      "seconds": 0.001240127,
+      "seed": 3419378616714001461,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 100,
+      "scenario_id": "fileops-ad516173ed65",
+      "seconds": 0.00147237,
+      "seed": 14820093436037199902,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 101,
+      "scenario_id": "fileops-5562ddb4d9e6",
+      "seconds": 0.001212738,
+      "seed": 7774064181650846819,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 102,
+      "scenario_id": "fileops-0972516a86ec",
+      "seconds": 0.001257402,
+      "seed": 728034927264493684,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 103,
+      "scenario_id": "fileops-15092ad857de",
+      "seconds": 0.001250454,
+      "seed": 12128749746587692121,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 104,
+      "scenario_id": "fileops-d3afb6cf1f84",
+      "seconds": 0.001264099,
+      "seed": 5082720492201339042,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 105,
+      "scenario_id": "fileops-1a7cd0e2116d",
+      "seconds": 0.001232782,
+      "seed": 16483435311524537527,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 106,
+      "scenario_id": "fileops-ea46284ea182",
+      "seconds": 0.001252939,
+      "seed": 9437406057138184344,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 107,
+      "scenario_id": "fileops-bd195d278b72",
+      "seconds": 0.001244744,
+      "seed": 2391376802751831277,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 108,
+      "scenario_id": "fileops-1741c3530714",
+      "seconds": 0.001258409,
+      "seed": 13792091622075029750,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 109,
+      "scenario_id": "fileops-ecf6c9a91ebf",
+      "seconds": 0.001207855,
+      "seed": 6746062367688676571,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 110,
+      "scenario_id": "fileops-f2dded04ad36",
+      "seconds": 0.001221901,
+      "seed": 18146777187011875116,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 111,
+      "scenario_id": "fileops-643ece95ca29",
+      "seconds": 0.001245654,
+      "seed": 11100747932625521969,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 112,
+      "scenario_id": "fileops-45b0f54dcdf6",
+      "seconds": 0.001248513,
+      "seed": 4054718678239168794,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 113,
+      "scenario_id": "fileops-a10c641936e9",
+      "seconds": 0.001229499,
+      "seed": 15455433497562367343,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 114,
+      "scenario_id": "fileops-2fad4c3cca5c",
+      "seconds": 0.00122492,
+      "seed": 8409404243176014192,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 115,
+      "scenario_id": "fileops-de127cdcffba",
+      "seconds": 0.001259266,
+      "seed": 1363374988789660997,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 116,
+      "scenario_id": "fileops-6ed7ca5dc5a6",
+      "seconds": 0.001176482,
+      "seed": 12764089808112859566,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 117,
+      "scenario_id": "fileops-90949722962d",
+      "seconds": 0.00123625,
+      "seed": 5718060553726506419,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 118,
+      "scenario_id": "fileops-7bdda1b6582e",
+      "seconds": 0.001238853,
+      "seed": 17118775373049704836,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 119,
+      "scenario_id": "fileops-c159776912fd",
+      "seconds": 0.001283531,
+      "seed": 10072746118663351785,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 120,
+      "scenario_id": "fileops-f0c509a77a24",
+      "seconds": 0.001264973,
+      "seed": 3026716864276998642,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 121,
+      "scenario_id": "fileops-b15231195480",
+      "seconds": 0.001224661,
+      "seed": 14427431683600197063,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 122,
+      "scenario_id": "fileops-5b5b03be1107",
+      "seconds": 0.001243846,
+      "seed": 7381402429213844008,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 123,
+      "scenario_id": "fileops-9e72231d564b",
+      "seconds": 0.001264291,
+      "seed": 335373174827490877,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 124,
+      "scenario_id": "fileops-5dc1e293ea3b",
+      "seconds": 0.001258293,
+      "seed": 11736087994150689286,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 125,
+      "scenario_id": "fileops-8b1ebe91f7a1",
+      "seconds": 0.00122815,
+      "seed": 4690058739764336235,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 126,
+      "scenario_id": "fileops-4bc1485ebfcd",
+      "seconds": 0.001229054,
+      "seed": 16090773559087534716,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 127,
+      "scenario_id": "fileops-9c12c30593b3",
+      "seconds": 0.001227772,
+      "seed": 9044744304701181505,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 128,
+      "scenario_id": "fileops-deb668129e26",
+      "seconds": 0.001254616,
+      "seed": 1998715050314828458,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 129,
+      "scenario_id": "fileops-7dac5a2d5529",
+      "seconds": 0.001214129,
+      "seed": 13399429869638026943,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 130,
+      "scenario_id": "fileops-fb7b6b0063b9",
+      "seconds": 0.001247957,
+      "seed": 6353400615251673728,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 131,
+      "scenario_id": "fileops-8a4a21861307",
+      "seconds": 0.001251359,
+      "seed": 17754115434574872213,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 132,
+      "scenario_id": "fileops-563b90a959b5",
+      "seconds": 0.001255556,
+      "seed": 10708086180188519166,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 133,
+      "scenario_id": "fileops-6c6d01e16dab",
+      "seconds": 0.001280981,
+      "seed": 3662056925802165955,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 134,
+      "scenario_id": "fileops-977a1c348417",
+      "seconds": 0.001326142,
+      "seed": 15062771745125364436,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 135,
+      "scenario_id": "fileops-f97c5043235a",
+      "seconds": 0.001247286,
+      "seed": 8016742490739011385,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 136,
+      "scenario_id": "fileops-afd222b0dc5b",
+      "seconds": 0.001258999,
+      "seed": 970713236352658178,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 137,
+      "scenario_id": "fileops-24ed91fb30f1",
+      "seconds": 0.001260495,
+      "seed": 12371428055675856663,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 138,
+      "scenario_id": "fileops-bd049bd5fc5f",
+      "seconds": 0.001382861,
+      "seed": 5325398801289503608,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 139,
+      "scenario_id": "fileops-0872e57f2424",
+      "seconds": 0.001255626,
+      "seed": 16726113620612702029,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 140,
+      "scenario_id": "fileops-6dfe9effd02a",
+      "seconds": 0.001247869,
+      "seed": 9680084366226348886,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 141,
+      "scenario_id": "fileops-d6c32d956764",
+      "seconds": 0.001220512,
+      "seed": 2634055111839995835,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 142,
+      "scenario_id": "fileops-abd292c26e3f",
+      "seconds": 0.001343686,
+      "seed": 14034769931163194252,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 143,
+      "scenario_id": "fileops-fca790256e20",
+      "seconds": 0.001233139,
+      "seed": 6988740676776841105,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 144,
+      "scenario_id": "fileops-b3f87398e5ee",
+      "seconds": 0.001201765,
+      "seed": 18389455496100039674,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 145,
+      "scenario_id": "fileops-9cab763cb0b1",
+      "seconds": 0.001233409,
+      "seed": 11343426241713686479,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 146,
+      "scenario_id": "fileops-59f9edf2cc1f",
+      "seconds": 0.001264283,
+      "seed": 4297396987327333328,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 147,
+      "scenario_id": "fileops-37d56fe80182",
+      "seconds": 0.001251566,
+      "seed": 15698111806650531877,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 148,
+      "scenario_id": "fileops-d68dd23321f3",
+      "seconds": 0.001219302,
+      "seed": 8652082552264178702,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 149,
+      "scenario_id": "fileops-4abab4f04aad",
+      "seconds": 0.001246298,
+      "seed": 1606053297877825555,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 150,
+      "scenario_id": "fileops-a109c25b874f",
+      "seconds": 0.001236101,
+      "seed": 13006768117201024100,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 151,
+      "scenario_id": "fileops-633b7d2ce842",
+      "seconds": 0.001227796,
+      "seed": 5960738862814670921,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 152,
+      "scenario_id": "fileops-165f781b149b",
+      "seconds": 0.001278865,
+      "seed": 17361453682137869394,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 153,
+      "scenario_id": "fileops-be3b8c12492c",
+      "seconds": 0.001233725,
+      "seed": 10315424427751516327,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 154,
+      "scenario_id": "fileops-38f4d01684a2",
+      "seconds": 0.001260543,
+      "seed": 3269395173365163144,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 155,
+      "scenario_id": "fileops-3268aed00ac7",
+      "seconds": 0.001218827,
+      "seed": 14670109992688361629,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 156,
+      "scenario_id": "fileops-140056b0dce7",
+      "seconds": 0.001330315,
+      "seed": 7624080738302008550,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 157,
+      "scenario_id": "fileops-2f4bafea6991",
+      "seconds": 0.001245834,
+      "seed": 578051483915655371,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 158,
+      "scenario_id": "fileops-581be64e4ae2",
+      "seconds": 0.001230433,
+      "seed": 11978766303238853852,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 159,
+      "scenario_id": "fileops-97f416f6aaa0",
+      "seconds": 0.00128511,
+      "seed": 4932737048852500769,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 160,
+      "scenario_id": "fileops-884e7b5c94eb",
+      "seconds": 0.001243646,
+      "seed": 16333451868175699210,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 161,
+      "scenario_id": "fileops-0f52f06f1072",
+      "seconds": 0.001261709,
+      "seed": 9287422613789346079,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 162,
+      "scenario_id": "fileops-7dffa3150cab",
+      "seconds": 0.001217775,
+      "seed": 2241393359402992992,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 163,
+      "scenario_id": "fileops-24f19d00b735",
+      "seconds": 0.001316876,
+      "seed": 13642108178726191477,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 164,
+      "scenario_id": "fileops-c1111e7d8a2b",
+      "seconds": 0.0012431,
+      "seed": 6596078924339838302,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 165,
+      "scenario_id": "fileops-3239570bc01c",
+      "seconds": 0.001196988,
+      "seed": 17996793743663036835,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 166,
+      "scenario_id": "fileops-151166222adf",
+      "seconds": 0.001216579,
+      "seed": 10950764489276683700,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 167,
+      "scenario_id": "fileops-7a4f2a1901ae",
+      "seconds": 0.001216749,
+      "seed": 3904735234890330521,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 168,
+      "scenario_id": "fileops-c459b33e4320",
+      "seconds": 0.001360451,
+      "seed": 15305450054213529058,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 169,
+      "scenario_id": "fileops-e472dec3fd23",
+      "seconds": 0.001233534,
+      "seed": 8259420799827175927,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 170,
+      "scenario_id": "fileops-f062ad8db89a",
+      "seconds": 0.001207019,
+      "seed": 1213391545440822744,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 171,
+      "scenario_id": "fileops-4d80237ec1a0",
+      "seconds": 0.001228109,
+      "seed": 12614106364764021293,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 172,
+      "scenario_id": "fileops-bb922bfa9cad",
+      "seconds": 0.001202014,
+      "seed": 5568077110377668150,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 173,
+      "scenario_id": "fileops-20c612f11665",
+      "seconds": 0.001319742,
+      "seed": 16968791929700866587,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 174,
+      "scenario_id": "fileops-6799b9f4f631",
+      "seconds": 0.001224812,
+      "seed": 9922762675314513516,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 175,
+      "scenario_id": "fileops-391d09afef72",
+      "seconds": 0.001230913,
+      "seed": 2876733420928160369,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 176,
+      "scenario_id": "fileops-682d91ec5239",
+      "seconds": 0.00122155,
+      "seed": 14277448240251358810,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 177,
+      "scenario_id": "fileops-9c4e475ca006",
+      "seconds": 0.001246391,
+      "seed": 7231418985865005743,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 178,
+      "scenario_id": "fileops-19dc8d3df37f",
+      "seconds": 0.001245169,
+      "seed": 185389731478652592,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 179,
+      "scenario_id": "fileops-1f146a810b1d",
+      "seconds": 0.001215392,
+      "seed": 11586104550801851013,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 180,
+      "scenario_id": "fileops-8cac066889b0",
+      "seconds": 0.001230184,
+      "seed": 4540075296415497966,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 181,
+      "scenario_id": "fileops-7a1b931cb459",
+      "seconds": 0.001243472,
+      "seed": 15940790115738696435,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 182,
+      "scenario_id": "fileops-84e7474422ac",
+      "seconds": 0.001235622,
+      "seed": 8894760861352343236,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 183,
+      "scenario_id": "fileops-fbbbe461b702",
+      "seconds": 0.001227243,
+      "seed": 1848731606965990185,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 184,
+      "scenario_id": "fileops-e8fb94d14f69",
+      "seconds": 0.001278104,
+      "seed": 13249446426289188658,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 185,
+      "scenario_id": "fileops-d6264a5cfce0",
+      "seconds": 0.001210432,
+      "seed": 6203417171902835463,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 186,
+      "scenario_id": "fileops-a19705160f39",
+      "seconds": 0.001249237,
+      "seed": 17604131991226034024,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 187,
+      "scenario_id": "fileops-de82f000cda9",
+      "seconds": 0.001249257,
+      "seed": 10558102736839680893,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 188,
+      "scenario_id": "fileops-6b8b602680df",
+      "seconds": 0.00136288,
+      "seed": 3512073482453327686,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 189,
+      "scenario_id": "fileops-3dcfb1ea3c00",
+      "seconds": 0.001355563,
+      "seed": 14912788301776526251,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 190,
+      "scenario_id": "fileops-c1e66a9315b5",
+      "seconds": 0.001241801,
+      "seed": 7866759047390173116,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 191,
+      "scenario_id": "fileops-d01882d1d5a7",
+      "seconds": 0.001246059,
+      "seed": 820729793003819905,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 192,
+      "scenario_id": "fileops-fb3c89702b2e",
+      "seconds": 0.001334332,
+      "seed": 12221444612327018474,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 193,
+      "scenario_id": "fileops-42ce5b7da3be",
+      "seconds": 0.001370763,
+      "seed": 5175415357940665343,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 194,
+      "scenario_id": "fileops-18c28f995cc0",
+      "seconds": 0.001208956,
+      "seed": 16576130177263863744,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 195,
+      "scenario_id": "fileops-9d78fb5f9d1b",
+      "seconds": 0.00124643,
+      "seed": 9530100922877510613,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 196,
+      "scenario_id": "fileops-aa08d47318d5",
+      "seconds": 0.001324214,
+      "seed": 2484071668491157566,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 197,
+      "scenario_id": "fileops-91a09f2d6911",
+      "seconds": 0.001345037,
+      "seed": 13884786487814355971,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 198,
+      "scenario_id": "fileops-b4bb432fa924",
+      "seconds": 0.001239177,
+      "seed": 6838757233428002836,
+      "verdict": "Match"
+    },
+    {
+      "api": "CreateFileA",
+      "detail": "",
+      "index": 199,
+      "scenario_id": "fileops-93c58e461f53",
+      "seconds": 0.001233951,
+      "seed": 18239472052751201401,
+      "verdict": "Match"
+    }
+  ],
+  "rine_version": "0.2.0-alpha.1",
+  "schema": 1,
+  "seed": 42,
+  "target": "fileops",
+  "top_mismatches": [],
+  "workers": 4
+}

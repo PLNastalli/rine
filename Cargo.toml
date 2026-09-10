@@ -1,0 +1,67 @@
+[workspace]
+members = [
+    "crates/winabi",
+    "crates/pe",
+    "crates/host-linux",
+    "crates/nt-object",
+    "crates/nt-memory",
+    "crates/nt-process",
+    "crates/nt-thread",
+    "crates/nt-file",
+    "crates/nt-sync",
+    "crates/nt-exception",
+    "crates/nt-registry",
+    "crates/nt-security",
+    "crates/nt-loader",
+    "crates/loader",
+    "crates/ntdll",
+    "crates/kernelbase",
+    "crates/kernel32",
+    "crates/runtime",
+    "crates/launcher",
+    "crates/api-scan",
+    "crates/oracle",
+    "crates/difftest",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.2.0-alpha.1"
+edition = "2021"
+rust-version = "1.80"
+license = "MIT OR Apache-2.0"
+repository = "https://example.local/rine"
+authors = ["Rine Project"]
+
+[workspace.dependencies]
+winabi = { path = "crates/winabi" }
+pe = { path = "crates/pe" }
+host-linux = { path = "crates/host-linux" }
+nt-object = { path = "crates/nt-object" }
+nt-memory = { path = "crates/nt-memory" }
+nt-process = { path = "crates/nt-process" }
+nt-thread = { path = "crates/nt-thread" }
+nt-file = { path = "crates/nt-file" }
+nt-sync = { path = "crates/nt-sync" }
+nt-exception = { path = "crates/nt-exception" }
+nt-registry = { path = "crates/nt-registry" }
+nt-security = { path = "crates/nt-security" }
+nt-loader = { path = "crates/nt-loader" }
+loader = { path = "crates/loader" }
+ntdll = { path = "crates/ntdll" }
+kernelbase = { path = "crates/kernelbase" }
+kernel32 = { path = "crates/kernel32" }
+runtime = { path = "crates/runtime" }
+launcher = { path = "crates/launcher" }
+api-scan = { path = "crates/api-scan" }
+oracle = { path = "crates/oracle" }
+difftest = { path = "crates/difftest" }
+bitflags = "2"
+tracing = "0.1"
+libc = "0.2"
+thiserror = "1"
+toml = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+proptest = "1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }

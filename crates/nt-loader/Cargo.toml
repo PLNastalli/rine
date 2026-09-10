@@ -1,0 +1,12 @@
+[package]
+name = "nt-loader"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "NT image loader logic: relocations, imports, TLS, PEB/TEB setup"
+
+[dependencies]
+winabi.workspace = true
+pe.workspace = true
+thiserror.workspace = true

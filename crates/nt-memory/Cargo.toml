@@ -1,0 +1,12 @@
+[package]
+name = "nt-memory"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "NT virtual memory manager: MEM_RESERVE/COMMIT regions over mmap"
+
+[dependencies]
+winabi.workspace = true
+host-linux.workspace = true
+thiserror.workspace = true

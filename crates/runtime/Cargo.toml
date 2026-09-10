@@ -1,0 +1,22 @@
+[package]
+name = "runtime"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Runtime orchestration: Capsule, process emulation, entry execution"
+
+[dependencies]
+winabi.workspace = true
+pe.workspace = true
+loader.workspace = true
+nt-loader.workspace = true
+nt-object.workspace = true
+nt-memory.workspace = true
+nt-file.workspace = true
+ntdll.workspace = true
+kernel32.workspace = true
+host-linux.workspace = true
+tracing.workspace = true
+thiserror.workspace = true
+toml.workspace = true

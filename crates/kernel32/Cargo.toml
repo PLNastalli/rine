@@ -1,0 +1,13 @@
+[package]
+name = "kernel32"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "kernel32 façade: thin forwarding to kernelbase/ntdll"
+
+[dependencies]
+winabi.workspace = true
+kernelbase.workspace = true
+ntdll.workspace = true
+nt-thread.workspace = true

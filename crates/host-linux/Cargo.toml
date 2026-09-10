@@ -1,0 +1,11 @@
+[package]
+name = "host-linux"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Linux Host Abstraction: sole boundary to syscalls (mmap, arch_prctl, io)"
+
+[dependencies]
+libc.workspace = true
+thiserror.workspace = true
