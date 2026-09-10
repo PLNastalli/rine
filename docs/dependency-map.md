@@ -17,6 +17,7 @@ pe: winabi + tracing + thiserror        nt-*: só winabi (+toml em nt-registry)
 api-scan: pe + winabi + kernel32 + ntdll + serde/serde_json (ferramenta)
 oracle: serde/serde_json (formato; runner usa `rine` via processo)
 difftest: oracle + pe + winabi + nt-object + nt-memory + nt-file + serde (+proptest em dev)
+perf: serde/serde_json/thiserror (+pe/runtime SÓ no bin rine-bench; lib puro)
 launcher: runtime + tracing-subscriber (+pe/serde_json/difftest em dev)
 ```
 

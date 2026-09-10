@@ -35,9 +35,12 @@ pronta e caçando bugs de verdade. Próximo: v0.3 = `hello_mingw.exe` CRT
 
 ## Última tarefa concluída
 
-v0.3 (parte 1): família TLS (`TlsAlloc/Free/GetValue/SetValue` com slots no
-TEB + bitmap no contexto — ADR-0011), `GetLastError`, `Sleep`; suite/evil
-estendidos (saídas 63–68 / 63–65); cobertura 18/4209; demanda MinGW 45→42.
+Performance regression gate (`crates/perf` + `rine-bench` + `bench/` +
+CI warn-only): schema 1 com ambiente, mediana pós-warmup, thresholds
+10/15 (strict 5/5 pronto), promoção manual com guarda anti-piora,
+baseline `v0.2.0-alpha.1.json`, ADR-0012. Examples antigos removidos
+(substituídos pelo runner). Antes: v0.3 parte 1 (TLS + GetLastError +
+Sleep, suite/evil estendidos, demanda 45→42).
 
 ## Próxima tarefa recomendada
 
@@ -59,7 +62,7 @@ Cobertura completa em `api-db/coverage.json`.
 
 ## Testes falhando / provisório / stubs / dívida
 
-Zero testes falhando (110 passed). Zero stubs (proibidos). Provisório
+Zero testes falhando (121 passed). Zero stubs (proibidos). Provisório
 documentado: singleton de processo (ADR-0003), `access==0`→read-only,
 share/flags ignorados, `X:rel`/UNC→NOT_IMPLEMENTED. Dívida: `VirtualQuery`,
 `openat2` direto, advapi32, ripgrep-pendente: nenhum.

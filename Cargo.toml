@@ -22,6 +22,7 @@ members = [
     "crates/api-scan",
     "crates/oracle",
     "crates/difftest",
+    "crates/perf",
 ]
 resolver = "2"
 
@@ -56,6 +57,7 @@ launcher = { path = "crates/launcher" }
 api-scan = { path = "crates/api-scan" }
 oracle = { path = "crates/oracle" }
 difftest = { path = "crates/difftest" }
+perf = { path = "crates/perf" }
 bitflags = "2"
 tracing = "0.1"
 libc = "0.2"

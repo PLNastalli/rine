@@ -26,5 +26,6 @@
 | Plataforma diferencial | `difftest` | cenários, modelos, shrink, corpus, `rine-test` | properties/concurrent/determinism/regression |
 | Driver guest | `pe::driver` | `FileOp` + expectativas embutidas | driver unit + campanhas |
 | Demanda | `runtime` | `missing_imports`, `demand_report` | `mingw_demand` |
+| Performance gate | `perf` | schema/stats/compare/report, `rine-bench`, `bench/` | unit por módulo |
 
 Lógica no lugar errado = bug arquitetural. Em dúvida, ver `architecture.md`.

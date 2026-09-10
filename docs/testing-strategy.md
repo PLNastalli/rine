@@ -54,7 +54,9 @@ derrubariam o host; documentado, não escondido).
 - ABI: `crates/winabi/tests/abi.rs` (+`tests/abi/README.md`) — contrato binário.
 - Fuzz: `fuzz/README.md` + corpus determinístico (`pe`, `nt-file`); libfuzzer
   só se migrarmos para nightly (upgrade path documentado).
-- Benches: `bench/` + baselines; gate manual (>2x sem motivo = investigar).
+- Benches: `bench/` + `rine-bench check` no CI (warn-only em alpha);
+  gate real em `docs/adr/ADR-0012-perf-gate.md` (mediana pós-warmup,
+  thresholds 10/15, promoção manual auditável).
 
 ## Regras
 

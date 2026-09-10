@@ -1,0 +1,20 @@
+[package]
+name = "perf"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Performance regression gate do Rine: schema, estatística, comparação e relatório"
+
+[[bin]]
+name = "rine-bench"
+path = "src/bin/rine-bench.rs"
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+# Só o bin `rine-bench` usa estas (medição executa o runtime de verdade,
+# mesmo escopo dos examples antigos). `src/lib.rs` é puro e NÃO as importa.
+pe.workspace = true
+runtime.workspace = true

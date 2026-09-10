@@ -1,0 +1,3 @@
+# Saídas de campanha (regerar com `rine-bench run`; baselines promovidas
+# ficam em `../baselines/` e SÃO versionadas).
+*.json
