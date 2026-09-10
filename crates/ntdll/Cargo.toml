@@ -12,4 +12,5 @@ nt-object.workspace = true
 nt-memory.workspace = true
 nt-file.workspace = true
 nt-thread.workspace = true
+nt-sync.workspace = true
 tracing.workspace = true

@@ -45,6 +45,10 @@ pub struct ProcessContext {
     pub mem: nt_memory::MemoryManager,
     /// Filesystem resolvido da Capsule (tradução de paths).
     pub fsys: nt_file::DriveMap,
+    /// Base onde o EXE foi mapeado (`GetModuleHandle(NULL)`; 0 = desconhecida).
+    /// Preenchido pelo `runtime` no load a partir do mapeamento real
+    /// (MAP_FIXED_NOREPLACE no base preferencial — determinístico nos testes).
+    pub image_base: u64,
 }
 
 static CONTEXT: OnceLock<Mutex<Option<Arc<ProcessContext>>>> = OnceLock::new();
@@ -88,6 +92,28 @@ pub fn nt_create_file(
     nt_file::create_file(&ctx.table, &ctx.fsys, win_path, opts)
 }
 
+/// `NtSetInformationFile(PositionInformation)` interno (só seek v0.3).
+pub fn nt_set_file_pointer(
+    handle: WindowsHandle,
+    distance: i64,
+    method: u32,
+) -> Result<u64, NtStatus> {
+    let ctx = require_context();
+    nt_file::set_file_pointer(&ctx.table, handle, distance, method)
+}
+
+/// Tamanho do arquivo (SEEK_END + restore) para `GetFileSizeEx`.
+pub fn nt_file_size(handle: WindowsHandle) -> Result<u64, NtStatus> {
+    let ctx = require_context();
+    nt_file::file_size(&ctx.table, handle)
+}
+
+/// Atributos por path (`GetFileAttributesW`).
+pub fn nt_file_attributes(win_path: &str) -> Result<u32, NtStatus> {
+    let ctx = require_context();
+    nt_file::file_attributes(&ctx.fsys, win_path)
+}
+
 /// `NtClose` interno (fecha handle + fd possuído).
 pub fn nt_close(handle: WindowsHandle) -> NtStatus {
     let ctx = match process_context() {
@@ -119,6 +145,14 @@ pub fn nt_free_virtual_memory(base: usize, free_type: winabi::AllocType) -> Resu
     ctx.mem.free(base, free_type).map_err(NtStatus::from)
 }
 
+/// `NtQueryVirtualMemory` (só forma `MemoryBasicInformation`, v0.3).
+/// Consulta pura: sem efeitos, `None` interno vira `INVALID_PARAMETER`
+/// na borda (o guest vê retorno 0 — ver `kernel32::VirtualQuery_impl`).
+pub fn nt_query_virtual_memory(addr: usize) -> Result<nt_memory::RegionInfo, NtStatus> {
+    let ctx = require_context();
+    ctx.mem.query(addr).ok_or(NtStatus::INVALID_PARAMETER)
+}
+
 /// `NtProtectVirtualMemory` interno. Retorna a proteção anterior.
 pub fn nt_protect_virtual_memory(
     base: usize,
@@ -147,7 +181,16 @@ pub extern "win64" fn RtlExitUserProcess_impl(code: u32) -> ! {
 
 /// Tabela autoritativa de exports implementados (fonte única: resolvedor
 /// em `runtime` + cobertura `api-db/coverage.json` leem daqui).
-pub const EXPORTS: &[&str] = &["RtlExitUserProcess", "NtTerminateProcess"];
+/// `Rtl*CriticalSection` moram aqui porque no Windows real as exports
+/// `kernel32!*CriticalSection` são forwarders para estes (item 10).
+pub const EXPORTS: &[&str] = &[
+    "RtlExitUserProcess",
+    "NtTerminateProcess",
+    "RtlInitializeCriticalSection",
+    "RtlDeleteCriticalSection",
+    "RtlEnterCriticalSection",
+    "RtlLeaveCriticalSection",
+];
 
 /// `NtTerminateProcess(handle, code)`: v0.1 só suporta processo atual.
 pub fn nt_terminate_process(handle: WindowsHandle, code: u32) -> NtStatus {
@@ -161,12 +204,80 @@ pub extern "win64" fn NtTerminateProcess_impl(_handle: u64, code: u32) -> u32 {
     nt_terminate_process(WindowsHandle(_handle), code).0
 }
 
+/// `RtlInitializeCriticalSection(cs)`: estado livre canônico.
+/// Lógica em `nt_sync`; estas façades são o alvo dos forwarders
+/// `kernel32!*CriticalSection` (como no Windows — ver `kernel32::modules`).
+/// `cs` já validado (não-nulo) na façade chamadora.
+// SAFETY (fronteira ABI, vale para os 4 impls abaixo):
+// - struct `CriticalSection` de 48 bytes válida por contrato Windows,
+//   mesma address space, durante a chamada; borrow nunca retido.
+// - quem garante: o PE compilado pelo Windows; violação (ponteiro selvagem)
+//   falha contida como STATUS_ACCESS_VIOLATION futuro (SEH/signals).
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn RtlInitializeCriticalSection_impl(
+    lp_critical_section: *mut winabi::CriticalSection,
+) {
+    nt_sync::initialize_cs(unsafe { &mut *lp_critical_section });
+}
+
+/// `RtlDeleteCriticalSection(cs)`: libera recursos internos (nenhum em v0.2).
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn RtlDeleteCriticalSection_impl(
+    lp_critical_section: *mut winabi::CriticalSection,
+) {
+    nt_sync::delete_cs(unsafe { &mut *lp_critical_section });
+}
+
+/// `RtlEnterCriticalSection(cs)`: adquire para a thread corrente.
+/// Contenção real é impossível single-threaded; se um dia ocorrer, o `Err`
+/// interno vira futex/wait (v0.3+) — hoje seria bug interno, então registra.
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn RtlEnterCriticalSection_impl(
+    lp_critical_section: *mut winabi::CriticalSection,
+) {
+    let st = nt_sync::enter_cs(
+        unsafe { &mut *lp_critical_section },
+        nt_thread::current_tid(),
+    );
+    debug_assert!(
+        st.is_success(),
+        "contenção impossível single-threaded: {st}"
+    );
+}
+
+/// `RtlLeaveCriticalSection(cs)`: libera uma aquisição. Dono errado = bug do
+/// caller (indefinido no Windows); aqui: ignora após registrar, em vez de
+/// corromper estado silenciosamente. SEH futuro pode elevar a exceção.
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn RtlLeaveCriticalSection_impl(
+    lp_critical_section: *mut winabi::CriticalSection,
+) {
+    if nt_sync::leave_cs(
+        unsafe { &mut *lp_critical_section },
+        nt_thread::current_tid(),
+    )
+    .is_error()
+    {
+        tracing::warn!("RtlLeaveCriticalSection sem posse (bug do guest)");
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn exports_nonempty() {
-        assert_eq!(EXPORTS, &["RtlExitUserProcess", "NtTerminateProcess"]);
+        assert_eq!(
+            EXPORTS,
+            &[
+                "RtlExitUserProcess",
+                "NtTerminateProcess",
+                "RtlInitializeCriticalSection",
+                "RtlDeleteCriticalSection",
+                "RtlEnterCriticalSection",
+                "RtlLeaveCriticalSection",
+            ]
+        );
     }
 }

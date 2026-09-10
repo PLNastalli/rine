@@ -1,0 +1,24 @@
+[package]
+name = "manager-tauri"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Rine Manager desktop shell (Tauri 2): thin commands over manager-core"
+
+[[bin]]
+name = "rine-manager"
+path = "src/main.rs"
+
+[dependencies]
+manager-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+# `custom-protocol` OBRIGATÓRIO: sem ele, `dev=true` sempre e o `dist` nunca
+# é embutido (janela cai no devUrl mesmo em release). Com ele, `cargo run`
+# serve a UI embutida; `tauri dev` continua usando o dev server.
+tauri = { version = "2", features = ["custom-protocol"] }
+tauri-plugin-dialog = "2"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }

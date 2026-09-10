@@ -2,7 +2,7 @@
 
 ## Versionamento (semver real; updates pequenos não sobem números grandes)
 
-Versão atual: `0.2.0-alpha.2` (`rine --version`). Enquanto `0.x`:
+Versão atual: `0.2.0-alpha.3` (`rine --version`). Enquanto `0.x`:
 pré-releases `-alpha.N` durante o milestone; ao fechar, `0.MINOR.0`;
 fixes viram `0.MINOR.PATCH` (sobe só o último número). `1.0` só com ABI
 estável. Regra: número grande (minor em 0.x) só por milestone fechado —

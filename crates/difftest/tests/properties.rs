@@ -27,8 +27,9 @@ fn arb_mem_op() -> impl Strategy<Value = model::MemOp> {
                 protect: p,
             }
         }),
-        (0usize..5).prop_map(|id| MemOp::Commit { id }),
+        (0usize..5, 0u8..6).prop_map(|(id, p)| MemOp::Commit { id, protect: p }),
         (0usize..5, 0u8..6).prop_map(|(id, protect)| MemOp::Protect { id, protect }),
+        (0usize..5, 0u64..9000).prop_map(|(id, offset)| MemOp::Query { id, offset }),
         (0usize..5).prop_map(|id| MemOp::Release { id }),
     ]
 }

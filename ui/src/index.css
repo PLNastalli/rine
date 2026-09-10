@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-rine-bg: #0b1220;
+  --color-rine-panel: #111a2e;
+  --color-rine-card: #151f36;
+  --color-rine-border: #263252;
+  --color-rine-text: #e8edf7;
+  --color-rine-muted: #93a1bd;
+  --color-rine-accent: #2f81f7;
+  --color-rine-ok: #3fb950;
+  --color-rine-warn: #d29922;
+  --color-rine-err: #f85149;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Foco sempre visível (a11y, §29). */
+:focus-visible {
+  outline: 2px solid var(--color-rine-accent);
+  outline-offset: 2px;
+}

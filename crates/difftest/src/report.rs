@@ -5,6 +5,7 @@
 //! Números nunca fictícios: tudo contado a partir dos resultados reais.
 
 use crate::compare::Verdict;
+use crate::scenario::Scenario;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -17,6 +18,8 @@ pub struct CaseRecord {
     pub verdict: Verdict,
     pub detail: String,
     pub seconds: f64,
+    /// Cenário completo (reproduce/minimize sem re-gerar nada).
+    pub scenario: Scenario,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -209,6 +212,13 @@ mod tests {
             verdict: v,
             detail: detail.into(),
             seconds: 0.01,
+            scenario: Scenario::new(
+                "fileops",
+                "CreateFileA",
+                1,
+                serde_json::json!({}),
+                serde_json::json!({}),
+            ),
         }
     }
 

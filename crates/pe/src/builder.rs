@@ -9,7 +9,7 @@
 //! headers (0x200 file-aligned)
 //! .text VA 0x1000 (código RIP-relative, sem relocs obrigatórios)
 //! .rdata VA 0x2000 (msg, dll name, Hint/Name, ILT/IAT, ImportDir)
-//! ImageBase preferencial 0x140000000
+//! ImageBase preferencial 0x1400000000
 //! ```
 
 pub(crate) const IMAGE_BASE: u64 = 0x0014_0000_0000;
@@ -308,9 +308,10 @@ impl RdataLayout {
 /// Monta `.rdata` genérico: blobs + Hint/Names + ILT + IAT + ImportDir.
 /// `dll` ex. `"KERNEL32.dll"`; `funcs` na ordem da IAT.
 pub fn build_rdata_generic(dll: &str, funcs: &[&str], blobs: &[(&str, &[u8])]) -> RdataLayout {
-    // 0x400 comporta ~16 imports + blobs típicos; `assemble` alinha o raw.
-    // (0x200 estourou no suite v0.3 com 16 imports — ver assert abaixo.)
-    let mut buf = vec![0u8; 0x400];
+    // 0x800 comporta ~36 imports + blobs típicos (A+W+wide paths);
+    // `assemble` alinha o raw. (0x200 estourou com 16 imports; 0x400 com 28
+    // + wide blobs; 0x600 com 36 + wide dirs — ver assert abaixo.)
+    let mut buf = vec![0u8; 0x800];
     let mut blobs_map = std::collections::HashMap::new();
     let mut off = 0usize;
     for (name, data) in blobs {
@@ -357,7 +358,7 @@ pub fn build_rdata_generic(dll: &str, funcs: &[&str], blobs: &[(&str, &[u8])]) -
     put32(&mut buf, off + 12, dll_rva);
     put32(&mut buf, off + 16, iat);
     off += 40;
-    assert!(off <= 0x400, "rdata estourou: {off:#X}");
+    assert!(off <= 0x800, "rdata estourou: {off:#X}");
     buf.truncate(off);
     RdataLayout {
         bytes: buf,
@@ -480,7 +481,7 @@ pub fn suite_exe_name() -> &'static str {
 
 /// `suite.exe`: TODAS as APIs v0.x em cadeia, com verificação no guest.
 /// Console→arquivo(write/read+compare)→memória(alloc/protect/free)→cmdline.
-/// Exit 0 = tudo passou; 41–48 = estágio que falhou (ver corpo).
+/// Exit 0 = tudo passou; 41–48/63–120 = estágio que falhou (ver corpo).
 /// REGRA STANDING (testing-strategy): toda API nova entra neste EXE.
 pub fn build_suite_exe() -> Vec<u8> {
     let funcs = [
@@ -504,6 +505,21 @@ pub fn build_suite_exe() -> Vec<u8> {
         "EnterCriticalSection",
         "LeaveCriticalSection",
         "SetUnhandledExceptionFilter",
+        "VirtualQuery",
+        "GetProcAddress",
+        "GetModuleHandleA",
+        "GetModuleHandleW",
+        "LoadLibraryA",
+        "LoadLibraryW",
+        "FreeLibrary",
+        "CreateFileW",
+        "GetFileAttributesW",
+        "SetFilePointerEx",
+        "GetFileSizeEx",
+        "CreateDirectoryW",
+        "DeleteFileW",
+        "MoveFileExW",
+        "RemoveDirectoryW",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -514,6 +530,43 @@ pub fn build_suite_exe() -> Vec<u8> {
             ("ok", b"RINE-SUITE-OK\n"),
             ("fmsg", file_exe_msg()),
             ("fname", b"C:\\suitetest.txt\0"),
+            ("gpa_name", b"WriteFile\0"),
+            ("gpa_bad", b"NoSuchExportZZZ\0"),
+            ("k32_name", b"kernel32.dll\0"),
+            ("mod_bad", b"NoSuchModuleZZZ\0"),
+            (
+                "wfname",
+                b"C\x00:\x00\\\x00s\x00u\x00i\x00t\x00e\x00t\x00e\x00s\x00t\x00.\x00t\x00x\x00t\x00\x00\x00",
+            ),
+            (
+                "wfname2",
+                b"C\x00:\x00\\\x00s\x00u\x00i\x00t\x00e\x00w\x00.\x00t\x00x\x00t\x00\x00\x00",
+            ),
+            (
+                "wzpath",
+                b"Z\x00:\x00\\\x00n\x00o\x00p\x00e\x00.\x00t\x00x\x00t\x00\x00\x00",
+            ),
+            (
+                "wdir",
+                b"C\x00:\x00\\\x00s\x00u\x00i\x00t\x00e\x00d\x00i\x00r\x00\x00\x00",
+            ),
+            (
+                "wfile1",
+                b"C\x00:\x00\\\x00s\x00u\x00i\x00t\x00e\x00d\x00i\x00r\x00\\\x00f\x001\x00.\x00t\x00x\x00t\x00\x00\x00",
+            ),
+            (
+                "wfile2",
+                b"C\x00:\x00\\\x00s\x00u\x00i\x00t\x00e\x00d\x00i\x00r\x00\\\x00f\x002\x00.\x00t\x00x\x00t\x00\x00\x00",
+            ),
+            (
+                "nt_wide",
+                b"N\x00T\x00D\x00L\x00L\x00.\x00D\x00L\x00L\x00\x00\x00",
+            ),
+            (
+                "k32_wide",
+                b"K\x00E\x00R\x00N\x00E\x00L\x003\x002\x00.\x00D\x00L\x00L\x00\x00\x00",
+            ),
+            ("wbad", b"Z\x00Z\x00Z\x00\x00\x00"),
         ],
     );
     let (i_std, i_write, i_open, i_read, i_close) =
@@ -528,18 +581,34 @@ pub fn build_suite_exe() -> Vec<u8> {
         r.iat(15),
         r.iat(16),
     );
-    let (i_cs_enter, i_cs_leave, i_uef, i_exit) = (r.iat(17), r.iat(18), r.iat(19), r.iat(20));
+    let (i_cs_enter, i_cs_leave, i_uef, i_query, i_gpa, i_exit) = (
+        r.iat(17),
+        r.iat(18),
+        r.iat(19),
+        r.iat(20),
+        r.iat(21),
+        r.iat(35),
+    );
+    let (i_gmh_a, i_gmh_w, i_ll_a, i_ll_w, i_free_lib) =
+        (r.iat(22), r.iat(23), r.iat(24), r.iat(25), r.iat(26));
+    let (i_open_w, i_attr_w, i_seek, i_size) = (r.iat(27), r.iat(28), r.iat(29), r.iat(30));
+    let (i_mkdir_w, i_del_w, i_move_w, i_rmdir_w) = (r.iat(31), r.iat(32), r.iat(33), r.iat(34));
     let (m_start, m_ok, m_fmsg, m_fname) = (
         r.blob("start"),
         r.blob("ok"),
         r.blob("fmsg"),
         r.blob("fname"),
     );
+    let (m_gpa_name, m_gpa_bad) = (r.blob("gpa_name"), r.blob("gpa_bad"));
+    let (m_k32, m_mod_bad) = (r.blob("k32_name"), r.blob("mod_bad"));
+    let (m_nt_wide, m_k32_wide, m_wbad) = (r.blob("nt_wide"), r.blob("k32_wide"), r.blob("wbad"));
+    let (m_wfname, m_wfname2, m_wzpath) = (r.blob("wfname"), r.blob("wfname2"), r.blob("wzpath"));
+    let (m_wdir, m_wfile1, m_wfile2) = (r.blob("wdir"), r.blob("wfile1"), r.blob("wfile2"));
     let mut c: Vec<u8> = Vec::new();
-    emit_sub_rsp(&mut c, 0xD8); // frame: shadow + args + locais + CS[0xA8..0xD8]
-                                // Helper local: exit(code) — 5+6 bytes.
-                                // (expandido inline abaixo via fail_to.)
-                                // --- 1. console ---
+    emit_sub_rsp(&mut c, 0x108); // frame: shadow + args + locais + CS[0xA8..0xD8] + MBI[0xD8..0x108]
+                                 // Helper local: exit(code) — 5+6 bytes.
+                                 // (expandido inline abaixo via fail_to.)
+                                 // --- 1. console ---
     c.extend_from_slice(&[0xB9, 0xF5, 0xFF, 0xFF, 0xFF]); // mov ecx,-11
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x89, 0xC3]); // mov rbx,rax
@@ -701,7 +770,224 @@ pub fn build_suite_exe() -> Vec<u8> {
     emit_call(&mut c, i_uef);
     c.extend_from_slice(&[0x48, 0x3D, 0x34, 0x12, 0x00, 0x00]); // cmp rax,0x1234
     emit_fail_unless_equal(&mut c, i_exit, 75);
-    // --- 10. OK final ---
+    // --- 10. VirtualQuery: alloc própria → query → confere 6 campos → free.
+    c.extend_from_slice(&[0x31, 0xC9]); // xor ecx,ecx
+    c.extend_from_slice(&[0xBA, 0x00, 0x10, 0x00, 0x00]); // mov edx,0x1000
+    c.extend_from_slice(&[0x41, 0xB8, 0x00, 0x30, 0x00, 0x00]); // mov r8d,0x3000
+    c.extend_from_slice(&[0x41, 0xB9, 0x04, 0x00, 0x00, 0x00]); // mov r9d,0x04
+    emit_call(&mut c, i_alloc);
+    c.extend_from_slice(&[0x48, 0x89, 0xC3]); // mov rbx,rax
+    c.extend_from_slice(&[0x48, 0x85, 0xDB]); // test rbx,rbx (não-NULL)
+    emit_fail_unless_not_equal(&mut c, i_exit, 76);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+                                              // lea rdx,[rsp+0xD8]: disp32 obrigatório (0xD8 > 127 não cabe em disp8!)
+    c.extend_from_slice(&[0x48, 0x8D, 0x94, 0x24, 0xD8, 0x00, 0x00, 0x00]);
+    c.extend_from_slice(&[0x41, 0xB8, 0x30, 0x00, 0x00, 0x00]); // mov r8d,48
+    emit_call(&mut c, i_query);
+    c.extend_from_slice(&[0x83, 0xF8, 0x30]); // cmp eax,48 (bytes escritos)
+    emit_fail_unless_equal(&mut c, i_exit, 77);
+    // rsi = cursor do MBI; resto em disp8 (padrão da etapa CS, provado).
+    c.extend_from_slice(&[0x48, 0x8D, 0xB4, 0x24, 0xD8, 0x00, 0x00, 0x00]); // lea rsi,[rsp+0xD8]
+    c.extend_from_slice(&[0x48, 0x39, 0x5E, 0x00]); // cmp [rsi+0],rbx (BaseAddress)
+    emit_fail_unless_equal(&mut c, i_exit, 78);
+    c.extend_from_slice(&[0x48, 0x81, 0x7E, 0x18, 0x00, 0x10, 0x00, 0x00]); // cmp qword [rsi+0x18],0x1000 (RegionSize)
+    emit_fail_unless_equal(&mut c, i_exit, 79);
+    c.extend_from_slice(&[0x81, 0x7E, 0x20, 0x00, 0x10, 0x00, 0x00]); // cmp dword [rsi+0x20],0x1000 (State=COMMIT; 0x81 = imm32, 0x83 seria imm8!)
+    emit_fail_unless_equal(&mut c, i_exit, 80);
+    c.extend_from_slice(&[0x83, 0x7E, 0x24, 0x04]); // cmp dword [rsi+0x24],0x04 (Protect=RW)
+    emit_fail_unless_equal(&mut c, i_exit, 81);
+    c.extend_from_slice(&[0x81, 0x7E, 0x28, 0x00, 0x00, 0x02, 0x00]); // cmp dword [rsi+0x28],0x20000 (Type=PRIVATE)
+    emit_fail_unless_equal(&mut c, i_exit, 82);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    c.extend_from_slice(&[0x31, 0xD2]); // xor edx,edx
+    c.extend_from_slice(&[0x41, 0xB8, 0x00, 0x80, 0x00, 0x00]); // mov r8d,0x8000 (RELEASE)
+    emit_call(&mut c, i_free);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 83);
+    // --- 11. GetProcAddress: nome → == IAT; ruim → NULL+127; ordinal 1633;
+    // módulo ruim → NULL+126. Pseudo-HMODULE kernel32 = 0x6B320000.
+    c.extend_from_slice(&[0x48, 0xB9, 0x00, 0x00, 0x32, 0x6B, 0x00, 0x00, 0x00, 0x00]); // movabs rcx,K32
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_gpa_name); // lea rdx,[gpa_name]
+    emit_call(&mut c, i_gpa);
+    c.extend_from_slice(&[0x48, 0x89, 0xC7]); // mov rdi,rax (guarda)
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax (não-NULL)
+    emit_fail_unless_not_equal(&mut c, i_exit, 84);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], i_write); // lea rdx,[slot IAT WriteFile]
+    c.extend_from_slice(&[0x48, 0x8B, 0x12]); // mov rdx,[rdx] (endereço resolvido)
+    c.extend_from_slice(&[0x48, 0x39, 0xD7]); // cmp rdi,rdx (iguais?)
+    emit_fail_unless_equal(&mut c, i_exit, 85);
+    c.extend_from_slice(&[0x48, 0xB9, 0x00, 0x00, 0x32, 0x6B, 0x00, 0x00, 0x00, 0x00]); // movabs rcx,K32
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_gpa_bad); // nome inexistente
+    emit_call(&mut c, i_gpa);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax (NULL esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 86);
+    emit_call(&mut c, i_err); // GetLastError → 127 (PROC_NOT_FOUND)
+    c.extend_from_slice(&[0x83, 0xF8, 0x7F]); // cmp eax,127
+    emit_fail_unless_equal(&mut c, i_exit, 87);
+    c.extend_from_slice(&[0x48, 0xB9, 0x00, 0x00, 0x32, 0x6B, 0x00, 0x00, 0x00, 0x00]); // movabs rcx,K32
+    c.extend_from_slice(&[0xBA, 0x61, 0x06, 0x00, 0x00]); // mov edx,1633 (ordinal WriteFile)
+    emit_call(&mut c, i_gpa);
+    c.extend_from_slice(&[0x48, 0x39, 0xF8]); // cmp rax,rdi (== por nome?)
+    emit_fail_unless_equal(&mut c, i_exit, 88);
+    c.extend_from_slice(&[0xB9, 0xEF, 0xBE, 0xAD, 0xDE]); // mov ecx,0xDEADBEEF (módulo ruim)
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_gpa_name);
+    emit_call(&mut c, i_gpa);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax (NULL esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 89);
+    emit_call(&mut c, i_err); // GetLastError → 126 (MOD_NOT_FOUND)
+    c.extend_from_slice(&[0x83, 0xF8, 0x7E]); // cmp eax,126
+    emit_fail_unless_equal(&mut c, i_exit, 90);
+    // --- 12. Módulos: GMH_A(minúsculo)==K32; GMH_A(NULL)==base; GMH_W(NT);
+    // GMH_A(ruim)==NULL; LL_A==K32; LL_W(maiúsculo)==K32; LL_A(ruim)==NULL+126;
+    // Free(K32)==1; Free(0xDEAD)==0. Pseudo K32=0x6B320000, NT=0x6E740000.
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_k32); // lea rcx,[k32_name]
+    emit_call(&mut c, i_gmh_a);
+    c.extend_from_slice(&[0x48, 0x89, 0xC3]); // mov rbx,rax (K32?)
+    c.extend_from_slice(&[0x48, 0xBA, 0x00, 0x00, 0x32, 0x6B, 0x00, 0x00, 0x00, 0x00]); // movabs rdx,K32
+    c.extend_from_slice(&[0x48, 0x39, 0xD3]); // cmp rbx,rdx
+    emit_fail_unless_equal(&mut c, i_exit, 91);
+    c.extend_from_slice(&[0x31, 0xC9]); // xor ecx,ecx (NULL)
+    emit_call(&mut c, i_gmh_a);
+    c.extend_from_slice(&[0x48, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00]); // movabs rdx,0x1400000000
+    c.extend_from_slice(&[0x48, 0x39, 0xD0]); // cmp rax,rdx (base da imagem?)
+    emit_fail_unless_equal(&mut c, i_exit, 92);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_nt_wide); // lea rcx,[NTDLL wide]
+    emit_call(&mut c, i_gmh_w);
+    c.extend_from_slice(&[0x48, 0xBA, 0x00, 0x00, 0x74, 0x6E, 0x00, 0x00, 0x00, 0x00]); // movabs rdx,NT
+    c.extend_from_slice(&[0x48, 0x39, 0xD0]); // cmp rax,rdx
+    emit_fail_unless_equal(&mut c, i_exit, 93);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_mod_bad);
+    emit_call(&mut c, i_gmh_a);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax (NULL esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 94);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_k32);
+    emit_call(&mut c, i_ll_a);
+    c.extend_from_slice(&[0x48, 0x39, 0xD8]); // cmp rax,rbx (== K32?)
+    emit_fail_unless_equal(&mut c, i_exit, 95);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_k32_wide);
+    emit_call(&mut c, i_ll_w);
+    c.extend_from_slice(&[0x48, 0x39, 0xD8]); // cmp rax,rbx
+    emit_fail_unless_equal(&mut c, i_exit, 96);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_mod_bad);
+    emit_call(&mut c, i_ll_a);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax (NULL esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 97);
+    emit_call(&mut c, i_err); // GetLastError → 126 (MOD_NOT_FOUND)
+    c.extend_from_slice(&[0x83, 0xF8, 0x7E]); // cmp eax,126
+    emit_fail_unless_equal(&mut c, i_exit, 98);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx (Free K32)
+    emit_call(&mut c, i_free_lib);
+    c.extend_from_slice(&[0x83, 0xF8, 0x01]); // cmp eax,1 (TRUE)
+    emit_fail_unless_equal(&mut c, i_exit, 99);
+    c.extend_from_slice(&[0xB9, 0xAD, 0xDE, 0x00, 0x00]); // mov ecx,0xDEAD
+    emit_call(&mut c, i_free_lib);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (FALSE esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 100);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wbad); // GMH_W(ruim) → NULL
+    emit_call(&mut c, i_gmh_w);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax (NULL esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 101);
+    // --- 14. Arquivos W: CreateFileW → write(11) → seek(5) → size(11) →
+    // close; attrs do .txt == NORMAL(0x80); Z:\nope == -1.
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfname2); // lea rcx,[wfname2]
+    c.extend_from_slice(&[0xBA, 0x00, 0x00, 0x00, 0xC0]); // mov edx,0xC0000000 (R+W)
+    c.extend_from_slice(&[0x45, 0x31, 0xC0, 0x45, 0x31, 0xC9]); // xor r8d; xor r9d
+    emit_stack_arg(&mut c, 5, 2, false); // CREATE_ALWAYS
+    emit_stack_arg(&mut c, 6, 0x80, false);
+    emit_stack_arg(&mut c, 7, 0, true);
+    emit_call(&mut c, i_open_w);
+    c.extend_from_slice(&[0x48, 0x89, 0xC3]); // mov rbx,rax
+    c.extend_from_slice(&[0x48, 0x83, 0xFB, 0xFF]); // cmp rbx,-1
+    emit_fail_unless_not_equal(&mut c, i_exit, 102);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_fmsg);
+    c.extend_from_slice(&[0x41, 0xB8, 0x0B, 0x00, 0x00, 0x00]); // mov r8d,11
+    c.extend_from_slice(&[0x4C, 0x8D, 0x4C, 0x24, 0x38]); // lea r9,[rsp+0x38]
+    emit_stack_arg(&mut c, 5, 0, true);
+    emit_call(&mut c, i_write);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 103);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    c.extend_from_slice(&[0x48, 0xBA, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]); // movabs rdx,5
+    c.extend_from_slice(&[0x4C, 0x8D, 0x44, 0x24, 0x40]); // lea r8,[rsp+0x40]
+    c.extend_from_slice(&[0x45, 0x31, 0xC9]); // xor r9d,r9d (BEGIN=0)
+    emit_call(&mut c, i_seek);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 104);
+    c.extend_from_slice(&[0x48, 0x83, 0x7C, 0x24, 0x40, 0x05]); // cmp qword [rsp+0x40],5
+    emit_fail_unless_equal(&mut c, i_exit, 105);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    c.extend_from_slice(&[0x48, 0x8D, 0x54, 0x24, 0x48]); // lea rdx,[rsp+0x48]
+    emit_call(&mut c, i_size);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 106);
+    c.extend_from_slice(&[0x48, 0x83, 0x7C, 0x24, 0x48, 0x0B]); // cmp qword [rsp+0x48],11
+    emit_fail_unless_equal(&mut c, i_exit, 107);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    emit_call(&mut c, i_close);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 108);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfname); // attrs de suitetest.txt
+    emit_call(&mut c, i_attr_w);
+    c.extend_from_slice(&[0x81, 0xF8, 0x80, 0x00, 0x00, 0x00]); // cmp eax,0x80 (NORMAL; 0x81=imm32, 0x83 seria -128!)
+    emit_fail_unless_equal(&mut c, i_exit, 109);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wzpath); // Z:\nope.txt
+    emit_call(&mut c, i_attr_w);
+    c.extend_from_slice(&[0x83, 0xF8, 0xFF]); // cmp eax,-1 (INVALID; eax! rax alto é zero em ret u32)
+    emit_fail_unless_equal(&mut c, i_exit, 110);
+    // --- 15. Mutação FS: mkdir → mkdir(dup)=0 → create f1 → move f1→f2 →
+    // attrs f2 → del f2 → attrs=-1 → rmdir → rmdir(dup)=0.
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wdir); // lea rcx,[wdir]
+    c.extend_from_slice(&[0x31, 0xD2]); // xor edx,edx (attrs NULL)
+    emit_call(&mut c, i_mkdir_w);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 111);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wdir);
+    c.extend_from_slice(&[0x31, 0xD2]);
+    emit_call(&mut c, i_mkdir_w);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (FALSE esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 112);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfile1);
+    c.extend_from_slice(&[0xBA, 0x00, 0x00, 0x00, 0x40]); // mov edx,GENERIC_WRITE
+    c.extend_from_slice(&[0x45, 0x31, 0xC0, 0x45, 0x31, 0xC9]); // xor r8d; xor r9d
+    emit_stack_arg(&mut c, 5, 2, false); // CREATE_ALWAYS
+    emit_stack_arg(&mut c, 6, 0x80, false);
+    emit_stack_arg(&mut c, 7, 0, true);
+    emit_call(&mut c, i_open_w);
+    c.extend_from_slice(&[0x48, 0x89, 0xC3]); // mov rbx,rax
+    c.extend_from_slice(&[0x48, 0x83, 0xFB, 0xFF]); // cmp rbx,-1
+    emit_fail_unless_not_equal(&mut c, i_exit, 113);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    emit_call(&mut c, i_close);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 114);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfile1); // move f1 → f2
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_wfile2);
+    c.extend_from_slice(&[0x41, 0xB8, 0x01, 0x00, 0x00, 0x00]); // mov r8d,1 (REPLACE)
+    emit_call(&mut c, i_move_w);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 115);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfile2); // attrs f2 == NORMAL
+    emit_call(&mut c, i_attr_w);
+    c.extend_from_slice(&[0x81, 0xF8, 0x80, 0x00, 0x00, 0x00]); // cmp eax,0x80 (imm32!)
+    emit_fail_unless_equal(&mut c, i_exit, 116);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfile2); // del f2
+    emit_call(&mut c, i_del_w);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 117);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfile2); // attrs f2 == -1
+    emit_call(&mut c, i_attr_w);
+    c.extend_from_slice(&[0x83, 0xF8, 0xFF]); // cmp eax,-1
+    emit_fail_unless_equal(&mut c, i_exit, 118);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wdir); // rmdir (vazio agora)
+    emit_call(&mut c, i_rmdir_w);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 119);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wdir); // rmdir (dup) → FALSE
+    emit_call(&mut c, i_rmdir_w);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (FALSE esperado)
+    emit_fail_unless_equal(&mut c, i_exit, 120);
+    // --- 16. OK final ---
     c.extend_from_slice(&[0xB9, 0xF5, 0xFF, 0xFF, 0xFF]);
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x89, 0xC1]); // mov rcx,rax
@@ -880,9 +1166,9 @@ pub fn build_args_exe() -> Vec<u8> {
     assemble(&c, &r.bytes, vsize, r.import_dir, 40, r.iats[0], iat_size)
 }
 
-/// `evil.exe`: robustez — 15 abusos que DEVEM falhar limpo.
+/// `evil.exe`: robustez — 17 abusos que DEVEM falhar limpo.
 /// Cada estágio espera recusa (FALSE/NULL/INVALID); aceitar = bug do runtime.
-/// Exit 0 = tudo contido; 51–65 = estágio que se comportou mal.
+/// Exit 0 = tudo contido; 51–67 = estágio que se comportou mal.
 /// FRONTEIRA DOCUMENTADA: ponteiros selvagens NÃO estão aqui (sem SEH até
 /// v0.3, falhariam o host — ver testing-strategy); só valores/handles/flags.
 pub fn build_evil_exe() -> Vec<u8> {
@@ -897,6 +1183,19 @@ pub fn build_evil_exe() -> Vec<u8> {
         "TlsGetValue",
         "TlsSetValue",
         "TlsFree",
+        "VirtualQuery",
+        "GetProcAddress",
+        "LoadLibraryA",
+        "FreeLibrary",
+        "GetModuleHandleA",
+        "CreateFileW",
+        "GetFileAttributesW",
+        "SetFilePointerEx",
+        "GetFileSizeEx",
+        "CreateDirectoryW",
+        "DeleteFileW",
+        "MoveFileExW",
+        "RemoveDirectoryW",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -906,6 +1205,12 @@ pub fn build_evil_exe() -> Vec<u8> {
             ("msg", b"evil\n"),
             ("zpath", b"Z:\\nope.txt\0"),
             ("fname", b"C:\\evil_disp.txt\0"),
+            ("gpa_bad", b"NoSuchExportZZZ\0"),
+            ("mod_bad", b"NoSuchModuleZZZ\0"),
+            (
+                "wzpath",
+                b"Z\x00:\x00\\\x00n\x00o\x00p\x00e\x00.\x00t\x00x\x00t\x00\x00\x00",
+            ),
         ],
     );
     let (i_std, i_write, i_open, i_read, i_close, i_alloc, i_free) = (
@@ -917,11 +1222,24 @@ pub fn build_evil_exe() -> Vec<u8> {
         r.iat(5),
         r.iat(6),
     );
-    let (i_tls_get, i_tls_set, i_tls_free, i_exit) = (r.iat(7), r.iat(8), r.iat(9), r.iat(10));
+    let (i_tls_get, i_tls_set, i_tls_free, i_query, i_gpa, i_exit) = (
+        r.iat(7),
+        r.iat(8),
+        r.iat(9),
+        r.iat(10),
+        r.iat(11),
+        r.iat(23),
+    );
+    let (i_ll_a, i_free_lib, i_gmh_a) = (r.iat(12), r.iat(13), r.iat(14));
+    let (i_open_w, i_attr_w, i_seek, i_size) = (r.iat(15), r.iat(16), r.iat(17), r.iat(18));
+    let (i_mkdir_w, i_del_w, i_move_w, i_rmdir_w) = (r.iat(19), r.iat(20), r.iat(21), r.iat(22));
     let (m_msg, m_zpath, m_fname) = (r.blob("msg"), r.blob("zpath"), r.blob("fname"));
+    let m_gpa_bad = r.blob("gpa_bad");
+    let m_mod_bad = r.blob("mod_bad");
+    let m_wzpath = r.blob("wzpath");
     let mut c: Vec<u8> = Vec::new();
-    emit_sub_rsp(&mut c, 0x48);
-    // 1. WriteFile(handle selvagem) deve dar FALSE (51 se TRUE).
+    emit_sub_rsp(&mut c, 0x78); // frame: shadow + args + locais + MBI[0x48..0x78]
+                                // 1. WriteFile(handle selvagem) deve dar FALSE (51 se TRUE).
     c.extend_from_slice(&[0x48, 0xB9, 0xEF, 0xBE, 0xAD, 0xDE, 0x00, 0x00, 0x00, 0x00]); // mov rcx,0xDEADBEEF
     emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_msg);
     c.extend_from_slice(&[0x41, 0xB8, 0x05, 0x00, 0x00, 0x00]);
@@ -1019,6 +1337,92 @@ pub fn build_evil_exe() -> Vec<u8> {
     c.extend_from_slice(&[0xB9, 0xFF, 0xFF, 0xFF, 0xFF]); // mov ecx,-1
     emit_call(&mut c, i_tls_free);
     evil_expect_zero(&mut c, i_exit, 65);
+    // 16. VirtualQuery(não-mapeado, buf, 48) → 0 (66).
+    c.extend_from_slice(&[0xB9, 0x00, 0x50, 0x34, 0x12]); // mov ecx,0x12345000
+    c.extend_from_slice(&[0x48, 0x8D, 0x54, 0x24, 0x48]); // lea rdx,[rsp+0x48]
+    c.extend_from_slice(&[0x41, 0xB8, 0x30, 0x00, 0x00, 0x00]); // mov r8d,48
+    emit_call(&mut c, i_query);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax; espera 0
+    evil_expect_jz_ok(&mut c, i_exit, 66);
+    // 17. VirtualQuery(qualquer, NULL, 48) → 0 (67; buffer inválido primeiro).
+    c.extend_from_slice(&[0xB9, 0x00, 0x50, 0x34, 0x12]); // mov ecx,0x12345000
+    c.extend_from_slice(&[0x31, 0xD2]); // xor edx,edx (NULL)
+    c.extend_from_slice(&[0x41, 0xB8, 0x30, 0x00, 0x00, 0x00]); // mov r8d,48
+    emit_call(&mut c, i_query);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax; espera 0
+    evil_expect_jz_ok(&mut c, i_exit, 67);
+    // 18. GetProcAddress(módulo selvagem, nome) → NULL (68).
+    c.extend_from_slice(&[0xB9, 0xEF, 0xBE, 0xAD, 0xDE]); // mov ecx,0xDEADBEEF
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_gpa_bad);
+    emit_call(&mut c, i_gpa);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax; espera 0
+    evil_expect_jz_ok(&mut c, i_exit, 68);
+    // 19. GetProcAddress(K32, nome inexistente) → NULL (69).
+    c.extend_from_slice(&[0x48, 0xB9, 0x00, 0x00, 0x32, 0x6B, 0x00, 0x00, 0x00, 0x00]); // movabs rcx,0x6B320000
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_gpa_bad);
+    emit_call(&mut c, i_gpa);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax; espera 0
+    evil_expect_jz_ok(&mut c, i_exit, 69);
+    // 20. LoadLibraryA(DLL inexistente) → NULL (70).
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_mod_bad);
+    emit_call(&mut c, i_ll_a);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax; espera 0
+    evil_expect_jz_ok(&mut c, i_exit, 70);
+    // 21. FreeLibrary(handle selvagem) → FALSE (71).
+    c.extend_from_slice(&[0xB9, 0xEF, 0xBE, 0xAD, 0xDE]); // mov ecx,0xDEADBEEF
+    emit_call(&mut c, i_free_lib);
+    evil_expect_zero(&mut c, i_exit, 71);
+    // 22. GetModuleHandleA(DLL inexistente) → NULL (72).
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_mod_bad);
+    emit_call(&mut c, i_gmh_a);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax; espera 0
+    evil_expect_jz_ok(&mut c, i_exit, 72);
+    // 23. CreateFileW(NULL) → INVALID (73).
+    c.extend_from_slice(&[0x31, 0xC9]); // xor ecx,ecx (NULL)
+    c.extend_from_slice(&[0xBA, 0x00, 0x00, 0x00, 0x80]);
+    c.extend_from_slice(&[0x45, 0x31, 0xC0, 0x45, 0x31, 0xC9]);
+    emit_stack_arg(&mut c, 5, 3, false);
+    emit_stack_arg(&mut c, 6, 0x80, false);
+    emit_stack_arg(&mut c, 7, 0, true);
+    emit_call(&mut c, i_open_w);
+    c.extend_from_slice(&[0x48, 0x83, 0xF8, 0xFF]); // cmp rax,-1; recusa esperada
+    evil_expect_equal(&mut c, i_exit, 73);
+    // 24. GetFileAttributesW(Z:\nope.txt) → -1 (74).
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wzpath);
+    emit_call(&mut c, i_attr_w);
+    c.extend_from_slice(&[0x83, 0xF8, 0xFF]); // cmp eax,-1 (INVALID u32; sem REX.W!)
+    evil_expect_equal(&mut c, i_exit, 74);
+    // 25. SetFilePointerEx(handle fechado/stale, 0, NULL, BEGIN) → FALSE (75).
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx (stale do estágio 6)
+    c.extend_from_slice(&[0x31, 0xD2]); // xor edx,edx
+    c.extend_from_slice(&[0x45, 0x31, 0xC0]); // xor r8d,r8d (lp NULL)
+    c.extend_from_slice(&[0x45, 0x31, 0xC9]); // xor r9d,r9d (BEGIN)
+    emit_call(&mut c, i_seek);
+    evil_expect_zero(&mut c, i_exit, 75);
+    // 26. GetFileSizeEx(handle selvagem, buf) → FALSE (76).
+    c.extend_from_slice(&[0x48, 0xB9, 0xEF, 0xBE, 0xAD, 0xDE, 0x00, 0x00, 0x00, 0x00]); // mov rcx,0xDEADBEEF
+    c.extend_from_slice(&[0x48, 0x8D, 0x54, 0x24, 0x38]); // lea rdx,[rsp+0x38]
+    emit_call(&mut c, i_size);
+    evil_expect_zero(&mut c, i_exit, 76);
+    // 27. DeleteFileW(Z:\nope.txt) → FALSE (77).
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wzpath);
+    emit_call(&mut c, i_del_w);
+    evil_expect_zero(&mut c, i_exit, 77);
+    // 28. MoveFileExW(Z:\a, Z:\b, 0) → FALSE (78; origem inexistente).
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wzpath);
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_wzpath);
+    c.extend_from_slice(&[0x45, 0x31, 0xC0]); // xor r8d,r8d (sem REPLACE)
+    emit_call(&mut c, i_move_w);
+    evil_expect_zero(&mut c, i_exit, 78);
+    // 29. CreateDirectoryW(NULL) → FALSE (79).
+    c.extend_from_slice(&[0x31, 0xC9]); // xor ecx,ecx (NULL)
+    c.extend_from_slice(&[0x31, 0xD2]); // xor edx,edx
+    emit_call(&mut c, i_mkdir_w);
+    evil_expect_zero(&mut c, i_exit, 79);
+    // 30. RemoveDirectoryW(Z:\nope.txt) → FALSE (80).
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wzpath);
+    emit_call(&mut c, i_rmdir_w);
+    evil_expect_zero(&mut c, i_exit, 80);
     // Tudo contido:
     c.extend_from_slice(&[0x31, 0xC9]);
     emit_call(&mut c, i_exit);
@@ -1127,16 +1531,30 @@ mod tests {
                 build_suite_exe(),
                 vec![
                     "CloseHandle",
+                    "CreateDirectoryW",
                     "CreateFileA",
+                    "CreateFileW",
                     "DeleteCriticalSection",
+                    "DeleteFileW",
                     "EnterCriticalSection",
                     "ExitProcess",
+                    "FreeLibrary",
                     "GetCommandLineW",
+                    "GetFileAttributesW",
+                    "GetFileSizeEx",
                     "GetLastError",
+                    "GetModuleHandleA",
+                    "GetModuleHandleW",
+                    "GetProcAddress",
                     "GetStdHandle",
                     "InitializeCriticalSection",
                     "LeaveCriticalSection",
+                    "LoadLibraryA",
+                    "LoadLibraryW",
+                    "MoveFileExW",
                     "ReadFile",
+                    "RemoveDirectoryW",
+                    "SetFilePointerEx",
                     "SetUnhandledExceptionFilter",
                     "Sleep",
                     "TlsAlloc",
@@ -1146,6 +1564,7 @@ mod tests {
                     "VirtualAlloc",
                     "VirtualFree",
                     "VirtualProtect",
+                    "VirtualQuery",
                     "WriteFile",
                 ],
             ),
@@ -1153,15 +1572,28 @@ mod tests {
                 build_evil_exe(),
                 vec![
                     "CloseHandle",
+                    "CreateDirectoryW",
                     "CreateFileA",
+                    "CreateFileW",
+                    "DeleteFileW",
                     "ExitProcess",
+                    "FreeLibrary",
+                    "GetFileAttributesW",
+                    "GetFileSizeEx",
+                    "GetModuleHandleA",
+                    "GetProcAddress",
                     "GetStdHandle",
+                    "LoadLibraryA",
+                    "MoveFileExW",
                     "ReadFile",
+                    "RemoveDirectoryW",
+                    "SetFilePointerEx",
                     "TlsFree",
                     "TlsGetValue",
                     "TlsSetValue",
                     "VirtualAlloc",
                     "VirtualFree",
+                    "VirtualQuery",
                     "WriteFile",
                 ],
             ),

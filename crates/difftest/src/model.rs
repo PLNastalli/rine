@@ -341,12 +341,23 @@ pub enum MemOp {
         size: usize,
         protect: u8,
     },
+    /// `Commit` carrega `protect` (índice em `PROTECTS`) como o
+    /// `VirtualAlloc(MEM_COMMIT, flProtect)` real: o commit define a
+    /// proteção atual; `alloc_protect` permanece o da reserva.
     Commit {
         id: usize,
+        protect: u8,
     },
     Protect {
         id: usize,
         protect: u8,
+    },
+    /// Consulta: endereço = base + offset (executor dobra em 4096 para ficar
+    /// dentro da primeira página; id desconhecido consulta 0 = nunca mapeado).
+    /// Sem efeitos em nenhum lado — puro em ambos.
+    Query {
+        id: usize,
+        offset: u64,
     },
     Release {
         id: usize,
@@ -356,15 +367,15 @@ pub enum MemOp {
 /// Os 6 `PAGE_*` básicos (sem GUARD/NOCACHE — quirk QUI-0001, v0.3).
 pub const PROTECTS: [u32; 6] = [0x01, 0x02, 0x04, 0x10, 0x20, 0x40];
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-enum RegionState {
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RegionState {
     Reserved,
     Committed,
 }
 
 #[derive(Debug, Default)]
 pub struct MemoryModel {
-    regions: HashMap<usize, (usize, RegionState, u32)>,
+    regions: HashMap<usize, (usize, RegionState, u32, u32)>,
 }
 
 impl MemoryModel {
@@ -379,26 +390,36 @@ impl MemoryModel {
                     return Err(Reject);
                 }
                 let len = (*size + 4095) & !4095;
-                self.regions.insert(
-                    *id,
-                    (len, RegionState::Reserved, PROTECTS[*protect as usize]),
-                );
+                let bits = PROTECTS[*protect as usize];
+                self.regions
+                    .insert(*id, (len, RegionState::Reserved, bits, bits));
                 Ok(())
             }
-            MemOp::Commit { id } => match self.regions.get_mut(id) {
-                Some((_, s @ RegionState::Reserved, _)) => {
+            MemOp::Commit { id, protect } => match self.regions.get_mut(id) {
+                Some((_, s @ RegionState::Reserved, p, _))
+                    if (*protect as usize) < PROTECTS.len() =>
+                {
                     *s = RegionState::Committed;
-                    Ok(())
-                }
-                _ => Err(Reject),
-            },
-            MemOp::Protect { id, protect } => match self.regions.get_mut(id) {
-                Some((_, RegionState::Committed, p)) if (*protect as usize) < PROTECTS.len() => {
                     *p = PROTECTS[*protect as usize];
                     Ok(())
                 }
                 _ => Err(Reject),
             },
+            MemOp::Protect { id, protect } => match self.regions.get_mut(id) {
+                Some((_, RegionState::Committed, p, _)) if (*protect as usize) < PROTECTS.len() => {
+                    *p = PROTECTS[*protect as usize];
+                    Ok(())
+                }
+                _ => Err(Reject),
+            },
+            MemOp::Query { id, .. } => {
+                // Consulta pura (ver `query_desc`); Ok = id conhecido.
+                if self.regions.contains_key(id) {
+                    Ok(())
+                } else {
+                    Err(Reject)
+                }
+            }
             MemOp::Release { id } => {
                 if self.regions.remove(id).is_some() {
                     Ok(())
@@ -407,6 +428,12 @@ impl MemoryModel {
                 }
             }
         }
+    }
+
+    /// Descritor esperado para `Query(id)`: `(len, state, protect, alloc)`.
+    /// `None` = id desconhecido (ambos os lados devem achar nada).
+    pub fn query_desc(&self, id: usize) -> Option<(usize, RegionState, u32, u32)> {
+        self.regions.get(&id).copied()
     }
 
     pub fn live_count(&self) -> usize {
@@ -575,9 +602,9 @@ mod tests {
             })
             .is_ok());
         assert!(m.step(&MemOp::Protect { id: 0, protect: 1 }).is_err()); // reserved!
-        assert!(m.step(&MemOp::Commit { id: 0 }).is_ok());
+        assert!(m.step(&MemOp::Commit { id: 0, protect: 2 }).is_ok());
         assert!(m.step(&MemOp::Protect { id: 0, protect: 1 }).is_ok());
-        assert!(m.step(&MemOp::Commit { id: 0 }).is_err()); // já committed
+        assert!(m.step(&MemOp::Commit { id: 0, protect: 2 }).is_err()); // já committed
         assert!(m.step(&MemOp::Release { id: 0 }).is_ok());
         assert!(m.step(&MemOp::Release { id: 0 }).is_err());
         assert!(m

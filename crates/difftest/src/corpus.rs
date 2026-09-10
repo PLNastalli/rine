@@ -45,6 +45,31 @@ pub fn load_dir(dir: &std::path::Path) -> Result<Vec<(String, CorpusCase)>, Stri
     Ok(out)
 }
 
+/// Reexecuta um caso in-process (memory/handles) via modelo×real.
+/// Retorna `(veredito, detalhe)`. Mesmo caminho do CLI e dos testes.
+pub fn replay_inprocess_case(case: &CorpusCase) -> (crate::compare::Verdict, String) {
+    use crate::compare::Verdict;
+    let ops_v = case.scenario.params["ops"].clone();
+    match case.scenario.target.as_str() {
+        "memory" => {
+            let ops: Vec<crate::model::MemOp> = serde_json::from_value(ops_v)
+                .unwrap_or_else(|_| panic!("ops de memória inválidas"));
+            let (v, d, _) = crate::campaigns::run_memory_once(&ops);
+            (v, d)
+        }
+        "handles" => {
+            let ops: Vec<crate::model::HandleOp> = serde_json::from_value(ops_v)
+                .unwrap_or_else(|_| panic!("ops de handles inválidas"));
+            let (v, d, _) = crate::campaigns::run_handles_once(0, case.scenario.seed, &ops);
+            (v, d)
+        }
+        other => (
+            Verdict::InfrastructureFailure,
+            format!("alvo desconhecido: {other}"),
+        ),
+    }
+}
+
 /// Serializa um caso promovido (minimizado + expectativa do modelo).
 pub fn serialize_promote(
     scenario: &Scenario,

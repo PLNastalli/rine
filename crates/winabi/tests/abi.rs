@@ -82,3 +82,23 @@ fn win64_call_both_directions() {
     assert_eq!(probe6(1, 2, 3, 4, 5, 6), 21);
     assert_eq!(probe6(u64::MAX, 1, 0, 0, 0, 0), 0); // wrap como no Windows
 }
+
+#[test]
+fn memory_basic_information_layout() {
+    // `winnt.h` x64: 8+8+4+2+2pad+8+4+4+4+4pad = 48 bytes.
+    assert_eq!(size_of::<MemoryBasicInformation>(), 48);
+    assert_eq!(align_of::<MemoryBasicInformation>(), 8);
+    assert_eq!(offset_of!(MemoryBasicInformation, base_address), 0x00);
+    assert_eq!(offset_of!(MemoryBasicInformation, allocation_base), 0x08);
+    assert_eq!(offset_of!(MemoryBasicInformation, allocation_protect), 0x10);
+    assert_eq!(offset_of!(MemoryBasicInformation, partition_id), 0x14);
+    assert_eq!(offset_of!(MemoryBasicInformation, region_size), 0x18);
+    assert_eq!(offset_of!(MemoryBasicInformation, state), 0x20);
+    assert_eq!(offset_of!(MemoryBasicInformation, protect), 0x24);
+    assert_eq!(offset_of!(MemoryBasicInformation, mem_type), 0x28);
+    assert_eq!(mem_state::COMMIT, 0x1000);
+    assert_eq!(mem_state::RESERVE, 0x2000);
+    assert_eq!(mem_state::FREE, 0x10000);
+    assert_eq!(mem_type::PRIVATE, 0x20000);
+    assert_eq!(mem_type::IMAGE, 0x1000000);
+}

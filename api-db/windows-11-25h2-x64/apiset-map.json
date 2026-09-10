@@ -1,0 +1,3378 @@
+{
+  "provenance": "pe::apiset + dump_apiset sobre windows-reference/win11-25h2/System32/apisetschema.dll (oracle Win11 25H2, fora do git). Regra v0: primeiro valor; vazio=sem rota.",
+  "count": 843,
+  "routes": [
+    {
+      "namespace": "api-ms-onecoreuap-print-render-l1-1-0",
+      "host": "printrenderapihost.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-advertisingid-l1-1-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-identity-l1-2-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-lifecyclepolicy-l1-1-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-runtime-internal-l1-1-11",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-runtime-l1-1-7",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-state-l1-2-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-state-l1-1-2",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-appmodel-unlock-l1-1-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-audiocore-spatial-config-l1-1-0",
+      "host": "windows.media.devices.dll"
+    },
+    {
+      "namespace": "api-ms-win-base-bootconfig-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-base-util-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-composition-redirection-l1-1-0",
+      "host": "dwmredir.dll"
+    },
+    {
+      "namespace": "api-ms-win-composition-windowmanager-l1-1-0",
+      "host": "udwm.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmclient-l1-5-3",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmclient-l1-4-0",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmclient-l1-3-0",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmclient-l1-2-0",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmclient-l1-1-1",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmdiagclient-l1-1-2",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmservicingclient-l1-2-2",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-containers-cmservicingclient-l1-1-1",
+      "host": "cmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-apiquery-l1-1-2",
+      "host": "ntdll.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-apiquery-l2-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-appcompat-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-appinit-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-atoms-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-backgroundtask-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-bicltapi-l1-1-6",
+      "host": "bi.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-biplmapi-l1-2-0",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-biplmapi-l1-1-5",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-biptcltapi-l1-1-7",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-calendar-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-com-l1-1-3",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-com-l2-1-1",
+      "host": "coml2.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-com-midlproxystub-l1-1-0",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-com-private-l1-3-1",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-com-private-l1-2-0",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-com-private-l1-1-1",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-comm-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-commandlinetoargv-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-ansi-l2-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-internal-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-l1-2-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-l2-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-l2-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-l3-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-console-l3-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-crt-l1-1-0",
+      "host": "ntdll.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-crt-l2-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-datetime-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-debug-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-debug-minidump-l1-1-0",
+      "host": "dbgcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-delayload-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-enclave-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-errorhandling-l1-1-3",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-featurestaging-l1-1-1",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-featuretoggles-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-fibers-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-fibers-l2-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-file-ansi-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-file-ansi-l2-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-file-fromapp-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-file-l1-2-5",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-file-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-file-l2-1-4",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-firmware-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-guard-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-handle-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-heap-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-heap-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-heap-l2-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-heap-obsolete-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-interlocked-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-interlocked-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-io-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-ioring-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-job-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-job-l2-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-kernel32-legacy-ansi-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-kernel32-legacy-l1-1-6",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-kernel32-private-l1-2-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-kernel32-private-l1-1-2",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-largeinteger-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-libraryloader-l1-2-3",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-libraryloader-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-libraryloader-l2-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-libraryloader-private-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-ansi-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-l1-2-4",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-l2-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-obsolete-l1-3-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-obsolete-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-obsolete-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localization-private-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-localregistry-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-marshal-l1-1-0",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-memory-l1-1-9",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-misc-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-multipleproviderrouter-l1-1-0",
+      "host": "mpr.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-namedpipe-ansi-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-namedpipe-l1-2-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-namedpipe-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-namespace-ansi-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-namespace-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-normalization-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-path-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-pcw-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-perfcounters-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-perfcounters-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-privateprofile-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processenvironment-ansi-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processenvironment-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processenvironment-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processsecurity-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processsnapshot-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processthreads-l1-1-8",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processtopology-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processtopology-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processtopology-obsolete-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-processtopology-private-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-profile-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psapi-ansi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psapi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psapi-obsolete-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psapiansi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-app-l1-1-0",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-appnotify-l1-1-1",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-info-l1-1-1",
+      "host": "appsruprov.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-key-l1-1-3",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-plm-l1-3-0",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-plm-l1-2-0",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-plm-l1-1-3",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-rtimer-l1-1-1",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-psm-tc-l1-1-1",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-quirks-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-realtime-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-registry-fromapp-l1-1-0",
+      "host": "reguwpapi.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-registry-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-registry-l2-3-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-registry-l2-2-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-registry-l2-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-registry-private-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-registryuserspecific-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-rtlsupport-l1-2-2",
+      "host": "ntdll.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-rtlsupport-l1-1-1",
+      "host": "ntdll.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-shlwapi-legacy-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-shlwapi-obsolete-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-shlwapi-obsolete-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-shutdown-ansi-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-shutdown-l1-1-1",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-sidebyside-ansi-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-sidebyside-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-slapi-l1-1-0",
+      "host": "clipc.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-state-helpers-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-string-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-string-l2-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-string-obsolete-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-stringansi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-stringloader-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-synch-ansi-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-synch-l1-2-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-synch-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-sysinfo-l1-2-8",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-sysinfo-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-sysinfo-l2-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-systemtopology-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-textinput-client-l1-2-0",
+      "host": "textinputframework.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-textinput-client-l1-1-1",
+      "host": "textinputframework.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-threadpool-l1-2-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-threadpool-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-threadpool-legacy-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-threadpool-private-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-timezone-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-timezone-private-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-toolhelp-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-ums-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-url-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-util-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-version-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-version-private-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-versionansi-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-windowsceip-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-windowserrorreporting-l1-1-3",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-error-l1-1-1",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-errorprivate-l1-1-1",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-l1-1-0",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-propertysetprivate-l1-1-1",
+      "host": "wintypes.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-registration-l1-1-0",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-robuffer-l1-1-0",
+      "host": "wintypes.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-roparameterizediid-l1-1-0",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-winrt-string-l1-1-1",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-wow64-l1-1-3",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-xstate-l1-1-3",
+      "host": "ntdll.dll"
+    },
+    {
+      "namespace": "api-ms-win-core-xstate-l2-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-conio-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-convert-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-environment-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-filesystem-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-heap-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-locale-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-math-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-multibyte-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-private-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-process-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-runtime-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-stdio-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-string-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-time-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-crt-utility-l1-1-0",
+      "host": "ucrtbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-deprecated-apis-obsolete-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-devices-config-l1-1-2",
+      "host": "cfgmgr32.dll"
+    },
+    {
+      "namespace": "api-ms-win-devices-query-l1-1-1",
+      "host": "cfgmgr32.dll"
+    },
+    {
+      "namespace": "api-ms-win-devices-swdevice-l1-1-1",
+      "host": "cfgmgr32.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-advapi32-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-advapi32-l2-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-advapi32-l3-1-0",
+      "host": "ntmarta.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-advapi32-l4-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-kernel32-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-kernel32-l2-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-normaliz-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-ole32-l1-1-0",
+      "host": "combase.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-shell32-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-shlwapi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-shlwapi-l2-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-user32-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-downlevel-version-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-dwmapi-l1-1-0",
+      "host": "dwmapi.dll"
+    },
+    {
+      "namespace": "api-ms-win-dx-d3dkmt-l1-1-9",
+      "host": "gdi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventing-classicprovider-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventing-consumer-l1-1-2",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventing-controller-l1-1-1",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventing-legacy-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventing-obsolete-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventing-provider-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventing-tdh-l1-1-2",
+      "host": "tdh.dll"
+    },
+    {
+      "namespace": "api-ms-win-eventlog-legacy-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-gaming-deviceinformation-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-gaming-expandedresources-l1-1-0",
+      "host": "gamemode.dll"
+    },
+    {
+      "namespace": "api-ms-win-gaming-experience-l1-1-0",
+      "host": "gamemode.dll"
+    },
+    {
+      "namespace": "api-ms-win-gaming-tcui-l1-1-4",
+      "host": "gamingtcui.dll"
+    },
+    {
+      "namespace": "api-ms-win-gdi-dpiinfo-l1-1-0",
+      "host": "gdi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-gdi-internal-uap-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "api-ms-win-ham-apphistory-l1-1-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-ham-hamplm-l1-1-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "api-ms-win-http-time-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-legacy-shlwapi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-mm-joystick-l1-1-0",
+      "host": "winmm.dll"
+    },
+    {
+      "namespace": "api-ms-win-mm-mci-l1-1-0",
+      "host": "winmm.dll"
+    },
+    {
+      "namespace": "api-ms-win-mm-misc-l1-1-1",
+      "host": "winmmbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-mm-misc-l2-1-0",
+      "host": "winmm.dll"
+    },
+    {
+      "namespace": "api-ms-win-mm-mme-l1-1-0",
+      "host": "winmmbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-mm-playsound-l1-1-0",
+      "host": "winmm.dll"
+    },
+    {
+      "namespace": "api-ms-win-mm-time-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-net-isolation-l1-1-1",
+      "host": "firewallapi.dll"
+    },
+    {
+      "namespace": "api-ms-win-networking-interfacecontexts-l1-1-0",
+      "host": "ondemandconnroutehelper.dll"
+    },
+    {
+      "namespace": "api-ms-win-ngc-serialization-l1-1-1",
+      "host": "ngckeyenum.dll"
+    },
+    {
+      "namespace": "api-ms-win-ntuser-ie-message-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-ntuser-ie-window-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-ntuser-ie-wmpointer-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-ntuser-rectangle-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-ntuser-sysparams-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-obsolete-localization-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-obsolete-psapi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-obsolete-shlwapi-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-ole32-ie-l1-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "api-ms-win-oobe-notification-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "api-ms-win-perf-legacy-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-power-base-l1-1-0",
+      "host": "powrprof.dll"
+    },
+    {
+      "namespace": "api-ms-win-power-limitsmanagement-l1-1-0",
+      "host": "powrprof.dll"
+    },
+    {
+      "namespace": "api-ms-win-power-setting-l1-1-1",
+      "host": "powrprof.dll"
+    },
+    {
+      "namespace": "api-ms-win-privacy-coreprivacysettingsstore-l1-1-0",
+      "host": "coreprivacysettingsstore.dll"
+    },
+    {
+      "namespace": "api-ms-win-ro-typeresolution-l1-1-1",
+      "host": "wintypes.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-clipboard-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-draw-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-powermanagement-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-private-l1-1-11",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-shell-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-synch-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-window-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-winevent-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-wmpointer-l1-2-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ntuser-wmpointer-l1-1-3",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "api-ms-win-rtcore-ole32-clipboard-l1-1-1",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-accesshlpr-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-activedirectoryclient-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-appcontainer-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-audit-l1-1-1",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-base-ansi-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-base-l1-2-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-base-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-base-private-l1-1-2",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-capability-l1-1-1",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-cpwl-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-credentials-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-credentials-l2-1-1",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-cryptoapi-l1-1-0",
+      "host": "cryptsp.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-grouppolicy-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-isolatedcontainer-l1-1-1",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-isolationapi-l1-2-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-isolationapi-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-isolationpolicy-l1-2-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-isolationpolicy-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-licenseprotection-l1-1-0",
+      "host": "licenseprotection.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-logon-l1-1-1",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-lsalookup-ansi-l2-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-lsalookup-l1-1-2",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-lsalookup-l2-1-1",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-lsapolicy-l1-1-2",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-provider-ansi-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-provider-l1-1-0",
+      "host": "ntmarta.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-sddl-ansi-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-sddl-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-sddl-private-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-sddlparsecond-l1-1-1",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-systemfunctions-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-security-trustee-l1-1-2",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-core-ansi-l1-1-1",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-core-l1-1-5",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-legacy-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-management-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-management-l2-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-private-l1-2-2",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-private-l1-1-5",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-winsvc-l1-2-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-service-winsvc-l1-1-0",
+      "host": "sechost.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-comhelpers-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-obsolete-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-path-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-registry-l1-1-1",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-scaling-l1-1-2",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-stream-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-stream-winrt-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-sysinfo-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-taskpool-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-thread-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shcore-unicodeansi-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shell-associations-l1-1-3",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "api-ms-win-shell-changenotify-l1-1-1",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "api-ms-win-shell-dataobject-l1-1-1",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "api-ms-win-shell-namespace-l1-1-1",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "api-ms-win-shell-shdirectory-l1-1-0",
+      "host": "shcore.dll"
+    },
+    {
+      "namespace": "api-ms-win-shell-shellcom-l1-1-0",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-shell-shellfolders-l1-1-1",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "api-ms-win-shlwapi-ie-l1-1-0",
+      "host": "shlwapi.dll"
+    },
+    {
+      "namespace": "api-ms-win-shlwapi-winrt-storage-l1-1-1",
+      "host": "shlwapi.dll"
+    },
+    {
+      "namespace": "api-ms-win-stateseparation-helpers-l1-1-1",
+      "host": "kernelbase.dll"
+    },
+    {
+      "namespace": "api-ms-win-storage-exports-external-l1-1-2",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "api-ms-win-storage-exports-internal-l1-1-0",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "api-ms-win-storage-reserve-l1-1-0",
+      "host": "storageusage.dll"
+    },
+    {
+      "namespace": "api-ms-win-winrt-search-folder-l1-1-1",
+      "host": "windows.storage.search.dll"
+    },
+    {
+      "namespace": "api-ms-win-wsl-api-l1-1-0",
+      "host": "wslapi.dll"
+    },
+    {
+      "namespace": "ext-ms-net-eap-sim-l1-1-0",
+      "host": "eapsimextdesktop.dll"
+    },
+    {
+      "namespace": "ext-ms-net-vpn-soh-l1-1-0",
+      "host": "vpnsohdesktop.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-appdefaults-l1-1-0",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-appmodel-deployment-internal-l1-1-2",
+      "host": "appxdeploymentclient.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-appmodel-staterepository-appextension-l1-1-0",
+      "host": "windows.staterepositoryclient.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-appmodel-staterepository-cache-l1-1-5",
+      "host": "windows.staterepositorycore.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-appmodel-staterepository-internal-l1-1-7",
+      "host": "windows.staterepositoryclient.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-appmodel-staterepository-pkgextension-l1-1-0",
+      "host": "windows.staterepositoryclient.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-appmodel-tdlmigration-l1-1-1",
+      "host": "tdlmigration.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-dcomp-l1-1-0",
+      "host": "dcomp.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-hlink-l1-1-0",
+      "host": "hlink.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-hnetcfg-l1-1-0",
+      "host": "hnetcfgclient.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-ipnathlp-l1-1-0",
+      "host": "ipnathlpclient.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-service-devicedirectory-claims-l1-1-0",
+      "host": "ddcclaimsapi.dll"
+    },
+    {
+      "namespace": "ext-ms-onecore-shlwapi-l1-1-1",
+      "host": "shlwapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-accel-api-km-l1-1-0",
+      "host": "winaccel.sys"
+    },
+    {
+      "namespace": "ext-ms-win-adsi-activeds-l1-1-0",
+      "host": "activeds.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-auth-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-encryptedfile-l1-1-1",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-eventlog-ansi-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-eventlog-l1-1-2",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-hwprof-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-idletask-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-lsa-l1-1-4",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-msi-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-npusername-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-ntmarta-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-psm-app-l1-1-0",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-registry-l1-1-1",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-safer-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-advapi32-shutdown-l1-1-0",
+      "host": "advapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appcompat-aeinv-l1-1-1",
+      "host": "aeinv.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appcompat-aepic-l1-1-0",
+      "host": "aepic.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appcompat-apphelp-l1-1-2",
+      "host": "apphelp.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appcompat-pcacli-l1-1-0",
+      "host": "pcacli.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-activation-l1-1-2",
+      "host": "activationmanager.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-appexecutionalias-l1-1-5",
+      "host": "apisethost.appexecutionalias.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-daxcore-l1-1-3",
+      "host": "daxexec.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-opc-l1-1-0",
+      "host": "opcservices.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-registrycompatibility-l1-1-0",
+      "host": "appxdeploymentextensions.desktop.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-restrictedappcontainer-internal-l1-1-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-shellexecute-l1-1-0",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appmodel-state-ext-l1-2-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appxdeploymentclient-appxdeploy-l1-1-1",
+      "host": "appxdeploymentclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-appxdeploymentclient-appxdeployonecore-l1-1-1",
+      "host": "appxdeploymentclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-audiocore-coreaudiopolicymanager-l1-1-0",
+      "host": "coreaudiopolicymanagerext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-authz-claimpolicies-l1-1-0",
+      "host": "authz.dll"
+    },
+    {
+      "namespace": "ext-ms-win-authz-context-l1-1-0",
+      "host": "authz.dll"
+    },
+    {
+      "namespace": "ext-ms-win-authz-remote-l1-1-0",
+      "host": "logoncli.dll"
+    },
+    {
+      "namespace": "ext-ms-win-base-psapi-l1-1-0",
+      "host": "psapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-base-rstrtmgr-l1-1-0",
+      "host": "rstrtmgr.dll"
+    },
+    {
+      "namespace": "ext-ms-win-biometrics-winbio-core-l1-1-7",
+      "host": "winbio.dll"
+    },
+    {
+      "namespace": "ext-ms-win-biometrics-winbio-l1-3-0",
+      "host": "winbioext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-biometrics-winbio-l1-2-0",
+      "host": "winbioext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-biometrics-winbio-l1-1-0",
+      "host": "winbioext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-bluetooth-apis-internal-l1-1-0",
+      "host": "bluetoothapis.dll"
+    },
+    {
+      "namespace": "ext-ms-win-bluetooth-apis-l1-1-0",
+      "host": "bluetoothapis.dll"
+    },
+    {
+      "namespace": "ext-ms-win-bluetooth-apis-private-l1-1-0",
+      "host": "bluetoothapis.dll"
+    },
+    {
+      "namespace": "ext-ms-win-branding-winbrand-l1-2-0",
+      "host": "winbrand.dll"
+    },
+    {
+      "namespace": "ext-ms-win-branding-winbrand-l1-1-2",
+      "host": "winbrand.dll"
+    },
+    {
+      "namespace": "ext-ms-win-capabilityaccessmanager-storage-l1-1-0",
+      "host": "capabilityaccessmanager.desktop.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-casting-lockscreen-l1-1-0",
+      "host": "miracastreceiverext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-casting-shell-l1-1-0",
+      "host": "castingshellext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ci-management-l1-1-3",
+      "host": "manageci.dll"
+    },
+    {
+      "namespace": "ext-ms-win-cluster-clusapi-l1-1-6",
+      "host": "clusapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-cluster-resutils-l1-1-3",
+      "host": "resutils.dll"
+    },
+    {
+      "namespace": "ext-ms-win-cmd-util-l1-1-0",
+      "host": "cmdext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-cng-rng-l1-1-1",
+      "host": "bcryptprimitives.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-clbcatq-l1-1-0",
+      "host": "clbcatq.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-coml2-l1-1-1",
+      "host": "coml2.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-ole32-l1-4-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-ole32-l1-3-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-ole32-l1-2-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-ole32-l1-1-5",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-psmregister-l1-3-1",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-psmregister-l1-2-2",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-psmregister-l1-1-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-com-sta-l1-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-composition-ghost-l1-1-0",
+      "host": "dwmghost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-composition-init-l1-1-0",
+      "host": "dwminit.dll"
+    },
+    {
+      "namespace": "ext-ms-win-compositor-hosting-l1-3-0",
+      "host": "ism.dll"
+    },
+    {
+      "namespace": "ext-ms-win-compositor-hosting-l1-2-1",
+      "host": "ism.dll"
+    },
+    {
+      "namespace": "ext-ms-win-compositor-hosting-l1-1-1",
+      "host": "ism.dll"
+    },
+    {
+      "namespace": "ext-ms-win-connectionattribution-api-l1-1-0",
+      "host": "connectionattributionapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-game-streaming-l1-1-0",
+      "host": "gamestreamingext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-iuri-l1-1-0",
+      "host": "urlmon.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-marshal-l2-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-pkeyhelper-l1-1-0",
+      "host": "pkeyhelper.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-psm-bi-l1-2-0",
+      "host": "bisrv.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-psm-bi-l1-1-0",
+      "host": "bisrv.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-psm-service-l1-1-6",
+      "host": "psmserviceexthost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-resourcemanager-l1-2-1",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-resourcemanager-l1-1-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-resourcepolicy-l1-1-2",
+      "host": "resourcepolicyclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-resourcepolicyserver-l1-1-1",
+      "host": "resourcepolicyserver.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-storelicensing-l1-2-1",
+      "host": "licensemanagerapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-storelicensing-l1-1-0",
+      "host": "licensemanagerapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-symbolicnames-l1-1-0",
+      "host": "tdhres.dll"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-base-export-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-baseinit-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-common-export-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-common-input-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-common-inputrim-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-common-user-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-dcomp-l1-1-3",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-ddccigdi-l1-1-1",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-dxgdi-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-dxgk-internal-l1-1-0",
+      "host": "dxgkrnl.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-dxgk-l1-1-0",
+      "host": "dxgkrnl.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-flipmgr-l1-1-1",
+      "host": "dxgkrnl.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-full-export-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-full-float-export-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-fulldcompbase-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-fulldwm-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-fullgdi-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-fulluser-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-fulluser64-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-fulluserbase-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-gdi-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-input-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-inputmit-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-inputrim-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-mininputmitbase-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-opmgdi-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-surfmgr-l1-1-1",
+      "host": "dxgkrnl.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-tokenmgr-l1-1-0",
+      "host": "dxgkrnl.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-user-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-userdisplay-l1-1-0",
+      "host": "win32kbase.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-win32k-userinit-l1-1-0",
+      "host": "win32k.sys"
+    },
+    {
+      "namespace": "ext-ms-win-core-winsrv-l1-1-0",
+      "host": "winsrvext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-coreui-navshutdown-l1-1-0",
+      "host": "navshutdown.dll"
+    },
+    {
+      "namespace": "ext-ms-win-deployment-productenumerator-l1-1-0",
+      "host": "productenumerator.dll"
+    },
+    {
+      "namespace": "ext-ms-win-desktopappx-l1-2-2",
+      "host": "daxexec.dll"
+    },
+    {
+      "namespace": "ext-ms-win-desktopappx-l1-1-7",
+      "host": "daxexec.dll"
+    },
+    {
+      "namespace": "ext-ms-win-devmgmt-dm-l1-1-3",
+      "host": "dmapisetextimpldesktop.dll"
+    },
+    {
+      "namespace": "ext-ms-win-devmgmt-policy-l1-1-3",
+      "host": "policymanager.dll"
+    },
+    {
+      "namespace": "ext-ms-win-direct2d-desktop-l1-1-0",
+      "host": "direct2ddesktop.dll"
+    },
+    {
+      "namespace": "ext-ms-win-domainjoin-netjoin-l1-1-0",
+      "host": "netjoin.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dot3-grouppolicy-l1-1-0",
+      "host": "dot3gpclnt.dll"
+    },
+    {
+      "namespace": "ext-ms-win-driver-recovery-l1-1-0",
+      "host": "drvsetup.dll"
+    },
+    {
+      "namespace": "ext-ms-win-driver-setup-l1-1-0",
+      "host": "drvsetup.dll"
+    },
+    {
+      "namespace": "ext-ms-win-driver-setup-wu-l1-1-1",
+      "host": "drvsetup.dll"
+    },
+    {
+      "namespace": "ext-ms-win-drvinst-desktop-l1-1-0",
+      "host": "newdev.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dwmapi-ext-l1-1-2",
+      "host": "dwmapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dwmapidxgi-ext-l1-1-1",
+      "host": "dwmapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dx-d3d9-l1-1-0",
+      "host": "d3d9.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dx-d3dkmt-dxcore-l1-1-6",
+      "host": "dxcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dx-d3dkmt-gdi-l1-1-0",
+      "host": "gdi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dx-ddraw-l1-1-0",
+      "host": "ddraw.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dx-dinput8-l1-1-0",
+      "host": "dinput8.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dx-dxdbhelper-l1-1-4",
+      "host": "directxdatabasehelper.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dxcore-internal-l1-1-0",
+      "host": "dxcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-dxcore-l1-1-0",
+      "host": "dxcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-edputil-policy-l1-1-2",
+      "host": "edputil.dll"
+    },
+    {
+      "namespace": "ext-ms-win-els-elscore-l1-1-0",
+      "host": "elscore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-eventing-pdh-l1-1-3",
+      "host": "pdh.dll"
+    },
+    {
+      "namespace": "ext-ms-win-eventing-rundown-l1-1-0",
+      "host": "etwrundown.dll"
+    },
+    {
+      "namespace": "ext-ms-win-eventing-tdh-ext-l1-1-0",
+      "host": "tdh.dll"
+    },
+    {
+      "namespace": "ext-ms-win-eventing-tdh-priv-l1-1-0",
+      "host": "tdh.dll"
+    },
+    {
+      "namespace": "ext-ms-win-eventing-wdi-l1-1-0",
+      "host": "wdi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-familysafety-childaccount-l1-1-0",
+      "host": "familysafetyext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-feclient-encryptedfile-l1-1-3",
+      "host": "feclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-firewallapi-webproxy-l1-1-1",
+      "host": "firewallapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-font-fontgroups-l1-1-0",
+      "host": "fontgroupsoverride.dll"
+    },
+    {
+      "namespace": "ext-ms-win-font-setup-l1-1-0",
+      "host": "muifontsetup.dll"
+    },
+    {
+      "namespace": "ext-ms-win-fs-clfs-l1-1-0",
+      "host": "clfs.sys"
+    },
+    {
+      "namespace": "ext-ms-win-fs-cscapi-l1-1-1",
+      "host": "cscapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-fs-vssapi-l1-1-0",
+      "host": "vssapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-fsutilext-ifsutil-l1-1-0",
+      "host": "fsutilext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-fsutilext-ulib-l1-1-0",
+      "host": "fsutilext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-fveapi-query-l1-1-0",
+      "host": "fveapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gaming-gamechatoverlay-l1-1-0",
+      "host": "gamechatoverlayext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gaming-xblgamesave-l1-1-0",
+      "host": "xblgamesaveext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gaming-xinput-l1-1-0",
+      "host": "xinputuap.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-clipping-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-dc-create-l1-1-2",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-dc-l1-2-1",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-devcaps-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-draw-l1-1-3",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-font-l1-1-3",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-gdiplus-l1-1-0",
+      "host": "gdiplus.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-internal-desktop-l1-1-6",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-internal-uap-init-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-metafile-l1-1-2",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-path-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-print-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-private-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-render-l1-1-0",
+      "host": "gdi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-rgn-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gdi-wcs-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-globalization-input-l1-1-3",
+      "host": "globinputhost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gpapi-grouppolicy-l1-1-0",
+      "host": "gpapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gpsvc-grouppolicy-l1-1-0",
+      "host": "gpsvc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gui-dui70-l1-1-0",
+      "host": "dui70.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gui-ieui-l1-1-0",
+      "host": "ieui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-gui-uxinit-l1-1-1",
+      "host": "uxinit.dll"
+    },
+    {
+      "namespace": "ext-ms-win-hostactivitymanager-bi-ham-ext-l1-1-0",
+      "host": "psmserviceexthost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-hostactivitymanager-ham-private-ext-l1-1-0",
+      "host": "psmserviceexthost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-hostactivitymanager-hostidstore-l1-1-1",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-hyperv-hgs-l1-1-0",
+      "host": "vmhgs.dll"
+    },
+    {
+      "namespace": "ext-ms-win-hyperv-hvemulation-l1-1-0",
+      "host": "winhvemulation.dll"
+    },
+    {
+      "namespace": "ext-ms-win-hyperv-hvplatform-l1-1-5",
+      "host": "winhvplatform.dll"
+    },
+    {
+      "namespace": "ext-ms-win-imm-l1-1-3",
+      "host": "imm32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-appcompat-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-datetime-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-elevation-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-errorhandling-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-file-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-localization-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-package-current-l1-1-0",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-package-l1-1-2",
+      "host": "kernel.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-process-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-quirks-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-registry-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-sidebyside-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-transacted-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-updateresource-l1-1-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernel32-windowserrorreporting-l1-1-1",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernelbase-processthread-l1-2-0",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-kernelbase-processthread-l1-1-3",
+      "host": "kernel32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-laps-l1-1-1",
+      "host": "laps.dll"
+    },
+    {
+      "namespace": "ext-ms-win-lighting-lamparray-l1-1-1",
+      "host": "lamparray.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mapi-mapi32-l1-1-0",
+      "host": "mapistub.dll"
+    },
+    {
+      "namespace": "ext-ms-win-media-avi-l1-1-0",
+      "host": "avifil32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mf-vfw-l1-1-0",
+      "host": "mfvfw.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mininput-cursorhost-l1-1-0",
+      "host": "inputhost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mininput-inputhost-l1-4-0",
+      "host": "inputhost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mininput-inputhost-l1-3-0",
+      "host": "inputhost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mininput-inputhost-l1-2-1",
+      "host": "inputhost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mininput-inputhost-l1-1-1",
+      "host": "inputhost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mininput-systeminputhost-l1-2-0",
+      "host": "ism.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mininput-systeminputhost-l1-1-0",
+      "host": "ism.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mm-io-l1-1-0",
+      "host": "winmmbase.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mm-msacm-l1-1-0",
+      "host": "msacm32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mm-pehelper-l1-1-0",
+      "host": "mf.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mm-wmvcore-l1-1-0",
+      "host": "wmvcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-moderncore-win32k-base-ntgdi-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-moderncore-win32k-base-ntuser-l1-1-0",
+      "host": "win32kfull.sys"
+    },
+    {
+      "namespace": "ext-ms-win-moderncore-win32k-base-sysentry-l1-1-0",
+      "host": "win32k.sys"
+    },
+    {
+      "namespace": "ext-ms-win-mpr-multipleproviderrouter-l1-1-0",
+      "host": "mprext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-mrmcorer-resmanager-l1-1-0",
+      "host": "mrmcorer.dll"
+    },
+    {
+      "namespace": "ext-ms-win-msa-ui-l1-1-0",
+      "host": "msauserext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-msa-user-l1-1-1",
+      "host": "msauserext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-msi-misc-l1-1-0",
+      "host": "msi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-msiltcfg-msi-l1-1-0",
+      "host": "msiltcfg.dll"
+    },
+    {
+      "namespace": "ext-ms-win-msimg-draw-l1-1-0",
+      "host": "msimg32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-net-cmvpn-l1-1-0",
+      "host": "cmintegrator.dll"
+    },
+    {
+      "namespace": "ext-ms-win-net-httpproxyext-l1-1-0",
+      "host": "httpprxc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-net-isoext-l1-1-0",
+      "host": "firewallapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-net-netbios-l1-1-0",
+      "host": "netbios.dll"
+    },
+    {
+      "namespace": "ext-ms-win-net-netshell-l1-1-0",
+      "host": "netshell.dll"
+    },
+    {
+      "namespace": "ext-ms-win-net-nfdapi-l1-1-1",
+      "host": "ndfapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-netio-l1-1-0",
+      "host": "netio.sys"
+    },
+    {
+      "namespace": "ext-ms-win-netprovision-netprovfw-l1-1-0",
+      "host": "netprovfw.dll"
+    },
+    {
+      "namespace": "ext-ms-win-networking-radiomonitor-l1-1-0",
+      "host": "windows.devices.radios.dll"
+    },
+    {
+      "namespace": "ext-ms-win-networking-teredo-l1-1-0",
+      "host": "windows.networking.connectivity.dll"
+    },
+    {
+      "namespace": "ext-ms-win-networking-wcmapi-l1-1-1",
+      "host": "wcmapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-networking-winipsec-l1-1-0",
+      "host": "winipsec.dll"
+    },
+    {
+      "namespace": "ext-ms-win-networking-wlanapi-l1-1-0",
+      "host": "wlanapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-newdev-config-l1-1-2",
+      "host": "newdev.dll"
+    },
+    {
+      "namespace": "ext-ms-win-nfc-semgr-l1-1-0",
+      "host": "semgrsvc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntdsapi-activedirectoryclient-l1-1-1",
+      "host": "ntdsapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntos-clipsp-l1-1-0",
+      "host": "clipsp.sys"
+    },
+    {
+      "namespace": "ext-ms-win-ntos-globmerger-l1-1-0",
+      "host": "globmerger.sys"
+    },
+    {
+      "namespace": "ext-ms-win-ntos-kcminitcfg-l1-1-0",
+      "host": "cmimcext.sys"
+    },
+    {
+      "namespace": "ext-ms-win-ntos-tm-l1-1-0",
+      "host": "tm.sys"
+    },
+    {
+      "namespace": "ext-ms-win-ntos-ucode-l1-1-0",
+      "host": "ntosext.sys"
+    },
+    {
+      "namespace": "ext-ms-win-ntos-werkernel-l1-1-1",
+      "host": "werkernel.sys"
+    },
+    {
+      "namespace": "ext-ms-win-ntos-win32k-l1-1-0",
+      "host": "win32k.sys"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-caret-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-chartranslation-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-dc-access-ext-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-dde-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-dialogbox-l1-1-3",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-draw-l1-1-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-gui-l1-3-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-gui-l1-2-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-gui-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-keyboard-ansi-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-keyboard-l1-3-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-keyboard-l1-2-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-keyboard-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-menu-l1-1-3",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-message-l1-1-3",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-misc-l1-7-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-misc-l1-6-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-misc-l1-5-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-misc-l1-3-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-misc-l1-2-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-misc-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-mit-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-mouse-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-powermanagement-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-private-l1-6-3",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-private-l1-5-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-private-l1-4-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-private-l1-3-3",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-private-l1-2-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-private-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-rawinput-l1-2-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-rawinput-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-rectangle-ext-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-rim-l1-2-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-rim-l1-1-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-rotationmanager-l1-1-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-server-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-string-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-synch-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-sysparams-ext-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-touch-hittest-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-uicontext-ext-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-window-l1-1-6",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-windowclass-l1-1-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-windowstation-ansi-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ntuser-windowstation-l1-1-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-odbc-odbc32-l1-1-0",
+      "host": "odbc32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ole32-bindctx-l1-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ole32-ie-ext-l1-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ole32-oleautomation-l1-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-oleacc-l1-1-2",
+      "host": "oleacc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-onecore-shutdown-l1-1-0",
+      "host": "twinapi.appcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-packagevirtualizationcontext-l1-1-0",
+      "host": "daxexec.dll"
+    },
+    {
+      "namespace": "ext-ms-win-parentalcontrols-setup-l1-1-0",
+      "host": "wpcapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-pinenrollment-enrollment-l1-1-2",
+      "host": "pinenrollmenthelper.dll"
+    },
+    {
+      "namespace": "ext-ms-win-printer-prntvpt-l1-1-2",
+      "host": "prntvpt.dll"
+    },
+    {
+      "namespace": "ext-ms-win-printer-winspool-core-l1-1-0",
+      "host": "winspool.drv"
+    },
+    {
+      "namespace": "ext-ms-win-printer-winspool-l1-2-0",
+      "host": "winspool.drv"
+    },
+    {
+      "namespace": "ext-ms-win-printer-winspool-l1-1-4",
+      "host": "winspool.drv"
+    },
+    {
+      "namespace": "ext-ms-win-profile-extender-l1-1-0",
+      "host": "userenv.dll"
+    },
+    {
+      "namespace": "ext-ms-win-profile-profsvc-l1-1-0",
+      "host": "profsvcext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-profile-userenv-l1-1-1",
+      "host": "profext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-provisioning-platform-l1-1-2",
+      "host": "provplatformdesktop.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ras-rasapi32-l1-1-2",
+      "host": "rasapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ras-rasdlg-l1-1-0",
+      "host": "rasdlg.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ras-rasman-l1-1-0",
+      "host": "rasman.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ras-tapi32-l1-1-1",
+      "host": "tapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-raschapext-eap-l1-1-0",
+      "host": "raschapext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rastlsext-eap-l1-1-0",
+      "host": "rastlsext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rdr-davhlpr-l1-1-0",
+      "host": "davhlpr.dll"
+    },
+    {
+      "namespace": "ext-ms-win-reinfo-query-l1-1-0",
+      "host": "reinfo.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resourcemanager-activitycoordinator-l1-1-1",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resourcemanager-crm-l1-2-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resourcemanager-crm-l1-1-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resourcemanager-crm-private-ext-l1-1-0",
+      "host": "psmserviceexthost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resourcemanager-gamemode-l1-2-1",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resourcemanager-gamemode-l1-1-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resourcemanager-limits-l1-1-0",
+      "host": "rmclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resources-deployment-l1-1-0",
+      "host": "mrmdeploy.dll"
+    },
+    {
+      "namespace": "ext-ms-win-resources-languageoverlay-l1-1-7",
+      "host": "languageoverlayutil.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ro-typeresolution-l1-1-1",
+      "host": "wintypes.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rometadata-dispenser-l1-1-0",
+      "host": "rometadata.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rpc-firewallportuse-l1-1-0",
+      "host": "rpcrtremote.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rpc-ssl-l1-1-0",
+      "host": "rpcrtremote.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-gdi-devcaps-l1-1-1",
+      "host": "gdi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-gdi-object-l1-1-0",
+      "host": "gdi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-gdi-rgn-l1-1-1",
+      "host": "gdi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-controllernavigation-l1-1-2",
+      "host": "inputhost.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-cursor-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-dc-access-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-dpi-l1-2-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-dpi-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-iam-l1-1-2",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-inputintercept-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-integration-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-keyboard-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-message-ansi-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-message-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-rawinput-l1-2-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-rawinput-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-synch-ext-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-syscolors-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-sysparams-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-usersecurity-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-window-ansi-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-window-ext-l1-1-1",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-window-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-winevent-ext-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ntuser-wmpointer-l1-1-0",
+      "host": "user32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ole32-dragdrop-l1-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-rtcore-ole32-misc-l1-1-0",
+      "host": "ole32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-samsrv-accountstore-l1-1-1",
+      "host": "samsrv.dll"
+    },
+    {
+      "namespace": "ext-ms-win-scesrv-server-l1-1-0",
+      "host": "scesrv.dll"
+    },
+    {
+      "namespace": "ext-ms-win-search-folder-l1-1-1",
+      "host": "searchfolder.dll"
+    },
+    {
+      "namespace": "ext-ms-win-search-lifetimemanager-l1-1-0",
+      "host": "mssrch.dll"
+    },
+    {
+      "namespace": "ext-ms-win-secur32-translatename-l1-1-0",
+      "host": "secur32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-appinfoext-l1-1-0",
+      "host": "appinfoext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-authbrokerui-l1-1-0",
+      "host": "authbrokerui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-capauthz-l1-1-1",
+      "host": "capauthz.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-catalog-database-l1-1-0",
+      "host": "cryptcatsvc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-certpoleng-l1-1-0",
+      "host": "certpoleng.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-cfl-l1-1-2",
+      "host": "cflapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-credui-internal-l1-1-1",
+      "host": "wincredui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-credui-l1-1-1",
+      "host": "credui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-cryptui-l1-1-1",
+      "host": "cryptui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-efs-l1-1-1",
+      "host": "efsext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-efswrt-l1-1-4",
+      "host": "efswrt.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-kerberos-l1-1-0",
+      "host": "kerberos.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-lsaadt-l1-1-0",
+      "host": "lsaadt.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-lsaadtpriv-l1-1-0",
+      "host": "lsaadt.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-lsaauditrpc-l1-1-0",
+      "host": "lsaadt.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-ngc-local-l1-1-0",
+      "host": "ngclocal.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-shutdownext-l1-1-0",
+      "host": "shutdownext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-slc-l1-1-0",
+      "host": "slc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-srp-l1-1-1",
+      "host": "srpapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-tokenbrokerui-l1-1-0",
+      "host": "tokenbrokerui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-vaultcds-l1-2-0",
+      "host": "vaultcds.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-vaultcds-l1-1-0",
+      "host": "vaultcds.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-vaultcli-l1-1-1",
+      "host": "vaultcli.dll"
+    },
+    {
+      "namespace": "ext-ms-win-security-winscard-l1-1-1",
+      "host": "winscard.dll"
+    },
+    {
+      "namespace": "ext-ms-win-sensors-core-private-l1-1-8",
+      "host": "sensorsnativeapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-sensors-utilities-private-l1-1-5",
+      "host": "sensorsutilsv2.dll"
+    },
+    {
+      "namespace": "ext-ms-win-servicing-uapi-l1-1-2",
+      "host": "servicinguapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-candidateaccountmgr-l1-1-0",
+      "host": "camext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-userinit-l1-1-0",
+      "host": "userinitext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-usermgr-l1-2-1",
+      "host": "usermgrcli.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-usermgr-l1-1-0",
+      "host": "usermgrcli.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-usertoken-l1-1-0",
+      "host": "wtsapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-wininit-l1-2-0",
+      "host": "wininitext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-wininit-l1-1-1",
+      "host": "wininitext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-winlogon-l1-1-2",
+      "host": "winlogonext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-winsta-l1-1-6",
+      "host": "winsta.dll"
+    },
+    {
+      "namespace": "ext-ms-win-session-wtsapi32-l1-1-2",
+      "host": "wtsapi32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-setupapi-classinstallers-l1-1-2",
+      "host": "setupapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-setupapi-inf-l1-1-1",
+      "host": "setupapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-setupapi-logging-l1-1-0",
+      "host": "setupapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-aclui-l1-1-0",
+      "host": "aclui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-comctl32-da-l1-1-0",
+      "host": "comctl32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-comctl32-init-l1-1-1",
+      "host": "comctl32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-comctl32-l1-1-0",
+      "host": "comctl32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-comctl32-window-l1-1-0",
+      "host": "comctl32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-comdlg32-l1-1-1",
+      "host": "comdlg32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-directory-l1-1-0",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-efsadu-l1-1-0",
+      "host": "efsadu.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-embeddedmode-l1-1-0",
+      "host": "embeddedmodesvcapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-exports-internal-l1-1-1",
+      "host": "shell32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-fileplaceholder-l1-1-0",
+      "host": "windows.fileexplorer.common.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-ntshrui-l1-1-0",
+      "host": "ntshrui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-propsys-l1-1-1",
+      "host": "propsys.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-shdocvw-l1-1-0",
+      "host": "shdocvw.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-shell32-l1-5-0",
+      "host": "shell32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-shell32-l1-4-0",
+      "host": "shell32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-shell32-l1-3-0",
+      "host": "shell32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-shell32-l1-2-3",
+      "host": "shell32.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-shlwapi-l1-2-1",
+      "host": "shlwapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell-shlwapi-l1-1-2",
+      "host": "shlwapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell32-shellcom-l1-1-0",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell32-shellfolders-l1-2-1",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-shell32-shellfolders-l1-1-1",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-smbshare-browser-l1-1-0",
+      "host": "browser.dll"
+    },
+    {
+      "namespace": "ext-ms-win-smbshare-browserclient-l1-1-0",
+      "host": "browcli.dll"
+    },
+    {
+      "namespace": "ext-ms-win-smbshare-sscore-l1-1-0",
+      "host": "sscoreext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-spinf-inf-l1-1-0",
+      "host": "spinf.dll"
+    },
+    {
+      "namespace": "ext-ms-win-storage-hbaapi-l1-1-1",
+      "host": "hbaapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-storage-iscsidsc-l1-1-0",
+      "host": "iscsidsc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-storage-sense-l1-2-5",
+      "host": "storageusage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-storage-sense-l1-1-0",
+      "host": "storageusage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-sxs-oleautomation-l1-1-0",
+      "host": "sxs.dll"
+    },
+    {
+      "namespace": "ext-ms-win-sysmain-pfapi-l1-1-1",
+      "host": "pfclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-sysmain-pfsapi-l1-1-0",
+      "host": "pfclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-sysmain-plmapi-l1-1-1",
+      "host": "pfclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-teapext-eap-l1-1-0",
+      "host": "eapteapext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-tsf-inputsetting-l1-1-0",
+      "host": "input.dll"
+    },
+    {
+      "namespace": "ext-ms-win-tsf-msctf-l1-1-4",
+      "host": "msctf.dll"
+    },
+    {
+      "namespace": "ext-ms-win-ttlsext-eap-l1-1-0",
+      "host": "ttlsext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-uiacore-l1-1-3",
+      "host": "uiautomationcore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-umpoext-umpo-l1-1-0",
+      "host": "umpoext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-usp10-l1-1-0",
+      "host": "gdi32full.dll"
+    },
+    {
+      "namespace": "ext-ms-win-uwf-servicing-apis-l1-1-1",
+      "host": "uwfservicingapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-uxtheme-themes-l1-1-3",
+      "host": "uxtheme.dll"
+    },
+    {
+      "namespace": "ext-ms-win-vmbus-hvsocket-l1-1-0",
+      "host": "hvsocket.sys"
+    },
+    {
+      "namespace": "ext-ms-win-wer-reporting-l1-1-3",
+      "host": "wer.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wer-ui-l1-1-1",
+      "host": "werui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wer-wct-l1-1-0",
+      "host": "wer.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wevtapi-eventlog-l1-1-3",
+      "host": "wevtapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-windowing-external-l1-1-0",
+      "host": "windows.ui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-winrt-device-access-l1-1-0",
+      "host": "deviceaccess.dll"
+    },
+    {
+      "namespace": "ext-ms-win-winrt-storage-l1-2-3",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-winrt-storage-l1-1-0",
+      "host": "windows.storage.dll"
+    },
+    {
+      "namespace": "ext-ms-win-winrt-storage-win32broker-l1-1-0",
+      "host": "windows.storage.onecore.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wlan-grouppolicy-l1-1-0",
+      "host": "wlgpclnt.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wlan-onexui-l1-1-0",
+      "host": "onexui.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wlan-scard-l1-1-0",
+      "host": "winscard.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wpc-webfilter-l1-1-0",
+      "host": "wpcwebfilter.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wrp-sfc-l1-1-0",
+      "host": "sfc.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wsclient-devlicense-l1-1-1",
+      "host": "wsclient.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wwaext-misc-l1-1-0",
+      "host": "wwaext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wwaext-module-l1-1-0",
+      "host": "wwaext.dll"
+    },
+    {
+      "namespace": "ext-ms-win-wwan-wwapi-l1-1-3",
+      "host": "wwapi.dll"
+    },
+    {
+      "namespace": "ext-ms-win-xaml-controls-l1-1-0",
+      "host": "windows.ui.xaml.phone.dll"
+    }
+  ]
+}

@@ -11,10 +11,8 @@ winabi.workspace = true
 ntdll.workspace = true
 nt-file.workspace = true
 nt-thread.workspace = true
-nt-sync.workspace = true
-tracing.workspace = true
+nt-memory.workspace = true
 
-# Só para o teste de ciclo TLS (contexto mínimo real).
+# Só para testes com tipos de outros subsistemas (contexto mínimo real).
 [dev-dependencies]
 nt-object.workspace = true
-nt-memory.workspace = true

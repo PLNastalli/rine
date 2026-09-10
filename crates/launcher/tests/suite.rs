@@ -65,8 +65,8 @@ fn evil_inputs_are_all_contained() {
         .output()
         .expect("spawn rine");
 
-    // Exit 0 = os 12 abusos foram recusados com erro limpo, sem crash.
-    // Qualquer outro valor (51–62, 139 SIGSEGV…) indica falha de contenção.
+    // Exit 0 = os 30 abusos foram recusados com erro limpo, sem crash.
+    // Qualquer outro valor (51–80, 139 SIGSEGV…) indica falha de contenção.
     assert_eq!(out.status.code(), Some(0), "{out:?}");
 
     // Nada pode ter sido criado: recusas vêm antes de qualquer efeito.

@@ -6,6 +6,9 @@ target/
 *~
 .vscode/
 .idea/
+# Frontend Tauri/React (gerado / deps).
+ui/node_modules/
+ui/dist/
 # Referência Windows local (4.4G, oracle de dev): nunca versionar.
 # Localização documentada em AGENTS.md e docs/adr/ADR-0009-*.
 windows-reference/

@@ -23,11 +23,13 @@ members = [
     "crates/oracle",
     "crates/difftest",
     "crates/perf",
+    "crates/manager-core",
+    "crates/manager-tauri",
 ]
 resolver = "2"
 
 [workspace.package]
-version = "0.2.0-alpha.2"
+version = "0.2.0-alpha.3"
 edition = "2021"
 rust-version = "1.80"
 license = "MIT OR Apache-2.0"
@@ -58,6 +60,7 @@ api-scan = { path = "crates/api-scan" }
 oracle = { path = "crates/oracle" }
 difftest = { path = "crates/difftest" }
 perf = { path = "crates/perf" }
+manager-core = { path = "crates/manager-core" }
 bitflags = "2"
 tracing = "0.1"
 libc = "0.2"

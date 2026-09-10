@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Mínimo: só os commands do Manager + dialog para escolher arquivos.","local":true,"windows":["main"],"permissions":["core:default","dialog:allow-open"]}}

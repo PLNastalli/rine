@@ -1,6 +1,6 @@
 # Estado atual
 
-_Data: 2026-09-10 (quinta sessão). Versão: **0.2.0-alpha.2**.
+_Data: 2026-09-10 (quinta sessão). Versão: **0.2.0-alpha.3**.
 Milestone: **v0.2 ~90%** + plataforma de testes diferenciais operacional._
 
 ## Milestone atual
@@ -12,9 +12,9 @@ pronta e caçando bugs de verdade. Próximo: v0.3 = `hello_mingw.exe` CRT
 ## O que funciona
 
 - E2E (filho isolado): hello/file/alloc/args/suite/evil + matrix RINE_PASS.
-- `rine --capsule`, `--version`, relatório `RINE-DEMAND` (37 faltantes do MinGW).
+- `rine --capsule`, `--version`, relatório `RINE-DEMAND` (32 faltantes do MinGW).
 - Infra: `rine-api-scan` (5578 DLLs/183k exports em 3s), `api-db/`
-  (KERNEL32/NTDLL + coverage 23/4209 BehaviorTested), oracle schema 1
+   (KERNEL32/NTDLL + coverage 25/4209 BehaviorTested), oracle schema 1
   (runner Rine + probe C compilável), ABI suite, fuzz determinístico,
   `RINE-CRASH`, `RUST_LOG` observável, benches + baseline, security-model.
 - `hello.exe` âncora bit-idêntico (`c9ba94…`).
@@ -35,17 +35,38 @@ pronta e caçando bugs de verdade. Próximo: v0.3 = `hello_mingw.exe` CRT
 
 ## Última tarefa concluída
 
-v0.3 (parte 3): `SetUnhandledExceptionFilter` mínimo (troca atômica no
-contexto, roundtrip 0→ptr→0 no guest, saídas 74–75 — sem ADR próprio:
-decisão pequena documentada no código); suite/evil verdes; cobertura
-23/4209; demanda MinGW 38→37. Antes: v0.3 parte 2 (critical sections,
-demanda 42→38); perf gate (ADR-0012); v0.3 parte 1 (TLS + GetLastError +
-Sleep, demanda 45→42).
+v0.3 (parte 8): itens 15–18 — `DeleteFileW`, `MoveFileExW` (REPLACE honesto;
+cross-device = copy+remove com `is_cross_device` em `host-linux`, sem libc
+fora da fronteira), `CreateDirectoryW` (sem recursão), `RemoveDirectoryW`
+(só vazio); suite 111–120, evil 77–80, unit `nt-file`; cobertura 42/4209;
+demanda segue 32. Antes, v0.3 (parte 7): itens 11–14 — `CreateFileW` (UTF-16 estrito, núcleo comum
+com a A), `GetFileAttributesW` (DIRECTORY/NORMAL+READONLY, sem ARCHIVE
+inventado), `SetFilePointerEx` (`lseek` novo em `host-linux`, `lp` opcional),
+`GetFileSizeEx` (END+restore); suite 102–110, evil 73–76; cobertura 38/4209;
+demanda segue 32 (nenhum dos 4 no fixture MinGW). Antes, v0.3 (parte 6):
+itens 9+10 — ApiSet (`pe::apiset` parseia o namespace v6
+real; snapshot 843 rotas; tabela gerada de 175; conformidade travada;
+`Sleep` via `api-ms-win-...` carrega com IAT real) + forwarders
+(`kernel32!*CS → ntdll!Rtl*`, chase de 1 salto; `kernelbase` perdeu as 4
+fns CS e 2 deps; ntdll 2→6 exports); suite/evil verdes sem mudar o guest;
+cobertura 34/4209; demanda segue 32 (UCRT é implementação, não roteamento).
+Antes, v0.3 (parte 5): família do loader dinâmico — `GetModuleHandleA/W`
+(NULL = base da imagem via `ProcessContext.image_base` novo; normalização
+Windows; ApiSet → 126), `LoadLibraryA/W` (conjunto carregado; imagem nova
+→ 126 honesto), `FreeLibrary` (estático = TRUE); suite 91–101, evil 70–72,
+unit `modules`, UTF-16 (`wide_slice`); cobertura 30/4209; **KERNEL32 do
+MinGW zerada (14/14)** — demanda 35→32 (só `api-ms-win-crt-*`). Antes,
+GUI 1.1: sidecar `rine` no Manager (`bundle.externalBin`,
+`pack-sidecar.sh`; `detect_runtime`: `$RINE_BIN` → sidecar → base → `PATH`;
+`RUNTIME_NOT_FOUND` instrui). Antes: v0.3 (parte 4): `GetProcAddress` (nome
++ ordinal real do oracle, `==` IAT, NULL+126/127; tokens `HMODULE` opacos
+documentados; suite 84–90, evil 68–69, unit `kernel32::modules`).
 
 ## Próxima tarefa recomendada
 
-v0.3 (continuação): `VirtualQuery`, loader de DLLs
-(`LoadLibraryA/GetProcAddress`), api-sets. Nessa ordem (cada um com teste).
+v0.3 (continuação, na ordem da demanda): `FindFirstFileW` (19),
+`FindNextFileW` (20), `FindClose` (21) — enumeração de diretórios.
+Nessa ordem (cada um com teste).
 
 ## Blockers
 

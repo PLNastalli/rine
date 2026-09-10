@@ -148,6 +148,46 @@ pub fn read_upto(fd: i32, buf: &mut [u8]) -> Result<usize, HostError> {
     }
 }
 
+/// Origem do seek (espelha FILE_BEGIN/CURRENT/END sem expor `SEEK_*`).#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SeekFrom {
+    /// Início (`SEEK_SET`).
+    Start,
+    /// Posição atual (`SEEK_CUR`).
+    Current,
+    /// Fim (`SEEK_END`).
+    End,
+}
+
+/// `lseek`: reposiciona o offset do fd; retorna o novo offset.
+/// Repete só em EINTR. Erro típico: ESPIPE (fd não-seekable, ex. console) —
+/// o caller (`nt-file`) mapeia para `NtStatus`.
+pub fn seek(fd: i32, offset: i64, from: SeekFrom) -> Result<u64, HostError> {
+    let whence = match from {
+        SeekFrom::Start => libc::SEEK_SET,
+        SeekFrom::Current => libc::SEEK_CUR,
+        SeekFrom::End => libc::SEEK_END,
+    };
+    loop {
+        // SAFETY: `lseek` não toca memória, só o offset do fd.
+        let n = unsafe { libc::lseek(fd, offset as libc::off_t, whence) };
+        if n < 0 {
+            let e = last_errno();
+            if e == libc::EINTR {
+                continue;
+            }
+            return Err(HostError::Io(e));
+        }
+        return Ok(n as u64);
+    }
+}
+
+/// Erro cross-device? (`rename` entre filesystems; o caller faz copy+remove).
+/// Centralizado aqui porque só `host-linux` lê `libc::EXDEV`
+/// (`ErrorKind::CrossesDevices` exigiria Rust 1.83+; MSRV é 1.80).
+pub fn is_cross_device(e: &std::io::Error) -> bool {
+    e.raw_os_error() == Some(libc::EXDEV)
+}
+
 /// Fecha um fd possuído pelo runtime.
 ///
 /// SAFETY: `fd` deve ser possuído (nunca 0/1/2 do host, nunca duplicado).

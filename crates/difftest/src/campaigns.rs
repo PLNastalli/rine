@@ -7,7 +7,7 @@
 
 use crate::compare::{Expectation, Verdict};
 use crate::gen;
-use crate::model::{self, FileExpect};
+use crate::model::{self};
 use crate::report::CaseRecord;
 use crate::rng::Rng;
 use crate::runner;
@@ -24,7 +24,6 @@ pub struct CampaignCfg<'a> {
     pub out_dir: PathBuf,
     pub rine_bin: &'a str,
     pub rine_version: String,
-    pub save_cases: bool,
 }
 
 /// Classifica path nos termos de `gen::PATH_CLASSES` (para cobertura).
@@ -119,9 +118,6 @@ pub fn run_fileops_once(
             model::RawOp::Close => coverage.push(("op".into(), "close".into())),
         }
     }
-    if cfg.save_cases {
-        save_case(cfg, scenario, &expects);
-    }
     let outcome = crate::exec::run_fileops_guest(
         cfg.rine_bin,
         &cfg.rine_version,
@@ -172,6 +168,7 @@ pub fn run_fileops_once(
         verdict,
         detail,
         seconds: t.elapsed().as_secs_f64(),
+        scenario: scenario.clone(),
     }
 }
 
@@ -202,16 +199,6 @@ fn model_files_for_compare(model: &model::FileModel, tmp: &Path) -> Vec<(String,
                 .map(|rel| (rel.to_string_lossy().into_owned(), bytes))
         })
         .collect()
-}
-
-fn save_case(cfg: &CampaignCfg, scenario: &Scenario, expects: &[FileExpect]) {
-    let dir = cfg.out_dir.join("cases");
-    let _ = std::fs::create_dir_all(&dir);
-    let doc = serde_json::json!({"scenario": scenario, "model_expects": expects});
-    let _ = std::fs::write(
-        dir.join(format!("{}.json", scenario.scenario_id)),
-        doc.to_string(),
-    );
 }
 
 /// Campanha fileops completa (paralela, determinística).
@@ -354,12 +341,13 @@ pub fn handles_campaign(
         coverage.lock().expect("coverage").extend(cov);
         CaseRecord {
             index,
-            scenario_id: scenario.scenario_id,
-            api: scenario.api,
+            scenario_id: scenario.scenario_id.clone(),
+            api: scenario.api.clone(),
             seed: case_seed,
             verdict,
             detail,
             seconds: t.elapsed().as_secs_f64(),
+            scenario,
         }
     });
     let cov = coverage.into_inner().expect("coverage");
@@ -378,17 +366,51 @@ pub fn run_memory_once(
     ops: &[model::MemOp],
 ) -> (crate::compare::Verdict, String, Vec<(String, String)>) {
     use crate::compare::Verdict;
-    use winabi::{AllocType, PageProtect};
+    use winabi::AllocType;
     let mut coverage = Vec::new();
     let mgr = nt_memory::MemoryManager::new();
     let mut model = model::MemoryModel::default();
     // id → (base real, size pedido). Bases opacas, nunca comparadas.
     let mut sym: std::collections::HashMap<usize, (usize, usize)> = Default::default();
     for op in ops {
+        // Query tem caminho próprio (compara descritores, não Ok/Err):
+        // concordar na ausência também é Match.
+        if let model::MemOp::Query { id, offset } = op {
+            let want = model.query_desc(*id);
+            let addr = sym
+                .get(id)
+                .map(|(b, _)| b + (*offset as usize % 4096))
+                .unwrap_or(0);
+            let got = mgr.query(addr);
+            let agree = match (want, got) {
+                (Some((mlen, mstate, mprot, malloc)), Some(info)) => {
+                    info.base == sym.get(id).unwrap().0
+                        && info.len == mlen
+                        && states_eq(info.state, mstate)
+                        && info.protect.bits() == mprot
+                        && info.alloc_protect.bits() == malloc
+                        && info.kind == nt_memory::RegionKind::Private
+                }
+                (None, None) => true,
+                _ => false,
+            };
+            coverage.push(("op".to_string(), "query".to_string()));
+            if !agree {
+                return (
+                    Verdict::SemanticMismatch,
+                    format!("query {id} diverge"),
+                    coverage,
+                );
+            }
+            continue;
+        }
         let want = model.step(op);
         // Reserva prevê disciplina de ids: id duplicado/tamanho 0/índice
         // ruim nunca chegam ao gerente (o modelo já recusou sem efeitos).
         let got = match op {
+            model::MemOp::Query { .. } => {
+                unreachable!("Query sai no caminho próprio acima (continue)")
+            }
             model::MemOp::Reserve { id, size, protect } => {
                 if sym.contains_key(id)
                     || *size == 0
@@ -406,22 +428,30 @@ pub fn run_memory_once(
                 }
             }
             // Caminho standalone de commit do gerente (base+size reais).
-            model::MemOp::Commit { id } => match sym.get(id) {
-                Some((base, size)) => mgr
-                    .allocate(*base, *size, AllocType::COMMIT, PageProtect::READWRITE)
-                    .map(|_| ())
-                    .map_err(|_| ()),
-                // Id desconhecido: base sintética fora de qualquer região.
-                None => mgr
-                    .allocate(
-                        id.wrapping_mul(0x1_0000).max(0x1000),
-                        4096,
-                        AllocType::COMMIT,
-                        PageProtect::READWRITE,
-                    )
-                    .map(|_| ())
-                    .map_err(|_| ()),
-            },
+            // `protect` vem do op como no Windows real (flProtect do COMMIT
+            // define a proteção atual; índice inválido nunca toca o gerente).
+            model::MemOp::Commit { id, protect } => {
+                if (*protect as usize) >= model::PROTECTS.len() {
+                    Err(())
+                } else {
+                    match sym.get(id) {
+                        Some((base, size)) => mgr
+                            .allocate(*base, *size, AllocType::COMMIT, protect_from_idx(*protect))
+                            .map(|_| ())
+                            .map_err(|_| ()),
+                        // Id desconhecido: base sintética fora de qualquer região.
+                        None => mgr
+                            .allocate(
+                                id.wrapping_mul(0x1_0000).max(0x1000),
+                                4096,
+                                AllocType::COMMIT,
+                                protect_from_idx(*protect),
+                            )
+                            .map(|_| ())
+                            .map_err(|_| ()),
+                    }
+                }
+            }
             model::MemOp::Protect { id, protect } => match sym.get(id) {
                 Some((base, _)) if (*protect as usize) < model::PROTECTS.len() => mgr
                     .protect_region(*base, protect_from_idx(*protect))
@@ -440,6 +470,7 @@ pub fn run_memory_once(
                 model::MemOp::Reserve { .. } => "reserve",
                 model::MemOp::Commit { .. } => "commit",
                 model::MemOp::Protect { .. } => "protect",
+                model::MemOp::Query { .. } => "query",
                 model::MemOp::Release { .. } => "release",
             }
             .to_string(),
@@ -487,6 +518,17 @@ fn protect_from_idx(i: u8) -> winabi::PageProtect {
     }
 }
 
+/// Igualdade entre estado do modelo e do gerente (tipos distintos,
+/// mesmas variantes — comparação explícita, sem `as` mágico).
+fn states_eq(a: nt_memory::RegionState, b: model::RegionState) -> bool {
+    use model::RegionState as M;
+    use nt_memory::RegionState as R;
+    matches!(
+        (a, b),
+        (R::Reserved, M::Reserved) | (R::Committed, M::Committed)
+    )
+}
+
 /// Campanha memory paralela.
 pub fn memory_campaign(
     seed: u64,
@@ -512,12 +554,13 @@ pub fn memory_campaign(
         coverage.lock().expect("coverage").extend(cov);
         CaseRecord {
             index,
-            scenario_id: scenario.scenario_id,
-            api: scenario.api,
+            scenario_id: scenario.scenario_id.clone(),
+            api: scenario.api.clone(),
             seed: case_seed,
             verdict,
             detail,
             seconds: t.elapsed().as_secs_f64(),
+            scenario,
         }
     });
     let cov = coverage.into_inner().expect("coverage");
@@ -556,12 +599,13 @@ pub fn pe_fuzz_campaign(seed: u64, n_cases: usize, workers: usize) -> Vec<CaseRe
         };
         CaseRecord {
             index,
-            scenario_id: scenario.scenario_id,
-            api: scenario.api,
+            scenario_id: scenario.scenario_id.clone(),
+            api: scenario.api.clone(),
             seed: case_seed,
             verdict,
             detail,
             seconds: t.elapsed().as_secs_f64(),
+            scenario,
         }
     })
 }

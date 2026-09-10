@@ -17,8 +17,10 @@ fn fixture() -> BTreeMap<String, Vec<String>> {
 #[test]
 fn mingw_demand_is_known() {
     // Contagem travada: qualquer mudança no fixture ou no resolve() aparece aqui.
-    // 46 imports − VirtualProtect − TlsGetValue − GetLastError − Sleep
-    // − 4 CriticalSection − SetUnhandledExceptionFilter = 37 em demanda.
+    // 46 imports − 14 KERNEL32 (todas implementadas: VirtualProtect, TlsGetValue,
+    // GetLastError, Sleep, 4 CriticalSection, SetUnhandledExceptionFilter,
+    // VirtualQuery, GetProcAddress, LoadLibraryA, GetModuleHandleA, FreeLibrary)
+    // = 32 em demanda (só api-ms-win-crt-*).
     let map = fixture();
     assert_eq!(map.len(), 9);
     let total: usize = map.values().map(|v| v.len()).sum();
@@ -29,5 +31,24 @@ fn mingw_demand_is_known() {
     assert!(map["KERNEL32.dll"].contains(&"GetLastError".to_string()));
     assert!(map["KERNEL32.dll"].contains(&"Sleep".to_string()));
     assert!(map["KERNEL32.dll"].contains(&"SetUnhandledExceptionFilter".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"VirtualQuery".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"GetProcAddress".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"LoadLibraryA".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"GetModuleHandleA".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"FreeLibrary".to_string()));
     assert!(map.contains_key("api-ms-win-crt-heap-l1-1-0.dll"));
+}
+
+/// Prova do mecanismo: um PE sintético que importa SÓ `GetProcAddress`
+/// não tem mais demanda (o resolvedor do `runtime` o satisfaz).
+#[test]
+fn get_proc_address_leaves_no_demand() {
+    let r = pe::builder::build_rdata_generic("KERNEL32.dll", &["GetProcAddress"], &[]);
+    let mut code = vec![0xC3u8];
+    while code.len() < 0x200 {
+        code.push(0xCC);
+    }
+    let vsize = code.len() as u32;
+    let bytes = pe::builder::assemble(&code, &r.bytes, vsize, r.import_dir, 40, r.iats[0], 24);
+    assert!(runtime::missing_imports(&bytes).unwrap().is_empty());
 }

@@ -16,9 +16,9 @@
 | Exceções/SEH | `nt-exception` | `ExceptionRecord` | (v0.3) |
 | Registry | `nt-registry` | `Registry::{set,get,save,load}` | unit (roundtrip arquivo) |
 | Segurança/token | `nt-security` | `Token` (stub) | — |
-| Façade NT | `ntdll` | `RtlExitUserProcess_impl`, contexto | via hello |
+| Façade NT | `ntdll` | `RtlExitUserProcess_impl`, `Rtl*CriticalSection` (alvos dos forwarders kernel32), contexto | via hello + suite |
 | Win32 interna | `kernelbase` | `get_std_handle`, `write_file` | via hello |
-| Win32 pública | `kernel32` | 21 exports (UEF novo) | hello + v02/v03 E2E |
+| Win32 pública | `kernel32` | 36 exports (mutação FS: del/move/mkdir/rmdir) | hello + v02/v03 E2E |
 | Orquestração/entry | `runtime` | `Emulator`, `Capsule::load_toml` | unit + hello/v02 |
 | CLI | `launcher` | bin `rine` | hello E2E |
 | Oracle estrutural | `api-scan` | `rine-api-scan scan/coverage`, `api-db/` | scan/coverage unit |
@@ -27,5 +27,7 @@
 | Driver guest | `pe::driver` | `FileOp` + expectativas embutidas | driver unit + campanhas |
 | Demanda | `runtime` | `missing_imports`, `demand_report` | `mingw_demand` |
 | Performance gate | `perf` | schema/stats/compare/report, `rine-bench`, `bench/` | unit por módulo |
+| Gestão (Manager) | `manager-core` | detect/inspect/preflight/run/registry/capsules/settings | 16 unit + `vertical_slice` E2E |
+| Shell desktop | `manager-tauri` | 13 thin commands sobre `manager-core` + janela | via core (sem lógica própria) |
 
 Lógica no lugar errado = bug arquitetural. Em dúvida, ver `architecture.md`.

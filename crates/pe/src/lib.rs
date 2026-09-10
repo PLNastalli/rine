@@ -7,6 +7,7 @@
 //! Suporta: DOS header, NT headers, sections, data dirs,
 //! imports, exports (nomes), base relocs, TLS dir (leitura).
 
+pub mod apiset;
 pub mod builder;
 pub mod driver;
 
@@ -38,6 +39,8 @@ pub enum PeError {
     BadExports(&'static str),
     #[error("reloc table malformed: {0}")]
     BadRelocs(&'static str),
+    #[error("apiset namespace malformed: {0}")]
+    BadApiSet(&'static str),
 }
 
 /// Índices de DataDirectory.

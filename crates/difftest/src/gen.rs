@@ -210,15 +210,22 @@ pub fn memory_sequence(rng: &mut Rng, n: usize, pool: usize) -> Vec<MemOp> {
     for _ in 0..n {
         let id = rng.below_usize(pool);
         match rng.below(100) {
-            0..=34 => ops.push(MemOp::Reserve {
+            0..=30 => ops.push(MemOp::Reserve {
                 id,
                 size: [0, 1, 100, 4096, 5000, 1 << 20][rng.below_usize(6)],
                 protect: rng.below(6) as u8,
             }),
-            35..=54 => ops.push(MemOp::Commit { id }),
-            55..=74 => ops.push(MemOp::Protect {
+            31..=48 => ops.push(MemOp::Commit {
                 id,
                 protect: rng.below(6) as u8,
+            }),
+            49..=64 => ops.push(MemOp::Protect {
+                id,
+                protect: rng.below(6) as u8,
+            }),
+            65..=84 => ops.push(MemOp::Query {
+                id,
+                offset: rng.below(8192),
             }),
             _ => ops.push(MemOp::Release { id }),
         }

@@ -189,7 +189,6 @@ fn cmd_differential(args: &[String]) {
                 out_dir: out.clone(),
                 rine_bin: &f.rine_bin,
                 rine_version: version.clone(),
-                save_cases: true,
             };
             let (records, cov) = campaigns::fileops_campaign(&cfg, f.cases, f.ops_per_case);
             (records, cov, "CreateFileA".to_string())
@@ -226,6 +225,26 @@ fn cmd_differential(args: &[String]) {
         &out.join("report.json"),
         &serde_json::to_value(&rep).unwrap(),
     );
+    // Falhas salvas (todos os alvos): reproduce/minimize sem re-gerar nada.
+    let cases_dir = out.join("cases");
+    let mut saved = 0;
+    for r in &records {
+        if r.verdict != compare::Verdict::Match {
+            let _ = std::fs::create_dir_all(&cases_dir);
+            let doc = serde_json::json!({"scenario": r.scenario});
+            if std::fs::write(
+                cases_dir.join(format!("{}.json", r.scenario_id)),
+                doc.to_string(),
+            )
+            .is_ok()
+            {
+                saved += 1;
+            }
+        }
+    }
+    if saved > 0 {
+        println!("{saved} casos de falha em {}", cases_dir.display());
+    }
     print!("{}", report::render_human(&rep));
     if f.merge_matrix {
         let matrix = PathBuf::from("compatibility/matrix.json");
@@ -341,12 +360,13 @@ fn runner_paths_fuzz(seed: u64, n: usize, workers: usize) -> Vec<report::CaseRec
         };
         report::CaseRecord {
             index,
-            scenario_id: scenario.scenario_id,
-            api: scenario.api,
+            scenario_id: scenario.scenario_id.clone(),
+            api: scenario.api.clone(),
             seed: case_seed,
             verdict,
             detail,
             seconds: t.elapsed().as_secs_f64(),
+            scenario,
         }
     })
 }
@@ -379,6 +399,7 @@ fn cmd_reproduce(args: &[String]) {
         case.scenario.scenario_id, case.scenario.seed
     );
     match case.scenario.target.as_str() {
+        "memory" | "handles" => cmd_reproduce_inprocess(&case.scenario),
         "fileops" => {
             let ops: Vec<model::RawOp> =
                 serde_json::from_value(case.scenario.params["ops"].clone()).unwrap_or_else(|_| {
@@ -441,6 +462,33 @@ fn cmd_reproduce(args: &[String]) {
     }
 }
 
+fn cmd_reproduce_inprocess(scenario: &scenario::Scenario) {
+    let ops_v = scenario.params["ops"].clone();
+    let (verdict, detail) = match scenario.target.as_str() {
+        "memory" => {
+            let ops: Vec<model::MemOp> = serde_json::from_value(ops_v).unwrap_or_else(|_| {
+                eprintln!("rine-test: ops inválidas no cenário");
+                std::process::exit(2);
+            });
+            let (v, d, _) = campaigns::run_memory_once(&ops);
+            (v, d)
+        }
+        "handles" => {
+            let ops: Vec<model::HandleOp> = serde_json::from_value(ops_v).unwrap_or_else(|_| {
+                eprintln!("rine-test: ops inválidas no cenário");
+                std::process::exit(2);
+            });
+            let (v, d, _) = campaigns::run_handles_once(0, scenario.seed, &ops);
+            (v, d)
+        }
+        other => {
+            eprintln!("rine-test: reproduce in-process desconhecido: {other}");
+            std::process::exit(2);
+        }
+    };
+    println!("verdict={verdict:?} detail={detail}");
+}
+
 fn steps_from_expects(
     ops: &[model::RawOp],
     expects: &[model::FileExpect],
@@ -490,8 +538,11 @@ fn cmd_minimize(args: &[String]) {
             eprintln!("rine-test: sem scenario no arquivo");
             std::process::exit(2);
         });
+    if scenario.target == "memory" || scenario.target == "handles" {
+        return cmd_minimize_inprocess(&f, &scenario, &v);
+    }
     if scenario.target != "fileops" {
-        eprintln!("rine-test: minimize hoje cobre fileops (handles/memory: ddmin via API)");
+        eprintln!("rine-test: minimize cobre fileops/handles/memory");
         std::process::exit(2);
     }
     let ops: Vec<model::RawOp> = serde_json::from_value(scenario.params["ops"].clone())
@@ -569,6 +620,105 @@ fn cmd_minimize(args: &[String]) {
                 std::process::exit(1);
             });
         let dest = dir.join(format!("files/{}.json", min_scenario.scenario_id));
+        if let Some(p) = dest.parent() {
+            let _ = std::fs::create_dir_all(p);
+        }
+        std::fs::write(&dest, text).expect("escrever corpus");
+        println!("promovido: {}", dest.display());
+    }
+}
+
+/// Minimize in-process (handles/memory): ddmin sobre ops com predicado
+/// "ainda diverge". Sem guest, sem tmpdir — direto modelo×real.
+fn cmd_minimize_inprocess(f: &Flags, scenario: &scenario::Scenario, v: &serde_json::Value) {
+    let _ = v;
+    let ops_v = scenario.params["ops"].clone();
+    match scenario.target.as_str() {
+        "memory" => {
+            let ops: Vec<model::MemOp> = serde_json::from_value(ops_v).unwrap_or_else(|_| {
+                eprintln!("rine-test: ops inválidas");
+                std::process::exit(2);
+            });
+            let first = campaigns::run_memory_once(&ops);
+            if first.0 == compare::Verdict::Match {
+                eprintln!("rine-test: caso original sem divergência (nada a minimizar)");
+                std::process::exit(2);
+            }
+            println!("divergência original: {}", first.1);
+            let min = shrink::minimize(
+                &ops,
+                &|sub: &[model::MemOp]| {
+                    campaigns::run_memory_once(sub).0 != compare::Verdict::Match
+                },
+                f.budget,
+            );
+            finish_minimize_inprocess(f, scenario, "memory", "VirtualAlloc", min);
+        }
+        "handles" => {
+            let ops: Vec<model::HandleOp> = serde_json::from_value(ops_v).unwrap_or_else(|_| {
+                eprintln!("rine-test: ops inválidas");
+                std::process::exit(2);
+            });
+            let first = campaigns::run_handles_once(0, scenario.seed, &ops);
+            if first.0 == compare::Verdict::Match {
+                eprintln!("rine-test: caso original sem divergência (nada a minimizar)");
+                std::process::exit(2);
+            }
+            println!("divergência original: {}", first.1);
+            let min = shrink::minimize(
+                &ops,
+                &|sub: &[model::HandleOp]| {
+                    campaigns::run_handles_once(0, scenario.seed, sub).0 != compare::Verdict::Match
+                },
+                f.budget,
+            );
+            finish_minimize_inprocess(f, scenario, "handles", "NtCreateFile", min);
+        }
+        other => {
+            eprintln!("rine-test: alvo desconhecido: {other}");
+            std::process::exit(2);
+        }
+    }
+}
+
+fn finish_minimize_inprocess<T: serde::Serialize>(
+    f: &Flags,
+    scenario: &scenario::Scenario,
+    target: &str,
+    api: &str,
+    min: Vec<T>,
+) {
+    // Conta ops via JSON (genérico sobre os dois tipos de op).
+    let n = serde_json::to_value(&min)
+        .unwrap()
+        .as_array()
+        .map(|a| a.len())
+        .unwrap_or(0);
+    println!("minimizado para {n} ops:");
+    println!("{}", serde_json::to_string_pretty(&min).unwrap());
+    if let Some(dir) = &f.promote {
+        if f.history.is_empty() {
+            eprintln!("rine-test: --promote exige --history \"descrição do bug\"");
+            std::process::exit(2);
+        }
+        let min_scenario = scenario::Scenario::new(
+            target,
+            api,
+            scenario.seed,
+            serde_json::json!({"ops": min}),
+            serde_json::json!({"generator": "minimize-v1", "from": scenario.scenario_id}),
+        );
+        let expect = compare::Expectation {
+            exit_code: Some(0),
+            stdout_contains: vec![],
+            files: Default::default(),
+        };
+        let text =
+            corpus::serialize_promote(&min_scenario, &expect, &f.history).unwrap_or_else(|e| {
+                eprintln!("rine-test: promote: {e}");
+                std::process::exit(1);
+            });
+        let dest = dir.join(format!("{target}/{}.json", min_scenario.scenario_id));
         if let Some(p) = dest.parent() {
             let _ = std::fs::create_dir_all(p);
         }
@@ -673,17 +823,29 @@ fn cmd_corpus(args: &[String]) {
     }
     let mut fail = 0;
     for (path, case) in &cases {
-        if case.scenario.target != "fileops" {
-            println!("SKIP (alvo futuro) {path}");
-            continue;
-        }
-        let verdict =
-            corpus::replay_fileops_case(case, &f.rine_bin, Duration::from_millis(f.timeout_ms));
+        let (verdict, origin) = match case.scenario.target.as_str() {
+            "fileops" => {
+                let v = corpus::replay_fileops_case(
+                    case,
+                    &f.rine_bin,
+                    Duration::from_millis(f.timeout_ms),
+                );
+                (v, "guest")
+            }
+            "memory" | "handles" => {
+                let (v, _) = corpus::replay_inprocess_case(case);
+                (v, "in-process")
+            }
+            other => {
+                println!("SKIP (alvo desconhecido: {other}) {path}");
+                continue;
+            }
+        };
         if verdict != compare::Verdict::Match {
             fail += 1;
         }
         println!(
-            "{verdict:16?} {path}  [{}]",
+            "{verdict:16?} [{origin}] {path}  [{}]",
             case.history.lines().next().unwrap_or("")
         );
     }

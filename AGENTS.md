@@ -10,7 +10,7 @@ Runtime de compatibilidade Windows-para-Linux em Rust. PE x86_64 roda o
 **código original direto na CPU** (sem VM, sem emulação, sem Wine).
 Princípio: *Windows por fora, Rust seguro por dentro, Linux nativo embaixo.*
 
-Versão: `0.2.0-alpha.2` (`rine --version`). Semver real: alpha por milestone
+Versão: `0.2.0-alpha.3` (`rine --version`). Semver real: alpha por milestone
 em curso, `0.MINOR.0` ao fechar, `PATCH` só para fixes (`docs/roadmap.md`).
 
 ## Ordem de leitura obrigatória (toda sessão)
@@ -64,6 +64,9 @@ em curso, `0.MINOR.0` ao fechar, `PATCH` só para fixes (`docs/roadmap.md`).
   `compatibility/`, `tests/{abi,behavior,integration,differential,windows}/`.
 - Façades finas: `kernel32→kernelbase→ntdll`; lógica em `nt-*`; syscalls
   SÓ em `host-linux`. Quirks em `compat/` (nunca `if exe=="x"` no core).
+- Manager (frontend opcional): `crates/manager-core` (toda a lógica, sem
+  dep de UI) + `docs/manager/`. O runtime NUNCA depende do Manager; deps
+  do Manager nunca vazam para os crates do core. CLI continua 100% sem GUI.
 - Docs são memória: `docs/` + ADRs + `current-state.md` atualizado SEMPRE.
 
 ## Gates (tudo verde ou a tarefa não acabou)

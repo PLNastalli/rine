@@ -234,6 +234,7 @@ impl Emulator {
             teb_ptr: &*teb as *const TebMinimal as u64,
             mem,
             fsys,
+            image_base,
             tls_bitmap: nt_thread::TlsBitmap::new(),
             unhandled_filter: std::sync::atomic::AtomicU64::new(0),
         }));
@@ -335,12 +336,22 @@ pub fn demand_report(pe_bytes: &[u8]) -> String {
         Err(e) => format!("rine: nem listar imports foi possível: {e}"),
     }
 }
-/// Resolvedor de imports: kernel32 + ntdll implementados.
+/// Resolvedor de imports: kernel32 + ntdll implementados (+ ApiSet → host).
 /// Retorna endereço host da implementação `extern "win64"`.
 fn resolve_import(dll: &str, name: Option<&str>, ordinal: Option<u16>) -> Option<u64> {
+    // Item 9: namespace ApiSet roteia para o host (`api-ms-win-core-synch…
+    // → kernel32); o símbolo resolve (ou falta honestamente) no destino.
+    let is_kernel32 = matches!(
+        kernel32::modules::resolve_dll(dll),
+        Some(kernel32::modules::KnownModule::Kernel32)
+    );
     let dll_l = dll.to_ascii_lowercase();
-    let is_kernel32 = dll_l == "kernel32.dll" || dll_l == "kernel32";
-    let is_ntdll = dll_l == "ntdll.dll" || dll_l == "ntdll";
+    let is_ntdll = dll_l == "ntdll.dll"
+        || dll_l == "ntdll"
+        || matches!(
+            kernel32::modules::resolve_dll(dll),
+            Some(kernel32::modules::KnownModule::Ntdll)
+        );
     if is_kernel32 {
         if let Some(n) = name {
             // kernel32 exporta também por nome exato (case-sensitive no Windows
@@ -375,10 +386,10 @@ mod tests {
     #[test]
     fn demand_lists_only_unresolved() {
         // PE sintético: 1 import inexistente + 1 existente.
-        // (`DeleteCriticalSection` já foi esse exemplo — virou implementado
-        // em v0.3; `LoadLibraryA` segue em demanda. A troca é intencional.)
+        // (`CreateFileW` já foi esse exemplo — virou implementado em v0.3;
+        // `FindFirstFileW` segue em demanda. A troca é intencional.)
         let r =
-            pe::builder::build_rdata_generic("KERNEL32.dll", &["LoadLibraryA", "WriteFile"], &[]);
+            pe::builder::build_rdata_generic("KERNEL32.dll", &["FindFirstFileW", "WriteFile"], &[]);
         let mut code = vec![0xC3u8];
         while code.len() < 0x200 {
             code.push(0xCC);
@@ -388,7 +399,7 @@ mod tests {
         let missing = missing_imports(&bytes).unwrap();
         assert_eq!(
             missing,
-            vec![("KERNEL32.dll".to_string(), "LoadLibraryA".to_string())]
+            vec![("KERNEL32.dll".to_string(), "FindFirstFileW".to_string())]
         );
         // WriteFile resolve → fora da lista. Suite real: lista vazia.
         let suite = pe::builder::build_suite_exe();
@@ -404,5 +415,42 @@ mod tests {
         let iat0 = unsafe { *((emu.image_base() + 0x2090) as *const u64) };
         assert_ne!(iat0, 0x0014_0000_0000 + 0x2040);
         assert_eq!(iat0, kernel32::GetStdHandle_impl as *const () as u64);
+    }
+
+    /// Item 9 (ApiSet): PE que importa `Sleep` via namespace
+    /// (`api-ms-win-core-synch-ansi-l1-1-0`, host kernel32 no mapa real)
+    /// carrega e a IAT aponta para o `Sleep` de verdade — mesma prova do
+    /// teste acima, exercendo a rota ApiSet→host de ponta a ponta.
+    #[test]
+    fn load_routes_apiset_to_host() {
+        let r = pe::builder::build_rdata_generic(
+            "API-MS-WIN-CORE-SYNCH-ANSI-L1-1-0.DLL",
+            &["Sleep"],
+            &[],
+        );
+        let mut code = vec![0xC3u8];
+        while code.len() < 0x200 {
+            code.push(0xCC);
+        }
+        let vsize = code.len() as u32;
+        let iat0_rva = r.iats[0];
+        let bytes = pe::builder::assemble(&code, &r.bytes, vsize, r.import_dir, 40, r.iats[0], 24);
+        // Sem demanda: o namespace roteou e o símbolo existe no host.
+        assert!(missing_imports(&bytes).unwrap().is_empty());
+        let emu = Emulator::load(Capsule::default(), &bytes, "apiset.exe").expect("load");
+        let iat0 = unsafe { *((emu.image_base() + iat0_rva as u64) as *const u64) };
+        assert_eq!(iat0, kernel32::Sleep_impl as *const () as u64);
+        // ApiSet→UCRT continua honesto: namespace resolve, símbolo falta.
+        let r2 =
+            pe::builder::build_rdata_generic("api-ms-win-crt-heap-l1-1-0.dll", &["malloc"], &[]);
+        let bytes2 =
+            pe::builder::assemble(&code, &r2.bytes, vsize, r2.import_dir, 40, r2.iats[0], 24);
+        assert_eq!(
+            missing_imports(&bytes2).unwrap(),
+            vec![(
+                "api-ms-win-crt-heap-l1-1-0.dll".to_string(),
+                "malloc".to_string()
+            )]
+        );
     }
 }

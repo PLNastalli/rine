@@ -48,6 +48,34 @@ struct Region {
     len: usize,
     state: RegionState,
     protect: PageProtect,
+    /// Proteção do momento da reserva/commit inicial (vira
+    /// `AllocationProtect` no query; `protect` é a atual).
+    alloc_protect: PageProtect,
+    /// Imagem PE rastreada vs memória `VirtualAlloc` (vira `Type` no query).
+    kind: RegionKind,
+}
+
+/// Origem da região (vira `Type` em `MEMORY_BASIC_INFORMATION`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RegionKind {
+    /// Via `VirtualAlloc` (`MEM_PRIVATE`).
+    Private,
+    /// Imagem PE mapeada (`MEM_IMAGE`). Mapeamentos de arquivo futuros
+    /// usam `MAPPED` (adicionar variante, não reinterpretar).
+    Image,
+}
+
+/// Visão somente-leitura de uma região para `VirtualQuery`.
+/// Bases reais (ASLR) nunca saem daqui sem necessidade — o comparador
+/// diferencial as trata como opacas (ver regra `aslr`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RegionInfo {
+    pub base: usize,
+    pub len: usize,
+    pub state: RegionState,
+    pub protect: PageProtect,
+    pub alloc_protect: PageProtect,
+    pub kind: RegionKind,
 }
 
 /// Gerenciador de regiões com lock único (v0.1 single-threaded por processo
@@ -129,6 +157,8 @@ impl MemoryManager {
                     len,
                     state,
                     protect,
+                    alloc_protect: protect,
+                    kind: RegionKind::Private,
                 },
             );
             Ok(base)
@@ -155,6 +185,7 @@ impl MemoryManager {
             let r = inner.regions.get_mut(&key).unwrap();
             r.state = RegionState::Committed;
             r.protect = protect;
+            // `alloc_protect` propositalmente intacto: é da reserva.
             Ok(base)
         } else {
             Err(MemError::InvalidParameter)
@@ -223,7 +254,9 @@ impl MemoryManager {
 
     /// Registra mapeamento externo (ex.: imagem PE mapeada pelo `loader`).
     /// A memória já pertence ao host; o manager apenas rastreia o estado
-    /// para que `VirtualQuery`-futuro e `free` sejam coerentes.
+    /// para que `query` e `free` sejam coerentes.
+    /// Marca `Image`: todo chamador atual mapeia imagem PE. Mapeamento de
+    /// arquivo futuro exige parâmetro de kind (não reinterpretar).
     pub fn track_external(&self, base: usize, len: usize, protect: PageProtect) {
         self.inner.lock().unwrap().regions.insert(
             base,
@@ -232,8 +265,29 @@ impl MemoryManager {
                 len,
                 state: RegionState::Committed,
                 protect,
+                alloc_protect: protect,
+                kind: RegionKind::Image,
             },
         );
+    }
+
+    /// Informação da região que contém `addr` (`None` = não mapeado).
+    /// Base para `VirtualQuery`: sem efeitos colaterais, só leitura.
+    pub fn query(&self, addr: usize) -> Option<RegionInfo> {
+        let inner = self.inner.lock().unwrap();
+        let (_, r) = inner
+            .regions
+            .range(..=addr)
+            .next_back()
+            .filter(|(_, r)| addr < r.base.saturating_add(r.len))?;
+        Some(RegionInfo {
+            base: r.base,
+            len: r.len,
+            state: r.state,
+            protect: r.protect,
+            alloc_protect: r.alloc_protect,
+            kind: r.kind,
+        })
     }
 
     pub fn untrack(&self, base: usize) {
@@ -342,5 +396,66 @@ mod tests {
         assert_eq!(section_protect(0x4000_0040), PageProtect::READONLY); // .rdata
         assert_eq!(section_protect(0xC000_0040), PageProtect::READWRITE); // .data
         assert_eq!(section_protect(0), PageProtect::NOACCESS);
+    }
+
+    #[test]
+    fn query_reports_region_containing_addr() {
+        let m = MemoryManager::new();
+        let ps = host_linux::page_size();
+        let base = m
+            .allocate(
+                0,
+                ps,
+                AllocType::RESERVE | AllocType::COMMIT,
+                PageProtect::READWRITE,
+            )
+            .unwrap();
+        // Base, meio e fim da região resolvem para ela.
+        for addr in [base, base + 1, base + ps - 1] {
+            let info = m.query(addr).expect("região mapeada");
+            assert_eq!(info.base, base);
+            assert_eq!(info.len, ps);
+            assert_eq!(info.state, RegionState::Committed);
+            assert_eq!(info.protect, PageProtect::READWRITE);
+            assert_eq!(info.alloc_protect, PageProtect::READWRITE);
+            assert_eq!(info.kind, RegionKind::Private);
+        }
+        // Fora: nada (VirtualQuery retornaria 0).
+        assert!(m.query(base.saturating_sub(1)).is_none());
+        assert!(m.query(base + ps).is_none());
+        m.free(base, AllocType::RELEASE).unwrap();
+        assert!(m.query(base).is_none()); // liberada some do mapa
+    }
+
+    #[test]
+    fn query_tracks_protect_and_kind_changes() {
+        let m = MemoryManager::new();
+        let ps = host_linux::page_size();
+        // Reserva pura: estado Reserved, AllocationProtect da reserva.
+        let base = m
+            .allocate(0, ps, AllocType::RESERVE, PageProtect::READWRITE)
+            .unwrap();
+        let info = m.query(base).unwrap();
+        assert_eq!(info.state, RegionState::Reserved);
+        assert_eq!(info.alloc_protect, PageProtect::READWRITE);
+        // Commit com outra proteção: atual muda, alocação fica.
+        m.allocate(base, ps, AllocType::COMMIT, PageProtect::READONLY)
+            .unwrap();
+        let info = m.query(base).unwrap();
+        assert_eq!(info.state, RegionState::Committed);
+        assert_eq!(info.protect, PageProtect::READONLY);
+        assert_eq!(info.alloc_protect, PageProtect::READWRITE);
+        // protect_region muda só a atual.
+        m.protect_region(base, PageProtect::READWRITE).unwrap();
+        let info = m.query(base).unwrap();
+        assert_eq!(
+            (info.protect, info.alloc_protect),
+            (PageProtect::READWRITE, PageProtect::READWRITE)
+        );
+        // Externo = imagem.
+        m.track_external(0x7000_0000, ps, PageProtect::EXECUTE_READ);
+        let info = m.query(0x7000_0000).unwrap();
+        assert_eq!(info.kind, RegionKind::Image);
+        m.free(base, AllocType::RELEASE).unwrap();
     }
 }

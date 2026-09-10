@@ -9,7 +9,7 @@
 Run Windows x86_64 executables directly on the CPU —  
 **no Wine, no Proton, no virtual machine, no CPU emulation.**
 
-![Version](https://img.shields.io/badge/version-0.2.0--alpha.2-blue)
+![Version](https://img.shields.io/badge/version-0.2.0--alpha.3-blue)
 ![Rust](https://img.shields.io/badge/Rust-1.80%2B-orange)
 ![Platform](https://img.shields.io/badge/host-Linux-lightgrey)
 ![Guest](https://img.shields.io/badge/guest-Windows%20x86__64-0078D4)
@@ -72,7 +72,7 @@ It is an independent compatibility runtime.
 Current version:
 
 ```text
-0.2.0-alpha.2
+0.2.0-alpha.3
 ```
 
 Already working end-to-end:
@@ -132,7 +132,14 @@ TlsFree
 TlsGetValue
 TlsSetValue
 GetLastError
+GetProcAddress
 Sleep
+InitializeCriticalSection
+EnterCriticalSection
+LeaveCriticalSection
+DeleteCriticalSection
+SetUnhandledExceptionFilter
+VirtualQuery
 ExitProcess
 ```
 
@@ -326,7 +333,17 @@ crates/
 ├── oracle
 ├── difftest
 └── perf
+│
+├── manager-core
+└── manager-tauri
+
+ui/
 ```
+
+The optional **Rine Manager** desktop app (`crates/manager-core` +
+`crates/manager-tauri` + `ui/`, Tauri 2 + React) is a pure frontend over
+the runtime: library, pre-flight checks, run and diagnostics. The CLI
+(`rine app.exe`) works fully without it, and no core crate depends on it.
 
 The rule is simple:
 

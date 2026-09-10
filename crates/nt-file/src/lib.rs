@@ -254,6 +254,148 @@ pub fn read_file(
         .map_err(|_| NtStatus::UNSUCCESSFUL)
 }
 
+/// Posiciona o cursor (`SetFilePointerEx`): `method` 0/1/2 =
+/// BEGIN/CURRENT/END; outro valor = `INVALID_PARAMETER` (Windows: falha).
+/// Não exige acesso de leitura/escrita (seek puro, como no Windows).
+/// Console (não-seekable) → erro do kernel mapeado (sem sucesso falso).
+pub fn set_file_pointer(
+    table: &HandleTable,
+    handle: WindowsHandle,
+    distance: i64,
+    method: u32,
+) -> Result<u64, NtStatus> {
+    use host_linux::SeekFrom;
+    let from = match method {
+        0 => SeekFrom::Start,
+        1 => SeekFrom::Current,
+        2 => SeekFrom::End,
+        _ => return Err(NtStatus::INVALID_PARAMETER),
+    };
+    let fd = file_fd(table, handle)?;
+    host_linux::seek(fd, distance, from).map_err(|_| NtStatus::UNSUCCESSFUL)
+}
+
+/// Tamanho do arquivo (`GetFileSizeEx`): SEEK_END + restaura o cursor
+/// (sem syscall nova além de `lseek`; falha no restore = erro, nunca
+/// cursor deslocado silenciosamente).
+pub fn file_size(table: &HandleTable, handle: WindowsHandle) -> Result<u64, NtStatus> {
+    use host_linux::SeekFrom;
+    let fd = file_fd(table, handle)?;
+    let cur = host_linux::seek(fd, 0, SeekFrom::Current).map_err(|_| NtStatus::UNSUCCESSFUL)?;
+    let end = host_linux::seek(fd, 0, SeekFrom::End).map_err(|_| NtStatus::UNSUCCESSFUL)?;
+    host_linux::seek(fd, cur as i64, SeekFrom::Start).map_err(|_| NtStatus::UNSUCCESSFUL)?;
+    Ok(end)
+}
+
+/// fd do objeto `File` (erro se handle inválido ou não-arquivo).
+fn file_fd(table: &HandleTable, handle: WindowsHandle) -> Result<i32, NtStatus> {
+    let obj: Arc<KernelObject> = table.lookup(handle)?;
+    if obj.typ != ObjectType::File {
+        return Err(NtStatus::INVALID_HANDLE);
+    }
+    let guard = obj.payload.lock().unwrap();
+    let ObjectPayload::File(f) = &*guard;
+    Ok(f.fd)
+}
+
+/// Atributos (`GetFileAttributesW`): DIRECTORY ou NORMAL (+ READONLY).
+/// Subconjunto v0.3 honesto (sem ARCHIVE/HIDDEN simulados — o host ext4
+/// não os tem; inventar seria stub). Ausente → `OBJECT_NAME_NOT_FOUND`.
+pub fn file_attributes(fsys: &DriveMap, win_path: &str) -> Result<u32, NtStatus> {
+    let path = fsys.translate(win_path)?;
+    let md = std::fs::metadata(&path).map_err(|e| io_to_status(e, 3))?;
+    let mut attrs = if md.is_dir() {
+        winabi::file_attr::DIRECTORY
+    } else {
+        winabi::file_attr::NORMAL
+    };
+    if md.permissions().readonly() {
+        attrs |= winabi::file_attr::READONLY;
+    }
+    Ok(attrs)
+}
+
+/// Apaga um arquivo (`DeleteFileW`). Diretório → erro (como no Windows,
+/// que exige `RemoveDirectoryW`; o `remove_file` do host nega sozinho).
+pub fn delete_file(fsys: &DriveMap, win_path: &str) -> Result<(), NtStatus> {
+    let path = fsys.translate(win_path)?;
+    std::fs::remove_file(&path).map_err(|e| io_to_status(e, 3))
+}
+
+/// Move/renomeia (`MoveFileExW`): `replace` = MOVEFILE_REPLACE_EXISTING.
+/// Sem `replace` e com destino existente → `OBJECT_NAME_COLLISION` (o
+/// `rename` do Linux substituiria sozinho — o Windows não).
+/// Cross-device (drives em filesystems distintos) → copy+remove (equivale
+/// ao MOVEFILE_COPY_ALLOWED; falha no meio = erro, sem metade fantasma:
+/// a remoção do origem só ocorre após cópia íntegra).
+pub fn move_file(
+    fsys: &DriveMap,
+    win_from: &str,
+    win_to: &str,
+    replace: bool,
+) -> Result<(), NtStatus> {
+    let from = fsys.translate(win_from)?;
+    let to = fsys.translate(win_to)?;
+    if !replace && std::fs::symlink_metadata(&to).is_ok() {
+        return Err(NtStatus::OBJECT_NAME_COLLISION);
+    }
+    match std::fs::rename(&from, &to) {
+        Ok(()) => Ok(()),
+        Err(e) if host_linux::is_cross_device(&e) => {
+            // Cross-device: copia recursiva (dir) ou simples (arquivo).
+            let md = std::fs::symlink_metadata(&from).map_err(|e| io_to_status(e, 3))?;
+            let copy_ok = if md.file_type().is_dir() {
+                copy_dir_recursive(&from, &to).is_ok()
+            } else {
+                std::fs::copy(&from, &to).is_ok()
+            };
+            if !copy_ok {
+                let _ = if md.file_type().is_dir() {
+                    std::fs::remove_dir_all(&to)
+                } else {
+                    std::fs::remove_file(&to)
+                };
+                return Err(NtStatus::UNSUCCESSFUL);
+            }
+            if md.file_type().is_dir() {
+                std::fs::remove_dir_all(&from).map_err(|_| NtStatus::UNSUCCESSFUL)?;
+            } else {
+                std::fs::remove_file(&from).map_err(|_| NtStatus::UNSUCCESSFUL)?;
+            }
+            Ok(())
+        }
+        Err(e) => Err(io_to_status(e, 3)),
+    }
+}
+
+/// Cópia recursiva para o fallback cross-device (sem `cp -r` externo).
+fn copy_dir_recursive(from: &std::path::Path, to: &std::path::Path) -> std::io::Result<()> {
+    std::fs::create_dir_all(to)?;
+    for entry in std::fs::read_dir(from)? {
+        let entry = entry?;
+        let (src, dst) = (entry.path(), to.join(entry.file_name()));
+        if entry.file_type()?.is_dir() {
+            copy_dir_recursive(&src, &dst)?;
+        } else {
+            std::fs::copy(&src, &dst)?;
+        }
+    }
+    Ok(())
+}
+
+/// Cria um diretório (`CreateDirectoryW`): sem recursão (como no Windows —
+/// pais ausentes = erro) e existente = `OBJECT_NAME_COLLISION`.
+pub fn create_directory(fsys: &DriveMap, win_path: &str) -> Result<(), NtStatus> {
+    let path = fsys.translate(win_path)?;
+    std::fs::create_dir(&path).map_err(|e| io_to_status(e, 3))
+}
+
+/// Remove um diretório vazio (`RemoveDirectoryW`; não-vazio = erro).
+pub fn remove_directory(fsys: &DriveMap, win_path: &str) -> Result<(), NtStatus> {
+    let path = fsys.translate(win_path)?;
+    std::fs::remove_dir(&path).map_err(|e| io_to_status(e, 3))
+}
+
 /// Fecha handle; se o objeto for `File` com fd possuído, fecha o fd.
 /// fds 1/2 do console (`owns_fd=false`) nunca são fechados (são do host).
 pub fn close_handle(table: &HandleTable, handle: WindowsHandle) -> Result<(), NtStatus> {
@@ -367,6 +509,105 @@ mod tests {
         let h = create_file(&table, &fsys, "T:\\t.txt", &opts).unwrap();
         close_handle(&table, h).unwrap();
         assert_eq!(std::fs::read(dir.join("t.txt")).unwrap(), b"");
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
+
+    /// Seek + size (`SetFilePointerEx`/`GetFileSizeEx`): BEGIN/CURRENT/END,
+    /// tamanho sem mover o cursor, método inválido recusado.
+    #[test]
+    fn seek_and_size_roundtrip() {
+        let dir = std::env::temp_dir().join(format!("rine-ntfile-sk-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join("s.bin"), b"0123456789").unwrap();
+        let mut d = HashMap::new();
+        d.insert('T', dir.to_string_lossy().into_owned());
+        let fsys = DriveMap::new(d, None);
+        let table = HandleTable::new();
+        let opts = CreateOptions::from_win32(0xC000_0000, 3).unwrap();
+        let h = create_file(&table, &fsys, "T:\\s.bin", &opts).unwrap();
+        assert_eq!(file_size(&table, h).unwrap(), 10);
+        assert_eq!(set_file_pointer(&table, h, 4, 0).unwrap(), 4); // BEGIN
+        let mut buf = [0u8; 2];
+        assert_eq!(read_file(&table, h, &mut buf).unwrap(), 2);
+        assert_eq!(&buf, b"45");
+        assert_eq!(set_file_pointer(&table, h, -2, 1).unwrap(), 4); // CURRENT
+        assert_eq!(set_file_pointer(&table, h, 0, 2).unwrap(), 10); // END
+        assert_eq!(file_size(&table, h).unwrap(), 10); // cursor intacto
+        assert_eq!(
+            set_file_pointer(&table, h, 0, 9),
+            Err(NtStatus::INVALID_PARAMETER)
+        );
+        assert_eq!(
+            set_file_pointer(&table, WindowsHandle(9999), 0, 0),
+            Err(NtStatus::INVALID_HANDLE)
+        );
+        close_handle(&table, h).unwrap();
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
+
+    /// Atributos (`GetFileAttributesW`): dir→DIRECTORY, arquivo→NORMAL,
+    /// ausente→NOT_FOUND (sem ARCHIVE inventado).
+    #[test]
+    fn attributes_directory_file_missing() {
+        let dir = std::env::temp_dir().join(format!("rine-ntfile-at-{}", std::process::id()));
+        std::fs::create_dir_all(dir.join("sub")).unwrap();
+        std::fs::write(dir.join("a.txt"), b"x").unwrap();
+        let mut d = HashMap::new();
+        d.insert('T', dir.to_string_lossy().into_owned());
+        let fsys = DriveMap::new(d, None);
+        assert_eq!(
+            file_attributes(&fsys, "T:\\sub").unwrap(),
+            winabi::file_attr::DIRECTORY
+        );
+        let a = file_attributes(&fsys, "T:\\a.txt").unwrap();
+        assert_ne!(a & winabi::file_attr::NORMAL, 0);
+        assert_eq!(
+            file_attributes(&fsys, "T:\\nope.txt"),
+            Err(NtStatus::OBJECT_NAME_NOT_FOUND)
+        );
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
+
+    /// Mutação (`DeleteFileW`/`MoveFileExW`/`CreateDirectoryW`/
+    /// `RemoveDirectoryW`): ciclo completo + recusas honestas.
+    #[test]
+    fn mutate_filesystem_roundtrip() {
+        let dir = std::env::temp_dir().join(format!("rine-ntfile-mu-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let mut d = HashMap::new();
+        d.insert('T', dir.to_string_lossy().into_owned());
+        let fsys = DriveMap::new(d, None);
+        // mkdir → dup recusa → move → del → rmdir → rmdir recusa.
+        create_directory(&fsys, "T:\\sub").unwrap();
+        assert_eq!(
+            create_directory(&fsys, "T:\\sub"),
+            Err(NtStatus::OBJECT_NAME_COLLISION)
+        );
+        std::fs::write(dir.join("sub/f1.txt"), b"ab").unwrap();
+        move_file(&fsys, "T:\\sub\\f1.txt", "T:\\sub\\f2.txt", true).unwrap();
+        assert!(!dir.join("sub/f1.txt").exists());
+        assert!(dir.join("sub/f2.txt").exists());
+        // Sem REPLACE e com destino existente: recusa (Windows não substitui).
+        std::fs::write(dir.join("sub/f1.txt"), b"ab").unwrap();
+        assert_eq!(
+            move_file(&fsys, "T:\\sub\\f1.txt", "T:\\sub\\f2.txt", false),
+            Err(NtStatus::OBJECT_NAME_COLLISION)
+        );
+        delete_file(&fsys, "T:\\sub\\f1.txt").unwrap();
+        delete_file(&fsys, "T:\\sub\\f2.txt").unwrap();
+        assert_eq!(
+            delete_file(&fsys, "T:\\sub\\f2.txt"),
+            Err(NtStatus::OBJECT_NAME_NOT_FOUND)
+        );
+        // Não-vazio recusa; vazio remove; dup recusa.
+        std::fs::write(dir.join("sub/f3.txt"), b"x").unwrap();
+        assert!(remove_directory(&fsys, "T:\\sub").is_err());
+        delete_file(&fsys, "T:\\sub\\f3.txt").unwrap();
+        remove_directory(&fsys, "T:\\sub").unwrap();
+        assert_eq!(
+            remove_directory(&fsys, "T:\\sub"),
+            Err(NtStatus::OBJECT_NAME_NOT_FOUND)
+        );
         std::fs::remove_dir_all(&dir).unwrap();
     }
 

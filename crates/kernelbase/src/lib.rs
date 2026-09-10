@@ -43,7 +43,7 @@ pub fn read_file(handle: WindowsHandle, buf: &mut [u8]) -> Result<u32, Win32Erro
     ntdll::nt_read_file(handle, buf).map_err(nt_to_win32)
 }
 
-/// `CreateFileA`: ANSI bytes → `NtCreateFile`. Retorna handle ou erro.
+/// `CreateFileA`: ANSI bytes → núcleo comum. Retorna handle ou erro.
 pub fn create_file_a(
     path_ansi: &[u8],
     access: u32,
@@ -57,8 +57,92 @@ pub fn create_file_a(
         .position(|&c| c == 0)
         .unwrap_or(path_ansi.len());
     let path = std::str::from_utf8(&path_ansi[..nul]).map_err(|_| Win32Error::INVALID_PARAMETER)?;
+    create_file_str(path, access, disposition)
+}
+
+/// `CreateFileW`: UTF-16 → núcleo comum. Surrogate solitário/inválido =
+/// `INVALID_PARAMETER` (o `nt-file` opera sobre `str`; UTF-16 não-canônico
+/// do Windows real é futuro documentado, nunca `lossy` silencioso).
+pub fn create_file_w(
+    path_wide: &[u16],
+    access: u32,
+    disposition: u32,
+) -> Result<WindowsHandle, Win32Error> {
+    let path = wide_to_string(cut_nul_w(path_wide)?)?;
+    create_file_str(&path, access, disposition)
+}
+/// Núcleo comum A/W (opções + `NtCreateFile`; a diferença é só o encoding).
+fn create_file_str(path: &str, access: u32, disposition: u32) -> Result<WindowsHandle, Win32Error> {
     let opts = nt_file::CreateOptions::from_win32(access, disposition).map_err(nt_to_win32)?;
     ntdll::nt_create_file(path, &opts).map_err(nt_to_win32)
+}
+
+/// `GetFileAttributesW(path) -> attrs` (`INVALID_FILE_ATTRIBUTES` na façade).
+pub fn get_file_attributes_w(path_wide: &[u16]) -> Result<u32, Win32Error> {
+    let path = wide_to_string(cut_nul_w(path_wide)?)?;
+    ntdll::nt_file_attributes(&path).map_err(nt_to_win32)
+}
+/// `SetFilePointerEx(h, dist, method) -> nova posição`.
+pub fn set_file_pointer_ex(
+    handle: WindowsHandle,
+    distance: i64,
+    method: u32,
+) -> Result<u64, Win32Error> {
+    ntdll::nt_set_file_pointer(handle, distance, method).map_err(nt_to_win32)
+}
+
+/// `GetFileSizeEx(h) -> tamanho`.
+pub fn get_file_size_ex(handle: WindowsHandle) -> Result<u64, Win32Error> {
+    ntdll::nt_file_size(handle).map_err(nt_to_win32)
+}
+
+/// Converte UTF-16 do guest em `String` (NUL-terminado já cortado pelo
+/// caller via `wide_slice`; aqui só a validação estrita).
+fn wide_to_string(units: &[u16]) -> Result<String, Win32Error> {
+    String::from_utf16(units).map_err(|_| Win32Error::INVALID_PARAMETER)
+}
+
+/// `DeleteFileW(path)`.
+pub fn delete_file_w(path_wide: &[u16]) -> Result<(), Win32Error> {
+    let path = wide_to_string(cut_nul_w(path_wide)?)?;
+    let ctx = ntdll::require_context();
+    nt_file::delete_file(&ctx.fsys, &path).map_err(nt_to_win32)
+}
+
+/// `MoveFileExW(from, to, flags)`: só `MOVEFILE_REPLACE_EXISTING`(1)
+/// altera comportamento; demais flags documentadas como ignoradas v0.3
+/// (WRITE_THROUGH sem efeito observável em rename local).
+pub fn move_file_ex_w(from_wide: &[u16], to_wide: &[u16], flags: u32) -> Result<(), Win32Error> {
+    let from = wide_to_string(cut_nul_w(from_wide)?)?;
+    let to = wide_to_string(cut_nul_w(to_wide)?)?;
+    let ctx = ntdll::require_context();
+    nt_file::move_file(&ctx.fsys, &from, &to, flags & 1 != 0).map_err(nt_to_win32)
+}
+
+/// `CreateDirectoryW(path)`.
+pub fn create_directory_w(path_wide: &[u16]) -> Result<(), Win32Error> {
+    let path = wide_to_string(cut_nul_w(path_wide)?)?;
+    let ctx = ntdll::require_context();
+    nt_file::create_directory(&ctx.fsys, &path).map_err(nt_to_win32)
+}
+
+/// `RemoveDirectoryW(path)`.
+pub fn remove_directory_w(path_wide: &[u16]) -> Result<(), Win32Error> {
+    let path = wide_to_string(cut_nul_w(path_wide)?)?;
+    let ctx = ntdll::require_context();
+    nt_file::remove_directory(&ctx.fsys, &path).map_err(nt_to_win32)
+}
+
+/// Corta no primeiro NUL (limite 32768 já garantido por `wide_slice`).
+fn cut_nul_w(path_wide: &[u16]) -> Result<&[u16], Win32Error> {
+    if path_wide.len() > 32768 {
+        return Err(Win32Error::INVALID_PARAMETER);
+    }
+    let nul = path_wide
+        .iter()
+        .position(|&c| c == 0)
+        .unwrap_or(path_wide.len());
+    Ok(&path_wide[..nul])
 }
 
 /// `CloseHandle(h) -> TRUE/FALSE` (LastError é da façade).
@@ -92,6 +176,47 @@ pub fn virtual_protect(base: u64, protect: PageProtect) -> Result<PageProtect, W
     ntdll::nt_protect_virtual_memory(base as usize, protect).map_err(nt_to_win32)
 }
 
+/// `VirtualQuery(addr) -> MEMORY_BASIC_INFORMATION`.
+///
+/// Mapeamento de cada campo (travado por testes em `nt-memory` + E2E):
+/// - `BaseAddress`/`RegionSize`: região que contém `addr` (0 = não mapeado);
+/// - `AllocationBase`: base da reserva (= `BaseAddress`; sem subdivisão);
+/// - `AllocationProtect`: proteção da reserva inicial;
+/// - `State`: `MEM_COMMIT`/`MEM_RESERVE` (`MEM_FREE` nunca sai daqui —
+///   não-mapeado retorna `Err`, e o guest vê 0);
+/// - `Protect`: atual (`PAGE_NOACCESS` se só reservada — igual ao host);
+/// - `Type`: `MEM_PRIVATE` (VirtualAlloc) / `MEM_IMAGE` (PE rastreada).
+pub fn virtual_query(addr: u64) -> Result<winabi::MemoryBasicInformation, Win32Error> {
+    use nt_memory::{RegionKind, RegionState};
+    let info = ntdll::nt_query_virtual_memory(addr as usize).map_err(nt_to_win32)?;
+    let state = match info.state {
+        RegionState::Committed => winabi::mem_state::COMMIT,
+        RegionState::Reserved => winabi::mem_state::RESERVE,
+    };
+    let protect = if info.state == RegionState::Committed {
+        info.protect.bits()
+    } else {
+        // Reservada = PROT_NONE no host: NOACCESS observável.
+        winabi::PageProtect::NOACCESS.bits()
+    };
+    let mem_type = match info.kind {
+        RegionKind::Private => winabi::mem_type::PRIVATE,
+        RegionKind::Image => winabi::mem_type::IMAGE,
+    };
+    Ok(winabi::MemoryBasicInformation {
+        base_address: info.base as u64,
+        allocation_base: info.base as u64,
+        allocation_protect: info.alloc_protect.bits(),
+        partition_id: 0,
+        _pad0: 0,
+        region_size: info.len as u64,
+        state,
+        protect,
+        mem_type,
+        _pad1: 0,
+    })
+}
+
 /// `SetUnhandledExceptionFilter(filtro) -> filtro anterior` (0 = nenhum).
 /// Troca atômica, sem falha possível: qualquer `u64` é aceito porque o valor
 /// é opaco até o dispatch SEH (v0.3+) — validá-lo agora seria adivinhação.
@@ -105,37 +230,6 @@ pub fn set_unhandled_exception_filter(filter: u64) -> u64 {
 pub fn exit_process(code: u32) -> ! {
     // Delega ao NT (ponto único de saída).
     ntdll::rtl_exit_user_process(code)
-}
-
-/// `InitializeCriticalSection(cs)`: estado livre canônico.
-/// `cs` já validado (não-nulo) na façade.
-pub fn initialize_critical_section(cs: &mut winabi::CriticalSection) {
-    nt_sync::initialize_cs(cs);
-}
-
-/// `DeleteCriticalSection(cs)`: libera recursos internos (nenhum em v0.2).
-pub fn delete_critical_section(cs: &mut winabi::CriticalSection) {
-    nt_sync::delete_cs(cs);
-}
-
-/// `EnterCriticalSection(cs)`: adquire para a thread corrente.
-/// Contenção real é impossível single-threaded; se um dia ocorrer, o `Err`
-/// interno vira futex/wait (v0.3+) — hoje seria bug interno, então registra.
-pub fn enter_critical_section(cs: &mut winabi::CriticalSection) {
-    let st = nt_sync::enter_cs(cs, nt_thread::current_tid());
-    debug_assert!(
-        st.is_success(),
-        "contenção impossível single-threaded: {st}"
-    );
-}
-
-/// `LeaveCriticalSection(cs)`: libera uma aquisição. Dono errado = bug do
-/// caller (indefinido no Windows); aqui: ignora após registrar, em vez de
-/// corromper estado silenciosamente. SEH futuro pode elevar a exceção.
-pub fn leave_critical_section(cs: &mut winabi::CriticalSection) {
-    if nt_sync::leave_cs(cs, nt_thread::current_tid()).is_error() {
-        tracing::warn!("LeaveCriticalSection sem posse (bug do guest)");
-    }
 }
 
 /// `TlsAlloc() -> índice`: aloca um slot TLS do processo.
@@ -251,6 +345,7 @@ mod tests {
             teb_ptr,
             mem: nt_memory::MemoryManager::new(),
             fsys: nt_file::DriveMap::new(std::collections::HashMap::new(), None),
+            image_base: 0, // testes sem load: GetModuleHandle(NULL) não se aplica
             tls_bitmap: nt_thread::TlsBitmap::new(),
             unhandled_filter: std::sync::atomic::AtomicU64::new(0),
         }));

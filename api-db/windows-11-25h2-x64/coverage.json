@@ -1,8 +1,8 @@
 {
   "provenance": "rine-api-scan coverage (ver api-db/README.md)",
   "totals": {
-    "Missing": 4186,
-    "BehaviorTested": 23
+    "Missing": 4167,
+    "BehaviorTested": 42
   },
   "apis": [
     {
@@ -1706,8 +1706,8 @@
       "name": "CreateDirectoryW",
       "ordinal": 213,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -1850,8 +1850,8 @@
       "name": "CreateFileW",
       "ordinal": 231,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -2490,8 +2490,8 @@
       "name": "DeleteFileW",
       "ordinal": 311,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -3754,8 +3754,8 @@
       "name": "FreeLibrary",
       "ordinal": 469,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -5002,8 +5002,8 @@
       "name": "GetFileAttributesW",
       "ordinal": 625,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -5066,8 +5066,8 @@
       "name": "GetFileSizeEx",
       "ordinal": 633,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -5402,8 +5402,8 @@
       "name": "GetModuleHandleA",
       "ordinal": 675,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -5426,8 +5426,8 @@
       "name": "GetModuleHandleW",
       "ordinal": 678,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -5874,8 +5874,8 @@
       "name": "GetProcAddress",
       "ordinal": 734,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -8106,8 +8106,8 @@
       "name": "LoadLibraryA",
       "ordinal": 1013,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -8130,8 +8130,8 @@
       "name": "LoadLibraryW",
       "ordinal": 1016,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -8426,8 +8426,8 @@
       "name": "MoveFileExW",
       "ordinal": 1053,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -10146,8 +10146,8 @@
       "name": "RemoveDirectoryW",
       "ordinal": 1268,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -11090,8 +11090,8 @@
       "name": "SetFilePointerEx",
       "ordinal": 1386,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -12522,8 +12522,8 @@
       "name": "VirtualQuery",
       "ordinal": 1565,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -20802,8 +20802,8 @@
       "name": "RtlDeleteCriticalSection",
       "ordinal": 915,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs (via kernel32 forwarders)"
     },
     {
       "dll": "ntdll.dll",
@@ -21298,8 +21298,8 @@
       "name": "RtlEnterCriticalSection",
       "ordinal": 977,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs (via kernel32 forwarders)"
     },
     {
       "dll": "ntdll.dll",
@@ -23002,8 +23002,8 @@
       "name": "RtlInitializeCriticalSection",
       "ordinal": 1190,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs (via kernel32 forwarders)"
     },
     {
       "dll": "ntdll.dll",
@@ -23738,8 +23738,8 @@
       "name": "RtlLeaveCriticalSection",
       "ordinal": 1282,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs (via kernel32 forwarders)"
     },
     {
       "dll": "ntdll.dll",

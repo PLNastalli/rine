@@ -11,3 +11,7 @@ winabi.workspace = true
 kernelbase.workspace = true
 ntdll.workspace = true
 nt-thread.workspace = true
+
+# Só para o teste de conformidade ApiSet (lê o fixture JSON versionado).
+[dev-dependencies]
+serde_json.workspace = true

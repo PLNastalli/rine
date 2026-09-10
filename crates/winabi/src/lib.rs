@@ -75,6 +75,10 @@ impl Win32Error {
     pub const ACCESS_DENIED: Self = Self(5);
     pub const NOT_SUPPORTED: Self = Self(50);
     pub const FILE_NOT_FOUND: Self = Self(2);
+    /// `ERROR_MOD_NOT_FOUND` (126): módulo desconhecido em `GetProcAddress`.
+    pub const MOD_NOT_FOUND: Self = Self(126);
+    /// `ERROR_PROC_NOT_FOUND` (127): símbolo/ordinal ausente em `GetProcAddress`.
+    pub const PROC_NOT_FOUND: Self = Self(127);
 }
 
 /// Mapeamento mínimo NTSTATUS -> Win32 para v0.1.
@@ -230,6 +234,56 @@ pub mod reloc {
     pub const REL32: u16 = 4;
 }
 
+/// Estado de região (`MEM_*` para `State` de `MEMORY_BASIC_INFORMATION`).
+pub mod mem_state {
+    pub const COMMIT: u32 = 0x1000;
+    pub const RESERVE: u32 = 0x2000;
+    pub const FREE: u32 = 0x10000;
+}
+
+/// Tipo de região (`MEM_*` para `Type` de `MEMORY_BASIC_INFORMATION`).
+pub mod mem_type {
+    pub const PRIVATE: u32 = 0x20000;
+    pub const MAPPED: u32 = 0x40000;
+    pub const IMAGE: u32 = 0x1000000;
+}
+
+/// Origem do seek (`SetFilePointerEx`: FILE_BEGIN/CURRENT/END).
+pub mod file_seek {
+    pub const BEGIN: u32 = 0;
+    pub const CURRENT: u32 = 1;
+    pub const END: u32 = 2;
+}
+
+/// Atributos (`GetFileAttributesW`; subconjunto v0.3: tipo + readonly).
+pub mod file_attr {
+    pub const READONLY: u32 = 0x1;
+    pub const DIRECTORY: u32 = 0x10;
+    pub const NORMAL: u32 = 0x80;
+}
+
+/// Retorno de `GetFileAttributesW` em falha (nunca um atributo real).
+pub const INVALID_FILE_ATTRIBUTES: u32 = 0xFFFF_FFFF;
+
+/// `MEMORY_BASIC_INFORMATION` x86_64 (48 bytes, layout exato `winnt.h`).
+///
+/// Campos observáveis pelo guest; offsets travados em `winabi/tests/abi.rs`.
+/// `PartitionId` existe nos SDKs modernos (0 aqui; sem partições NUMA em v0.3).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct MemoryBasicInformation {
+    pub base_address: u64,
+    pub allocation_base: u64,
+    pub allocation_protect: u32,
+    pub partition_id: u16,
+    pub _pad0: u16,
+    pub region_size: u64,
+    pub state: u32,
+    pub protect: u32,
+    pub mem_type: u32,
+    pub _pad1: u32,
+}
+
 /// Convenção de chamada Windows x64 (para referência e asserts):
 ///
 /// ```text
@@ -291,6 +345,20 @@ pub const TLS_OUT_OF_INDEXES: u32 = 0xFFFF_FFFF;
 
 /// `Sleep(INFINITE)`: dorme sem limite (nunca acorda sozinho).
 pub const INFINITE: u32 = 0xFFFF_FFFF;
+
+/// Pseudo-`HMODULE`s das DLLs implementadas pelo próprio runtime.
+///
+/// No Windows real, `HMODULE` é o endereço-base onde a DLL foi mapeada.
+/// As façades do Rine vivem no binário host (sem imagem guest), então o
+/// runtime entrega estes tokens opacos em `GetModuleHandle` e os aceita
+/// de volta em `GetProcAddress`/`FreeLibrary`. Valores fora de qualquer
+/// região mapeável (`0x6B32`/`0x6E74` = "k2"/"nt"); NUNCA dereferenciáveis
+/// pelo guest (`VirtualQuery` sobre eles retorna 0 — desvio documentado
+/// em `docs/compatibility.md`). `LoadLibrary` real (v0.4) aposentará os
+/// tokens em favor de bases mapeadas de verdade.
+pub const KERNEL32_PSEUDO_BASE: u64 = 0x0000_0000_6B32_0000;
+/// Ver `KERNEL32_PSEUDO_BASE`.
+pub const NTDLL_PSEUDO_BASE: u64 = 0x0000_0000_6E74_0000;
 
 /// PEB mínimo observável.
 #[derive(Debug, Clone, Copy)]
