@@ -36,6 +36,11 @@ pub struct ProcessContext {
     pub teb_ptr: u64,
     /// Bitmap de índices TLS do processo (valores ficam no TEB de cada thread).
     pub tls_bitmap: nt_thread::TlsBitmap,
+    /// Filtro de exceção não-tratada do processo (`SetUnhandledExceptionFilter`).
+    /// Ponteiro opaco do guest (nunca dereferenciado sem SEH/dispatch, v0.3+);
+    /// `AtomicU64` porque é um único valor trocado por swap (sem lock).
+    /// 0 = nenhum (estado inicial do Windows).
+    pub unhandled_filter: std::sync::atomic::AtomicU64,
     /// Gerente de memória virtual do processo (`VirtualAlloc` e v0.2+).
     pub mem: nt_memory::MemoryManager,
     /// Filesystem resolvido da Capsule (tradução de paths).

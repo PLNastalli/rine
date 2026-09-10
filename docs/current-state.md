@@ -12,9 +12,9 @@ pronta e caçando bugs de verdade. Próximo: v0.3 = `hello_mingw.exe` CRT
 ## O que funciona
 
 - E2E (filho isolado): hello/file/alloc/args/suite/evil + matrix RINE_PASS.
-- `rine --capsule`, `--version`, relatório `RINE-DEMAND` (38 faltantes do MinGW).
+- `rine --capsule`, `--version`, relatório `RINE-DEMAND` (37 faltantes do MinGW).
 - Infra: `rine-api-scan` (5578 DLLs/183k exports em 3s), `api-db/`
-  (KERNEL32/NTDLL + coverage 22/4209 BehaviorTested), oracle schema 1
+  (KERNEL32/NTDLL + coverage 23/4209 BehaviorTested), oracle schema 1
   (runner Rine + probe C compilável), ABI suite, fuzz determinístico,
   `RINE-CRASH`, `RUST_LOG` observável, benches + baseline, security-model.
 - `hello.exe` âncora bit-idêntico (`c9ba94…`).
@@ -35,16 +35,17 @@ pronta e caçando bugs de verdade. Próximo: v0.3 = `hello_mingw.exe` CRT
 
 ## Última tarefa concluída
 
-v0.3 (parte 2): critical sections (`Initialize/Delete/Enter/Leave`, posse +
-recursão verificadas no guest, saídas 69–73 — ADR-0013); suite/evil verdes;
-cobertura 22/4209; demanda MinGW 42→38. Antes: perf gate (ADR-0012); v0.3
-parte 1 (TLS + GetLastError + Sleep, demanda 45→42).
+v0.3 (parte 3): `SetUnhandledExceptionFilter` mínimo (troca atômica no
+contexto, roundtrip 0→ptr→0 no guest, saídas 74–75 — sem ADR próprio:
+decisão pequena documentada no código); suite/evil verdes; cobertura
+23/4209; demanda MinGW 38→37. Antes: v0.3 parte 2 (critical sections,
+demanda 42→38); perf gate (ADR-0012); v0.3 parte 1 (TLS + GetLastError +
+Sleep, demanda 45→42).
 
 ## Próxima tarefa recomendada
 
-v0.3 (continuação): `SetUnhandledExceptionFilter` mínimo, `VirtualQuery`,
-loader de DLLs (`LoadLibraryA/GetProcAddress`), api-sets.
-Nessa ordem (cada um com teste).
+v0.3 (continuação): `VirtualQuery`, loader de DLLs
+(`LoadLibraryA/GetProcAddress`), api-sets. Nessa ordem (cada um com teste).
 
 ## Blockers
 
@@ -54,7 +55,7 @@ GitHub (`PLNastalli/rine`, árvore limpa); identidade de commit placeholder
 
 ## APIs faltantes prioritárias
 
-As 6 KERNEL32 do MinGW ainda em aberto (`tests/windows/hello_mingw.imports.json`).
+As 5 KERNEL32 do MinGW ainda em aberto (`tests/windows/hello_mingw.imports.json`).
 Cobertura completa em `api-db/coverage.json`.
 
 ## Testes falhando / provisório / stubs / dívida

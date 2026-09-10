@@ -20,6 +20,7 @@ existência de símbolos.
 | kernel32 | `Sleep` | ✅ (0 cede; ms dorme; INFINITE fiel — sem teste) | v03 (retorno) |
 | kernel32 | `Initialize/DeleteCriticalSection` | ✅ (estado canônico; delete zera p/ visibilidade) | v03 (suite 69) |
 | kernel32 | `Enter/LeaveCriticalSection` | ✅ (posse + recursão; contenção → `Err` p/ futex futuro) | v03 (suite 70–73) |
+| kernel32 | `SetUnhandledExceptionFilter` | ✅ (troca atômica, retorna anterior; opaco até SEH) | v03 (suite 74–75) |
 | kernel32 | `ExitProcess` | ✅ (nunca retorna; exit code preservado) | hello (exit 0) |
 
 Cobertura standing: `suite.exe` (todas acima em cadeia, exit 0) e `evil.exe`

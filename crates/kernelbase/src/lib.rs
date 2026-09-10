@@ -92,6 +92,15 @@ pub fn virtual_protect(base: u64, protect: PageProtect) -> Result<PageProtect, W
     ntdll::nt_protect_virtual_memory(base as usize, protect).map_err(nt_to_win32)
 }
 
+/// `SetUnhandledExceptionFilter(filtro) -> filtro anterior` (0 = nenhum).
+/// Troca atômica, sem falha possível: qualquer `u64` é aceito porque o valor
+/// é opaco até o dispatch SEH (v0.3+) — validá-lo agora seria adivinhação.
+pub fn set_unhandled_exception_filter(filter: u64) -> u64 {
+    let ctx = ntdll::require_context();
+    ctx.unhandled_filter
+        .swap(filter, std::sync::atomic::Ordering::SeqCst)
+}
+
 /// `ExitProcess(code)`: nunca retorna.
 pub fn exit_process(code: u32) -> ! {
     // Delega ao NT (ponto único de saída).
@@ -243,6 +252,7 @@ mod tests {
             mem: nt_memory::MemoryManager::new(),
             fsys: nt_file::DriveMap::new(std::collections::HashMap::new(), None),
             tls_bitmap: nt_thread::TlsBitmap::new(),
+            unhandled_filter: std::sync::atomic::AtomicU64::new(0),
         }));
     }
 
@@ -266,5 +276,16 @@ mod tests {
     fn sleep_zero_returns() {
         sleep_ms(0);
         sleep_ms(1);
+    }
+
+    #[test]
+    fn unhandled_filter_swap_roundtrip() {
+        test_context();
+        // Estado inicial: nenhum filtro (como no Windows).
+        assert_eq!(set_unhandled_exception_filter(0x1234), 0);
+        // Segunda troca devolve a anterior e instala a nova.
+        assert_eq!(set_unhandled_exception_filter(0), 0x1234);
+        // Voltou a nenhum.
+        assert_eq!(set_unhandled_exception_filter(0), 0);
     }
 }

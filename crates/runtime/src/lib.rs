@@ -235,6 +235,7 @@ impl Emulator {
             mem,
             fsys,
             tls_bitmap: nt_thread::TlsBitmap::new(),
+            unhandled_filter: std::sync::atomic::AtomicU64::new(0),
         }));
 
         Ok(Self {

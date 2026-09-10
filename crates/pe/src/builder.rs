@@ -503,6 +503,7 @@ pub fn build_suite_exe() -> Vec<u8> {
         "DeleteCriticalSection",
         "EnterCriticalSection",
         "LeaveCriticalSection",
+        "SetUnhandledExceptionFilter",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -527,7 +528,7 @@ pub fn build_suite_exe() -> Vec<u8> {
         r.iat(15),
         r.iat(16),
     );
-    let (i_cs_enter, i_cs_leave, i_exit) = (r.iat(17), r.iat(18), r.iat(19));
+    let (i_cs_enter, i_cs_leave, i_uef, i_exit) = (r.iat(17), r.iat(18), r.iat(19), r.iat(20));
     let (m_start, m_ok, m_fmsg, m_fname) = (
         r.blob("start"),
         r.blob("ok"),
@@ -690,7 +691,17 @@ pub fn build_suite_exe() -> Vec<u8> {
     emit_fail_unless_equal(&mut c, i_exit, 73);
     c.extend_from_slice(&[0x48, 0x89, 0xF1]); // mov rcx,rsi
     emit_call(&mut c, i_cs_del);
-    // --- 9. OK final ---
+    // --- 9. SetUnhandledExceptionFilter roundtrip: set(0x1234)→0, set(0)→0x1234.
+    // mov rcx,0x1234 (arg único, 64-bit por valor; zeros altos irrelevantes).
+    c.extend_from_slice(&[0x48, 0xB9, 0x34, 0x12, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
+    emit_call(&mut c, i_uef);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax (NULL anterior)
+    emit_fail_unless_equal(&mut c, i_exit, 74);
+    c.extend_from_slice(&[0x31, 0xC9]); // xor ecx,ecx
+    emit_call(&mut c, i_uef);
+    c.extend_from_slice(&[0x48, 0x3D, 0x34, 0x12, 0x00, 0x00]); // cmp rax,0x1234
+    emit_fail_unless_equal(&mut c, i_exit, 75);
+    // --- 10. OK final ---
     c.extend_from_slice(&[0xB9, 0xF5, 0xFF, 0xFF, 0xFF]);
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x89, 0xC1]); // mov rcx,rax
@@ -1126,6 +1137,7 @@ mod tests {
                     "InitializeCriticalSection",
                     "LeaveCriticalSection",
                     "ReadFile",
+                    "SetUnhandledExceptionFilter",
                     "Sleep",
                     "TlsAlloc",
                     "TlsFree",

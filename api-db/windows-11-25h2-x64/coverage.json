@@ -1,8 +1,8 @@
 {
   "provenance": "rine-api-scan coverage (ver api-db/README.md)",
   "totals": {
-    "Missing": 4187,
-    "BehaviorTested": 22
+    "Missing": 4186,
+    "BehaviorTested": 23
   },
   "apis": [
     {
@@ -11722,8 +11722,8 @@
       "name": "SetUnhandledExceptionFilter",
       "ordinal": 1465,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",

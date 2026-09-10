@@ -6,7 +6,7 @@ Façade Win32 pública: marshalling ABI → `kernelbase`. NENHUMA lógica aqui.
 - API: `GetStdHandle/WriteFile/ReadFile/CreateFileA/CloseHandle/`
   `VirtualAlloc/VirtualFree/VirtualProtect/GetCommandLineW`
   `TlsAlloc/TlsFree/TlsGetValue/TlsSetValue/GetLastError/Sleep`
-  `Initialize/Delete/Enter/LeaveCriticalSection/ExitProcess_impl`
+  `Initialize/Delete/Enter/LeaveCriticalSection/SetUnhandledExceptionFilter/ExitProcess_impl`
   (`extern "win64"`), `resolve`, `EXPORTS` (tabela autoritativa, anti-drift).
   Deps: `winabi`, `kernelbase`, `ntdll`, `nt-thread`.
   Consumers: `runtime` (resolvedor de imports).

@@ -91,6 +91,7 @@ pub fn behavior_tested() -> Vec<(String, String)> {
         k("DeleteCriticalSection"),
         k("EnterCriticalSection"),
         k("LeaveCriticalSection"),
+        k("SetUnhandledExceptionFilter"),
     ];
     v.push(("ntdll.dll".to_string(), "RtlExitUserProcess".to_string()));
     v.push(("ntdll.dll".to_string(), "NtTerminateProcess".to_string()));

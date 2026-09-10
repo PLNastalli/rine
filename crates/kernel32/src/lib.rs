@@ -326,6 +326,13 @@ pub extern "win64" fn GetCommandLineW_impl() -> *const u16 {
     ctx.cmdline_ptr as *const u16
 }
 
+/// `LPTOP_LEVEL_EXCEPTION_FILTER SetUnhandledExceptionFilter(filtro)`.
+/// Retorna o filtro anterior (NULL na primeira chamada). Sem LastError novo:
+/// a função nunca falha (qualquer ponteiro é "válido" até o dispatch).
+pub extern "win64" fn SetUnhandledExceptionFilter_impl(lp_top_level_exception_filter: u64) -> u64 {
+    kernelbase::set_unhandled_exception_filter(lp_top_level_exception_filter)
+}
+
 /// `void ExitProcess(UINT)` — nunca retorna.
 pub extern "win64" fn ExitProcess_impl(code: u32) -> ! {
     kernelbase::exit_process(code)
@@ -389,6 +396,7 @@ pub const EXPORTS: &[&str] = &[
     "DeleteCriticalSection",
     "EnterCriticalSection",
     "LeaveCriticalSection",
+    "SetUnhandledExceptionFilter",
     "ExitProcess",
 ];
 
@@ -420,6 +428,7 @@ pub fn resolve(dll: &str, name: &str) -> Option<u64> {
         "DeleteCriticalSection" => Some(DeleteCriticalSection_impl as *const () as u64),
         "EnterCriticalSection" => Some(EnterCriticalSection_impl as *const () as u64),
         "LeaveCriticalSection" => Some(LeaveCriticalSection_impl as *const () as u64),
+        "SetUnhandledExceptionFilter" => Some(SetUnhandledExceptionFilter_impl as *const () as u64),
         "ExitProcess" => Some(ExitProcess_impl as *const () as u64),
         _ => None,
     }
