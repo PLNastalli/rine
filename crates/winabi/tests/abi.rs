@@ -49,12 +49,18 @@ fn tib_teb_peb_layout() {
     assert_eq!(size_of::<Tib>(), 56);
     assert_eq!(offset_of!(Tib, exception_list), 0);
     assert_eq!(offset_of!(Tib, teb_self), 48);
-    // TEB mínimo: TIB + LastError + PEB + ImageBase.
+    // TEB mínimo: TIB + LastError + PEB + ImageBase + TLS (v0.3: slots no fim,
+    // sem deslocar nenhum offset acima — invariante travado aqui).
     assert_eq!(offset_of!(TebMinimal, tib), 0);
     assert_eq!(offset_of!(TebMinimal, last_error_value), 56);
     assert_eq!(offset_of!(TebMinimal, peb_ptr), 64);
     assert_eq!(offset_of!(TebMinimal, image_base), 72);
+    assert_eq!(offset_of!(TebMinimal, tls_slots), 80);
+    assert_eq!(size_of::<TebMinimal>(), 80 + 64 * 8);
     assert_eq!(align_of::<TebMinimal>(), 8);
+    assert_eq!(TLS_SLOTS, 64);
+    assert_eq!(TLS_OUT_OF_INDEXES, 0xFFFF_FFFF);
+    assert_eq!(INFINITE, 0xFFFF_FFFF);
     assert_eq!(offset_of!(PebMinimal, image_base), 0);
     // Convenção documentada da chamada x64.
     assert_eq!(x64call::SHADOW_SPACE, 32);

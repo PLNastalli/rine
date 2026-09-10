@@ -4,11 +4,13 @@
 launcher ──► runtime ──┬──► loader ──► nt-loader ──► pe ──► winabi
                        │       ├──────► nt-memory ──► host-linux
                        │       └──────► host-linux
-                       ├──► kernel32 ──► kernelbase ──► ntdll ──┬──► nt-file ──► host-linux
-                       │       ├──────► nt-thread              └──► nt-object ──► winabi
-                       │       └──────► ntdll
+                       ├──► kernel32 ──┬──► kernelbase ──► ntdll ──┬──► nt-file ──► host-linux
+                       │               │                          ├──► nt-thread
+                       │               │                          └──► nt-object ──► winabi
+                       │               ├──► nt-thread
+                       │               └──► ntdll
                        ├──► ntdll, nt-object, nt-memory, nt-file, nt-loader, loader
-                       ├──► host-linux, pe, winabi, toml
+                       ├──► nt-thread, host-linux, pe, winabi, toml
 
 winabi: bitflags (folha)               host-linux: libc + thiserror (folha)
 pe: winabi + tracing + thiserror        nt-*: só winabi (+toml em nt-registry)
@@ -23,3 +25,5 @@ Façades nunca são deps de `nt-*`. Deps sem consumidor são removidas
 (auditoria deletou ~40; `cargo tree` deve continuar DAG).
 `runtime` orquestra via façades + `nt-file`/`nt-loader`/`loader`/`nt-memory`
 (memória do processo é criada no load e instalada no contexto).
+TLS (v0.3): `kernelbase` → `nt-thread` (`teb_tls_slot`), `ntdll` → `nt-thread`
+(`TlsBitmap`), `runtime` → `nt-thread` (bitmap do contexto).

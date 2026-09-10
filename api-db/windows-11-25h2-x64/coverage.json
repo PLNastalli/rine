@@ -1,8 +1,8 @@
 {
   "provenance": "rine-api-scan coverage (ver api-db/README.md)",
   "totals": {
-    "Missing": 4197,
-    "BehaviorTested": 12
+    "Missing": 4191,
+    "BehaviorTested": 18
   },
   "apis": [
     {
@@ -5234,8 +5234,8 @@
       "name": "GetLastError",
       "ordinal": 654,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -11850,8 +11850,8 @@
       "name": "Sleep",
       "ordinal": 1481,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -12122,24 +12122,24 @@
       "name": "TlsAlloc",
       "ordinal": 1515,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
       "name": "TlsFree",
       "ordinal": 1516,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
       "name": "TlsGetValue",
       "ordinal": 1517,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",
@@ -12154,8 +12154,8 @@
       "name": "TlsSetValue",
       "ordinal": 1519,
       "forwarder": null,
-      "status": "Missing",
-      "evidence": ""
+      "status": "BehaviorTested",
+      "evidence": "launcher/tests/{hello,v02,suite}.rs"
     },
     {
       "dll": "kernel32.dll",

@@ -169,6 +169,9 @@ name = "kernelbase"
 version = "0.2.0-alpha.1"
 dependencies = [
  "nt-file",
+ "nt-memory",
+ "nt-object",
+ "nt-thread",
  "ntdll",
  "winabi",
 ]
@@ -322,6 +325,7 @@ dependencies = [
  "nt-file",
  "nt-memory",
  "nt-object",
+ "nt-thread",
  "tracing",
  "winabi",
 ]
@@ -506,6 +510,7 @@ dependencies = [
  "nt-loader",
  "nt-memory",
  "nt-object",
+ "nt-thread",
  "ntdll",
  "pe",
  "thiserror",

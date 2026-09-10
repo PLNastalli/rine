@@ -36,10 +36,11 @@ Explicitly out of scope: threads extras, SEH, DLL loading, GUI (v0.3+).
 ## v0.3 — Threads, sync, exceptions (+ demanda MinGW)
 
 Goal: `hello_mingw.exe` (CRT) passar a carregar — demanda travada em
-`tests/windows/hello_mingw.imports.json` (46 imports, 45 em aberto).
+`tests/windows/hello_mingw.imports.json` (46 imports, 42 em aberto).
 
-Requirements: critical sections, TLS slots (`TlsGetValue`), `Sleep`,
-`GetLastError` export, `SetUnhandledExceptionFilter` mínimo, `VirtualQuery`,
+Requirements: critical sections, ~~TLS slots (`TlsGetValue`)~~ ✅ feito,
+~~`Sleep`~~ ✅ feito, ~~`GetLastError` export~~ ✅ feito,
+`SetUnhandledExceptionFilter` mínimo, `VirtualQuery`,
 `LoadLibraryA/GetProcAddress` (loader de DLLs próprias primeiro),
 `__try/__except` mínimo, API Sets resolvidos via `apisets.json`,
 NTSTATUS↔Win32 gerada.

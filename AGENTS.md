@@ -28,7 +28,7 @@ em curso, `0.MINOR.0` ao fechar, `PATCH` só para fixes (`docs/roadmap.md`).
 - v0.2: `file/alloc/args.exe` + **`suite.exe`** (todas as APIs em cadeia,
   exit 0) + **`evil.exe`** (12 abusos contidos, exit 0) — `tests/suite.rs`,
   `tests/v02.rs`. `hello.exe` é âncora: hash `c9ba94…` verificado.
-- 10 exports kernel32 + 2 ntdll. Cobertura honesta em `docs/compatibility.md`
+- 16 exports kernel32 + 2 ntdll. Cobertura honesta em `docs/compatibility.md`
   e `api-db/coverage.json` (estados: Missing/Stub/Partial/Implemented/
   BehaviorTested/DifferentiallyVerified — nada é "implementado" sem teste).
 - Referência Windows real: `windows-reference/win11-25h2/System32`

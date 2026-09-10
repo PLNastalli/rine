@@ -259,7 +259,7 @@ pub fn assemble(
         let mut name = [0u8; 8];
         name[..6].copy_from_slice(b".rdata");
         out.extend_from_slice(&name);
-        w32(&mut out, 0x200); // VirtualSize
+        w32(&mut out, rdata.len() as u32); // VirtualSize (dado real)
         w32(&mut out, RDATA_RVA); // VirtualAddress
         w32(&mut out, rdata_raw as u32); // SizeOfRawData
         w32(&mut out, 0x200 + text_raw as u32); // PointerToRawData
@@ -286,7 +286,7 @@ pub fn assemble(
 
 /// Layout do `.rdata` gerado para um PE de teste.
 pub struct RdataLayout {
-    /// Bytes finais (0x200).
+    /// Bytes finais (tamanho real usado; `assemble` alinha o raw).
     pub bytes: Vec<u8>,
     /// blob nomeado -> RVA.
     pub blobs: std::collections::HashMap<String, u32>,
@@ -308,7 +308,9 @@ impl RdataLayout {
 /// Monta `.rdata` genérico: blobs + Hint/Names + ILT + IAT + ImportDir.
 /// `dll` ex. `"KERNEL32.dll"`; `funcs` na ordem da IAT.
 pub fn build_rdata_generic(dll: &str, funcs: &[&str], blobs: &[(&str, &[u8])]) -> RdataLayout {
-    let mut buf = vec![0u8; 0x200];
+    // 0x400 comporta ~16 imports + blobs típicos; `assemble` alinha o raw.
+    // (0x200 estourou no suite v0.3 com 16 imports — ver assert abaixo.)
+    let mut buf = vec![0u8; 0x400];
     let mut blobs_map = std::collections::HashMap::new();
     let mut off = 0usize;
     for (name, data) in blobs {
@@ -355,7 +357,8 @@ pub fn build_rdata_generic(dll: &str, funcs: &[&str], blobs: &[(&str, &[u8])]) -
     put32(&mut buf, off + 12, dll_rva);
     put32(&mut buf, off + 16, iat);
     off += 40;
-    assert!(off <= 0x200, "rdata estourou: {off:#X}");
+    assert!(off <= 0x400, "rdata estourou: {off:#X}");
+    buf.truncate(off);
     RdataLayout {
         bytes: buf,
         blobs: blobs_map,
@@ -490,6 +493,12 @@ pub fn build_suite_exe() -> Vec<u8> {
         "VirtualFree",
         "VirtualProtect",
         "GetCommandLineW",
+        "TlsAlloc",
+        "TlsFree",
+        "TlsGetValue",
+        "TlsSetValue",
+        "GetLastError",
+        "Sleep",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -504,8 +513,10 @@ pub fn build_suite_exe() -> Vec<u8> {
     );
     let (i_std, i_write, i_open, i_read, i_close) =
         (r.iat(0), r.iat(1), r.iat(2), r.iat(3), r.iat(4));
-    let (i_alloc, i_free, i_prot, i_cmd, i_exit) =
-        (r.iat(5), r.iat(6), r.iat(7), r.iat(8), r.iat(9));
+    let (i_alloc, i_free, i_prot, i_cmd, i_tls_alloc, i_tls_free) =
+        (r.iat(5), r.iat(6), r.iat(7), r.iat(8), r.iat(9), r.iat(10));
+    let (i_tls_get, i_tls_set, i_err, i_sleep, i_exit) =
+        (r.iat(11), r.iat(12), r.iat(13), r.iat(14), r.iat(15));
     let (m_start, m_ok, m_fmsg, m_fname) = (
         r.blob("start"),
         r.blob("ok"),
@@ -605,7 +616,42 @@ pub fn build_suite_exe() -> Vec<u8> {
     emit_call(&mut c, i_cmd);
     c.extend_from_slice(&[0x66, 0x83, 0x38, 0x00]); // cmp word [rax],0 (não-vazia)
     emit_fail_unless_not_equal(&mut c, i_exit, 47);
-    // --- 5. OK final ---
+    // --- 5. TLS roundtrip: alloc → set → get → free → get(falha) ---
+    emit_call(&mut c, i_tls_alloc); // eax = índice
+    c.extend_from_slice(&[0x83, 0xF8, 0xFF]); // cmp eax,-1 (TLS_OUT_OF_INDEXES?)
+    emit_fail_unless_not_equal(&mut c, i_exit, 63);
+    c.extend_from_slice(&[0x89, 0xC3]); // mov ebx,eax (guarda o índice)
+    c.extend_from_slice(&[0x89, 0xD9]); // mov ecx,ebx
+                                        // movabs rdx,0x1122334455667788 (B8+rdx=BA; B8 seria rax!)
+    c.extend_from_slice(&[0x48, 0xBA, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11]);
+    emit_call(&mut c, i_tls_set);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 64);
+    c.extend_from_slice(&[0x89, 0xD9]); // mov ecx,ebx
+    emit_call(&mut c, i_tls_get);
+    // cmp rax,r10 via r10 (imm64 não cabe em cmp direto).
+    // REX 0x4C = W+R (reg=r10 via R, r/m=rax); 0x49 seria REX.W+B (errado!).
+    c.extend_from_slice(&[0x49, 0xBA, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11]);
+    c.extend_from_slice(&[0x4C, 0x39, 0xD0]); // cmp rax,r10
+    emit_fail_unless_equal(&mut c, i_exit, 65);
+    c.extend_from_slice(&[0x89, 0xD9]); // mov ecx,ebx
+    emit_call(&mut c, i_tls_free);
+    c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
+    emit_fail_unless_not_equal(&mut c, i_exit, 66);
+    c.extend_from_slice(&[0x89, 0xD9]); // mov ecx,ebx
+    emit_call(&mut c, i_tls_get); // pós-free → NULL
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax
+    emit_fail_unless_equal(&mut c, i_exit, 67);
+    // --- 6. GetLastError: força erro (handle 999) e confere 87 ---
+    c.extend_from_slice(&[0xB9, 0xE7, 0x03, 0x00, 0x00]); // mov ecx,999
+    emit_call(&mut c, i_std); // INVALID + LastError=87 (ignora rax)
+    emit_call(&mut c, i_err);
+    c.extend_from_slice(&[0x83, 0xF8, 0x57]); // cmp eax,87 (INVALID_PARAMETER)
+    emit_fail_unless_equal(&mut c, i_exit, 68);
+    // --- 7. Sleep(5) retorna (sem assert observável; prova não-trava) ---
+    c.extend_from_slice(&[0xB9, 0x05, 0x00, 0x00, 0x00]); // mov ecx,5
+    emit_call(&mut c, i_sleep);
+    // --- 8. OK final ---
     c.extend_from_slice(&[0xB9, 0xF5, 0xFF, 0xFF, 0xFF]);
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x89, 0xC1]); // mov rcx,rax
@@ -784,9 +830,9 @@ pub fn build_args_exe() -> Vec<u8> {
     assemble(&c, &r.bytes, vsize, r.import_dir, 40, r.iats[0], iat_size)
 }
 
-/// `evil.exe`: robustez — 12 abusos que DEVEM falhar limpo.
+/// `evil.exe`: robustez — 15 abusos que DEVEM falhar limpo.
 /// Cada estágio espera recusa (FALSE/NULL/INVALID); aceitar = bug do runtime.
-/// Exit 0 = tudo contido; 51–62 = estágio que se comportou mal.
+/// Exit 0 = tudo contido; 51–65 = estágio que se comportou mal.
 /// FRONTEIRA DOCUMENTADA: ponteiros selvagens NÃO estão aqui (sem SEH até
 /// v0.3, falhariam o host — ver testing-strategy); só valores/handles/flags.
 pub fn build_evil_exe() -> Vec<u8> {
@@ -798,6 +844,9 @@ pub fn build_evil_exe() -> Vec<u8> {
         "CloseHandle",
         "VirtualAlloc",
         "VirtualFree",
+        "TlsGetValue",
+        "TlsSetValue",
+        "TlsFree",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -809,7 +858,7 @@ pub fn build_evil_exe() -> Vec<u8> {
             ("fname", b"C:\\evil_disp.txt\0"),
         ],
     );
-    let (i_std, i_write, i_open, i_read, i_close, i_alloc, i_free, i_exit) = (
+    let (i_std, i_write, i_open, i_read, i_close, i_alloc, i_free) = (
         r.iat(0),
         r.iat(1),
         r.iat(2),
@@ -817,8 +866,8 @@ pub fn build_evil_exe() -> Vec<u8> {
         r.iat(4),
         r.iat(5),
         r.iat(6),
-        r.iat(7),
     );
+    let (i_tls_get, i_tls_set, i_tls_free, i_exit) = (r.iat(7), r.iat(8), r.iat(9), r.iat(10));
     let (m_msg, m_zpath, m_fname) = (r.blob("msg"), r.blob("zpath"), r.blob("fname"));
     let mut c: Vec<u8> = Vec::new();
     emit_sub_rsp(&mut c, 0x48);
@@ -906,6 +955,20 @@ pub fn build_evil_exe() -> Vec<u8> {
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x83, 0xF8, 0xFF]); // cmp rax,-1; recusa esperada
     evil_expect_equal(&mut c, i_exit, 62);
+    // 13. TlsGetValue(0xFFFFFFFF) → NULL (63).
+    c.extend_from_slice(&[0xB9, 0xFF, 0xFF, 0xFF, 0xFF]); // mov ecx,-1
+    emit_call(&mut c, i_tls_get);
+    c.extend_from_slice(&[0x48, 0x85, 0xC0]); // test rax,rax; espera 0
+    evil_expect_jz_ok(&mut c, i_exit, 63);
+    // 14. TlsSetValue(0xFFFFFFFF, 1) → FALSE (64).
+    c.extend_from_slice(&[0xB9, 0xFF, 0xFF, 0xFF, 0xFF]); // mov ecx,-1
+    c.extend_from_slice(&[0xBA, 0x01, 0x00, 0x00, 0x00]); // mov edx,1
+    emit_call(&mut c, i_tls_set);
+    evil_expect_zero(&mut c, i_exit, 64);
+    // 15. TlsFree(0xFFFFFFFF) → FALSE (65).
+    c.extend_from_slice(&[0xB9, 0xFF, 0xFF, 0xFF, 0xFF]); // mov ecx,-1
+    emit_call(&mut c, i_tls_free);
+    evil_expect_zero(&mut c, i_exit, 65);
     // Tudo contido:
     c.extend_from_slice(&[0x31, 0xC9]);
     emit_call(&mut c, i_exit);
@@ -1017,8 +1080,14 @@ mod tests {
                     "CreateFileA",
                     "ExitProcess",
                     "GetCommandLineW",
+                    "GetLastError",
                     "GetStdHandle",
                     "ReadFile",
+                    "Sleep",
+                    "TlsAlloc",
+                    "TlsFree",
+                    "TlsGetValue",
+                    "TlsSetValue",
                     "VirtualAlloc",
                     "VirtualFree",
                     "VirtualProtect",
@@ -1033,6 +1102,9 @@ mod tests {
                     "ExitProcess",
                     "GetStdHandle",
                     "ReadFile",
+                    "TlsFree",
+                    "TlsGetValue",
+                    "TlsSetValue",
                     "VirtualAlloc",
                     "VirtualFree",
                     "WriteFile",

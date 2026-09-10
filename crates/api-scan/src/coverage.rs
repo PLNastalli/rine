@@ -81,6 +81,12 @@ pub fn behavior_tested() -> Vec<(String, String)> {
         k("VirtualFree"),
         k("VirtualProtect"),
         k("GetCommandLineW"),
+        k("TlsAlloc"),
+        k("TlsFree"),
+        k("TlsGetValue"),
+        k("TlsSetValue"),
+        k("GetLastError"),
+        k("Sleep"),
     ];
     v.push(("ntdll.dll".to_string(), "RtlExitUserProcess".to_string()));
     v.push(("ntdll.dll".to_string(), "NtTerminateProcess".to_string()));

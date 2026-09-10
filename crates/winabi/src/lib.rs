@@ -242,7 +242,20 @@ pub struct TebMinimal {
     pub _pad: u32,
     pub peb_ptr: u64,
     pub image_base: u64,
+    /// Slots TLS da thread (`TlsGetValue/SetValue`), 64 valores.
+    /// Ficam no fim para não deslocar nenhum offset documentado acima.
+    /// TEB real tem 64 slots + expansão; expansão chega com multithread (v0.3).
+    pub tls_slots: [u64; 64],
 }
+
+/// Número de slots TLS por thread (Windows: 64 + 1024 de expansão).
+pub const TLS_SLOTS: usize = 64;
+
+/// Retorno de `TlsAlloc` em falha (sem slot livre).
+pub const TLS_OUT_OF_INDEXES: u32 = 0xFFFF_FFFF;
+
+/// `Sleep(INFINITE)`: dorme sem limite (nunca acorda sozinho).
+pub const INFINITE: u32 = 0xFFFF_FFFF;
 
 /// PEB mínimo observável.
 #[derive(Debug, Clone, Copy)]

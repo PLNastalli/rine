@@ -17,12 +17,15 @@ fn fixture() -> BTreeMap<String, Vec<String>> {
 #[test]
 fn mingw_demand_is_known() {
     // Contagem travada: qualquer mudança no fixture ou no resolve() aparece aqui.
-    // 46 imports totais − VirtualProtect (implementado) = 45 em demanda.
+    // 46 imports − VirtualProtect − TlsGetValue − GetLastError − Sleep = 42 em demanda.
     let map = fixture();
     assert_eq!(map.len(), 9);
     let total: usize = map.values().map(|v| v.len()).sum();
     assert_eq!(total, 46);
     assert!(map["KERNEL32.dll"].contains(&"DeleteCriticalSection".to_string()));
     assert!(map["KERNEL32.dll"].contains(&"VirtualProtect".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"TlsGetValue".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"GetLastError".to_string()));
+    assert!(map["KERNEL32.dll"].contains(&"Sleep".to_string()));
     assert!(map.contains_key("api-ms-win-crt-heap-l1-1-0.dll"));
 }

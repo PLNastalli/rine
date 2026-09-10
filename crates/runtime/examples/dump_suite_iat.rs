@@ -13,6 +13,12 @@ fn main() {
         "VirtualFree",
         "VirtualProtect",
         "GetCommandLineW",
+        "TlsAlloc",
+        "TlsFree",
+        "TlsGetValue",
+        "TlsSetValue",
+        "GetLastError",
+        "Sleep",
         "ExitProcess",
     ];
     let expect = [
@@ -25,6 +31,12 @@ fn main() {
         kernel32::VirtualFree_impl as *const () as u64,
         kernel32::VirtualProtect_impl as *const () as u64,
         kernel32::GetCommandLineW_impl as *const () as u64,
+        kernel32::TlsAlloc_impl as *const () as u64,
+        kernel32::TlsFree_impl as *const () as u64,
+        kernel32::TlsGetValue_impl as *const () as u64,
+        kernel32::TlsSetValue_impl as *const () as u64,
+        kernel32::GetLastError_impl as *const () as u64,
+        kernel32::Sleep_impl as *const () as u64,
         kernel32::ExitProcess_impl as *const () as u64,
     ];
     let img = pe::Image::parse(&bytes).unwrap();

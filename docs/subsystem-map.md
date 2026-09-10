@@ -18,7 +18,7 @@
 | Segurança/token | `nt-security` | `Token` (stub) | — |
 | Façade NT | `ntdll` | `RtlExitUserProcess_impl`, contexto | via hello |
 | Win32 interna | `kernelbase` | `get_std_handle`, `write_file` | via hello |
-| Win32 pública | `kernel32` | 10 exports (`File/Alloc/Cmdline` novos) | hello + v02 E2E |
+| Win32 pública | `kernel32` | 16 exports (TLS + `GetLastError`/`Sleep` novos) | hello + v02/v03 E2E |
 | Orquestração/entry | `runtime` | `Emulator`, `Capsule::load_toml` | unit + hello/v02 |
 | CLI | `launcher` | bin `rine` | hello E2E |
 | Oracle estrutural | `api-scan` | `rine-api-scan scan/coverage`, `api-db/` | scan/coverage unit |

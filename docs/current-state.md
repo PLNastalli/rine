@@ -12,9 +12,9 @@ pronta e caçando bugs de verdade. Próximo: v0.3 = `hello_mingw.exe` CRT
 ## O que funciona
 
 - E2E (filho isolado): hello/file/alloc/args/suite/evil + matrix RINE_PASS.
-- `rine --capsule`, `--version`, relatório `RINE-DEMAND` (45 faltantes do MinGW).
+- `rine --capsule`, `--version`, relatório `RINE-DEMAND` (42 faltantes do MinGW).
 - Infra: `rine-api-scan` (5578 DLLs/183k exports em 3s), `api-db/`
-  (KERNEL32/NTDLL + coverage 12/4209 BehaviorTested), oracle schema 1
+  (KERNEL32/NTDLL + coverage 18/4209 BehaviorTested), oracle schema 1
   (runner Rine + probe C compilável), ABI suite, fuzz determinístico,
   `RINE-CRASH`, `RUST_LOG` observável, benches + baseline, security-model.
 - `hello.exe` âncora bit-idêntico (`c9ba94…`).
@@ -27,27 +27,23 @@ pronta e caçando bugs de verdade. Próximo: v0.3 = `hello_mingw.exe` CRT
 
 ## O que NÃO funciona (e por quê)
 
-- `hello_mingw.exe` (CRT): 45 imports sem implementação (critical sections,
-  TLS, LoadLibrary, SEH, api-sets…) = **escopo v0.3**, não bug.
+- `hello_mingw.exe` (CRT): 42 imports sem implementação (critical sections,
+  LoadLibrary, SEH, api-sets…) = **escopo v0.3**, não bug.
 - Diferencial Windows: sem host Windows (formato + probe prontos).
 - Ponteiros selvagens do guest derrubam o host (sem SEH até v0.3).
 - 32 bits/EFI: scanner pula com motivo (WoW64 futuro).
 
 ## Última tarefa concluída
 
-Plataforma de testes (`difftest` + `pe::driver` + `rine-test`): cenários com
-seed, normalização explícita, 8 vereditos, shrink, corpus (`files/memory/
-handles`), runner paralelo determinístico, fuzz, proptest, concorrência,
-matriz com `campaigns[]`, docs (differential/windows-oracle/fuzzing/
-behavioral-coverage/non-regression) + ADR-0010. Caçadas: EINVAL access==0,
-truncate perdido, trailing-slash, fuga `..` do drive (+ harness: path
-relativo). Smoke-apps + baselines + AGENTS r11.
+v0.3 (parte 1): família TLS (`TlsAlloc/Free/GetValue/SetValue` com slots no
+TEB + bitmap no contexto — ADR-0011), `GetLastError`, `Sleep`; suite/evil
+estendidos (saídas 63–68 / 63–65); cobertura 18/4209; demanda MinGW 45→42.
 
 ## Próxima tarefa recomendada
 
-v0.3 pela demanda: `TlsGetValue`+TLS slots, critical sections,
-`GetLastError` export, `Sleep`, `VirtualQuery`, loader de DLLs
-(`LoadLibraryA/GetProcAddress`), api-sets. Nessa ordem (cada um com teste).
+v0.3 (continuação): critical sections, `SetUnhandledExceptionFilter` mínimo,
+`VirtualQuery`, loader de DLLs (`LoadLibraryA/GetProcAddress`), api-sets.
+Nessa ordem (cada um com teste).
 
 ## Blockers
 
@@ -58,12 +54,12 @@ commit `9aea8fc`, árvore limpa, identidade placeholder `Rine` —
 
 ## APIs faltantes prioritárias
 
-As 13 KERNEL32 do MinGW (`tests/windows/hello_mingw.imports.json`).
+As 10 KERNEL32 do MinGW ainda em aberto (`tests/windows/hello_mingw.imports.json`).
 Cobertura completa em `api-db/coverage.json`.
 
 ## Testes falhando / provisório / stubs / dívida
 
-Zero testes falhando (59 passed). Zero stubs (proibidos). Provisório
+Zero testes falhando (110 passed). Zero stubs (proibidos). Provisório
 documentado: singleton de processo (ADR-0003), `access==0`→read-only,
 share/flags ignorados, `X:rel`/UNC→NOT_IMPLEMENTED. Dívida: `VirtualQuery`,
 `openat2` direto, advapi32, ripgrep-pendente: nenhum.

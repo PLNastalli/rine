@@ -71,6 +71,63 @@ pub extern "win64" fn WriteFile_impl(
     }
 }
 
+/// `DWORD TlsAlloc()` — índice ou `TLS_OUT_OF_INDEXES`.
+pub extern "win64" fn TlsAlloc_impl() -> u32 {
+    match kernelbase::tls_alloc() {
+        Ok(idx) => {
+            nt_thread::set_last_error(winabi::Win32Error::SUCCESS);
+            idx
+        }
+        Err(e) => {
+            nt_thread::set_last_error(e);
+            winabi::TLS_OUT_OF_INDEXES
+        }
+    }
+}
+
+/// `BOOL TlsFree(DWORD)` — 1 em sucesso, 0 + LastError caso contrário.
+pub extern "win64" fn TlsFree_impl(dw_tls_index: u32) -> i32 {
+    match kernelbase::tls_free(dw_tls_index) {
+        Ok(()) => {
+            nt_thread::set_last_error(winabi::Win32Error::SUCCESS);
+            1
+        }
+        Err(e) => {
+            nt_thread::set_last_error(e);
+            0
+        }
+    }
+}
+
+/// `LPVOID TlsGetValue(DWORD)` — valor ou NULL (inválido e 0 legítimo
+/// são indistinguíveis, como no Windows; sem LastError novo aqui).
+pub extern "win64" fn TlsGetValue_impl(dw_tls_index: u32) -> u64 {
+    kernelbase::tls_get_value(dw_tls_index)
+}
+
+/// `BOOL TlsSetValue(DWORD, LPVOID)` — 1 em sucesso, 0 + LastError caso contrário.
+pub extern "win64" fn TlsSetValue_impl(dw_tls_index: u32, lp_tls_value: u64) -> i32 {
+    match kernelbase::tls_set_value(dw_tls_index, lp_tls_value) {
+        Ok(()) => {
+            nt_thread::set_last_error(winabi::Win32Error::SUCCESS);
+            1
+        }
+        Err(e) => {
+            nt_thread::set_last_error(e);
+            0
+        }
+    }
+}
+
+/// `DWORD GetLastError()` — último erro da thread, sem efeitos colaterais.
+pub extern "win64" fn GetLastError_impl() -> u32 {
+    nt_thread::get_last_error().0
+}
+
+/// `VOID Sleep(DWORD)` — dorme `ms` (0 cede; `INFINITE` nunca volta).
+pub extern "win64" fn Sleep_impl(dw_milliseconds: u32) {
+    kernelbase::sleep_ms(dw_milliseconds);
+}
 /// Lê string ANSI NUL-terminada do guest (cap 32768; sem NUL = inválida).
 fn ansi_slice(ptr: *const u8) -> Result<&'static [u8], winabi::Win32Error> {
     use winabi::Win32Error;
@@ -287,6 +344,12 @@ pub const EXPORTS: &[&str] = &[
     "VirtualFree",
     "VirtualProtect",
     "GetCommandLineW",
+    "TlsAlloc",
+    "TlsFree",
+    "TlsGetValue",
+    "TlsSetValue",
+    "GetLastError",
+    "Sleep",
     "ExitProcess",
 ];
 
@@ -308,6 +371,12 @@ pub fn resolve(dll: &str, name: &str) -> Option<u64> {
         "VirtualFree" => Some(VirtualFree_impl as *const () as u64),
         "VirtualProtect" => Some(VirtualProtect_impl as *const () as u64),
         "GetCommandLineW" => Some(GetCommandLineW_impl as *const () as u64),
+        "TlsAlloc" => Some(TlsAlloc_impl as *const () as u64),
+        "TlsFree" => Some(TlsFree_impl as *const () as u64),
+        "TlsGetValue" => Some(TlsGetValue_impl as *const () as u64),
+        "TlsSetValue" => Some(TlsSetValue_impl as *const () as u64),
+        "GetLastError" => Some(GetLastError_impl as *const () as u64),
+        "Sleep" => Some(Sleep_impl as *const () as u64),
         "ExitProcess" => Some(ExitProcess_impl as *const () as u64),
         _ => None,
     }

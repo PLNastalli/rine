@@ -29,6 +29,13 @@ pub struct ProcessContext {
     /// Leitura somente; endereço estável (Vec nunca realocado após o load).
     /// 0 = ausente (nunca em loads via `Emulator`, que sempre preenchem).
     pub cmdline_ptr: u64,
+    /// Base do TEB da thread inicial, como endereço `u64` (mesmo padrão do
+    /// `cmdline_ptr`: o contexto global guarda dados; a reinterpretação
+    /// unsafe vive em `nt_thread::teb_tls_slot`, dona do conceito TEB).
+    /// Aponta para o `Box<TebMinimal>` do `Emulator`, vivo durante o guest.
+    pub teb_ptr: u64,
+    /// Bitmap de índices TLS do processo (valores ficam no TEB de cada thread).
+    pub tls_bitmap: nt_thread::TlsBitmap,
     /// Gerente de memória virtual do processo (`VirtualAlloc` e v0.2+).
     pub mem: nt_memory::MemoryManager,
     /// Filesystem resolvido da Capsule (tradução de paths).

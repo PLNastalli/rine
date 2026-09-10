@@ -4,7 +4,9 @@ Implementação Win32 interna (lógica real; `kernel32` só encaminha).
 
 - Não é: ABI (sem `extern`, sem ponteiros crus).
 - API: `get_std_handle`, `write/read_file`, `create_file_a`, `close_handle`,
-  `virtual_alloc/free/protect`, `exit_process`. Deps: `ntdll`, `nt-file`.
+  `virtual_alloc/free/protect`, `tls_alloc/get/set/free`, `sleep_ms`,
+  `exit_process`. Deps: `ntdll`, `nt-file`, `nt-thread` (slots TLS).
   Consumers: `kernel32`.
 - Erros: `Win32Error` (+ LastError na façade). Unsafe: nenhum.
-- Testes: hello + v02 E2E. ADRs: 0004, 0006, 0007.
+- Testes: hello + v02/v03 E2E; ciclo TLS com contexto real (unit). ADRs:
+  0004, 0006, 0007, 0011.

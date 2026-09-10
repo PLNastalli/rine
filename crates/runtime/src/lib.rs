@@ -145,14 +145,10 @@ impl Emulator {
         let cmdline_ptr = cmdline_w.as_ptr() as u64;
         params[PARAMS_CMDLINE_OFF + 8..PARAMS_CMDLINE_OFF + 16]
             .copy_from_slice(&cmdline_ptr.to_le_bytes());
-        ntdll::install_context(Arc::new(ntdll::ProcessContext {
-            table: table.clone(),
-            stdout_handle: stdout,
-            stderr_handle: stderr,
-            cmdline_ptr,
-            mem: nt_memory::MemoryManager::new(),
-            fsys: nt_file::DriveMap::new(capsule.drives.clone(), capsule.current_dir.clone()),
-        }));
+        // Contexto global só no fim (passo 7): `teb_ptr` exige o TEB criado.
+        // Até lá, `mem`/`fsys` vivem como locais (passo 5b usa direto).
+        let mem = nt_memory::MemoryManager::new();
+        let fsys = nt_file::DriveMap::new(capsule.drives.clone(), capsule.current_dir.clone());
 
         // 2. Mapeia a imagem.
         let (mapped, img) = loader::map_image(pe_bytes)?;
@@ -180,9 +176,8 @@ impl Emulator {
         // 5b. Registra a imagem no gerente de memória para que
         // `VirtualAlloc` nunca colida com ela (fonte única de regiões).
         {
-            let ctx = ntdll::require_context();
             let base = mapped.base as usize;
-            ctx.mem.track_external(
+            mem.track_external(
                 base,
                 img.size_of_headers as usize,
                 winabi::PageProtect::READONLY,
@@ -192,7 +187,7 @@ impl Emulator {
                 if len == 0 {
                     continue;
                 }
-                ctx.mem.track_external(
+                mem.track_external(
                     base + s.virtual_address as usize,
                     len,
                     nt_memory::section_protect(s.characteristics),
@@ -223,11 +218,24 @@ impl Emulator {
             _pad: 0,
             peb_ptr,
             image_base,
+            tls_slots: [0; winabi::TLS_SLOTS],
         });
         teb.tib.teb_self = &*teb as *const TebMinimal as u64;
         // `peb` deve ficar pinned: movemos para o struct (endereço estável
         // após o Box; `peb_ptr` acima já capturou o endereço do Box).
         let _ = &mut peb;
+
+        // 7. Contexto global das façades (TEB já existe: `teb_ptr` estável).
+        ntdll::install_context(Arc::new(ntdll::ProcessContext {
+            table: table.clone(),
+            stdout_handle: stdout,
+            stderr_handle: stderr,
+            cmdline_ptr,
+            teb_ptr: &*teb as *const TebMinimal as u64,
+            mem,
+            fsys,
+            tls_bitmap: nt_thread::TlsBitmap::new(),
+        }));
 
         Ok(Self {
             capsule,
