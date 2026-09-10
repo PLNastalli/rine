@@ -51,8 +51,10 @@ v0.3 pela demanda: `TlsGetValue`+TLS slots, critical sections,
 
 ## Blockers
 
-Sem host Windows (diferencial/oracle real). Sem repo git (recomendado iniciar;
-`target/` e `api-db/` volumoso já têm `.gitignore`).
+Sem host Windows (diferencial/oracle real). Git local pronto (`main`,
+commit `9aea8fc`, árvore limpa, identidade placeholder `Rine` —
+`git config user.name/email` p/ personalizar); remoto GitHub pendente
+(sem `gh`/token neste ambiente — comandos no relatório da sessão).
 
 ## APIs faltantes prioritárias
 
