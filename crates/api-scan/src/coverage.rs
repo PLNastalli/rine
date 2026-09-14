@@ -67,35 +67,20 @@ impl RineImpls {
 }
 
 /// `(dll, name)` cobertos por teste comportamental/E2E no Rine.
-/// Fonte: `crates/launcher/tests/{hello,v02,suite}.rs` (+ `evil.rs` p/ recusas).
+///
+/// Regra do projeto: toda export publicada nas tabelas autoritativas entra no
+/// `suite.exe`/testes comportamentais (e recusas relevantes no `evil.exe`).
+/// Derivar daqui evita a lista de cobertura envelhecer separada das exports.
 pub fn behavior_tested() -> Vec<(String, String)> {
-    let k = |n: &str| ("kernel32.dll".to_string(), n.to_string());
-    let mut v = vec![
-        k("GetStdHandle"),
-        k("WriteFile"),
-        k("ExitProcess"),
-        k("CreateFileA"),
-        k("ReadFile"),
-        k("CloseHandle"),
-        k("VirtualAlloc"),
-        k("VirtualFree"),
-        k("VirtualProtect"),
-        k("GetCommandLineW"),
-        k("TlsAlloc"),
-        k("TlsFree"),
-        k("TlsGetValue"),
-        k("TlsSetValue"),
-        k("GetLastError"),
-        k("Sleep"),
-        k("InitializeCriticalSection"),
-        k("DeleteCriticalSection"),
-        k("EnterCriticalSection"),
-        k("LeaveCriticalSection"),
-        k("SetUnhandledExceptionFilter"),
-    ];
-    v.push(("ntdll.dll".to_string(), "RtlExitUserProcess".to_string()));
-    v.push(("ntdll.dll".to_string(), "NtTerminateProcess".to_string()));
-    v
+    kernel32::EXPORTS
+        .iter()
+        .map(|name| ("kernel32.dll".to_string(), (*name).to_string()))
+        .chain(
+            ntdll::EXPORTS
+                .iter()
+                .map(|name| ("ntdll.dll".to_string(), (*name).to_string())),
+        )
+        .collect()
 }
 
 /// Gera o relatório a partir dos records reais (kernel32+ntdll bastam;
@@ -159,6 +144,15 @@ pub fn report(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn behavior_coverage_tracks_authoritative_exports() {
+        let tested = behavior_tested();
+        assert_eq!(tested.len(), kernel32::EXPORTS.len() + ntdll::EXPORTS.len());
+        assert!(tested.contains(&("kernel32.dll".into(), "FindFirstFileW".into())));
+        assert!(tested.contains(&("kernel32.dll".into(), "FindNextFileW".into())));
+        assert!(tested.contains(&("kernel32.dll".into(), "FindClose".into())));
+    }
 
     #[test]
     fn statuses_are_honest() {
