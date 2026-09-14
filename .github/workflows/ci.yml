@@ -4,9 +4,6 @@ on:
   push:
   pull_request:
 
-permissions:
-  contents: write
-
 jobs:
   gates:
     runs-on: ubuntu-latest
@@ -15,16 +12,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-      - name: apply targeted repair
-        if: startsWith(github.event.head_commit.message, '[integrate-find-file]')
-        run: |
-          python3 .github/integrate_find_file.py
-          cargo fmt
-          git config user.name "Rine CI"
-          git config user.email "rine-ci@users.noreply.github.com"
-          git add crates/pe/src/builder.rs crates/runtime/src/lib.rs crates/manager-core/src/preflight.rs
-          git commit -m "test: integrate find-file APIs into suite and evil"
-          git push
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
       - name: focused find-file regressions
         run: |
           cargo test -p winabi --test find_data_abi
@@ -37,6 +29,12 @@ jobs:
             libwebkit2gtk-4.1-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
+      - name: manager frontend
+        working-directory: ui
+        run: |
+          npm ci
+          npm run build
+          npm test
       - name: manager sidecar
         run: crates/manager-tauri/pack-sidecar.sh --debug
       - name: fmt
