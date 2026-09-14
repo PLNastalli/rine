@@ -15,16 +15,15 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-      - name: apply find-file implementation
-        if: startsWith(github.event.head_commit.message, '[apply-find-file]')
+      - name: apply targeted repair
+        if: startsWith(github.event.head_commit.message, '[fix-find-data]')
         run: |
-          if [ -f .github/fix_apply_find_file.py ]; then python3 .github/fix_apply_find_file.py; fi
-          python3 .github/apply_find_file.py
+          python3 .github/fix_find_data_default.py
           cargo fmt
           git config user.name "Rine CI"
           git config user.email "rine-ci@users.noreply.github.com"
-          git add crates/winabi crates/nt-object crates/nt-file crates/ntdll crates/kernelbase crates/kernel32
-          git commit -m "feat: implement Win32 directory enumeration"
+          git add crates/winabi/src/lib.rs
+          git commit -m "fix: initialize WIN32_FIND_DATAW explicitly"
           git push
       - name: focused find-file regressions
         run: |
