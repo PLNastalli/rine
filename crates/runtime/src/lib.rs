@@ -387,9 +387,9 @@ mod tests {
     fn demand_lists_only_unresolved() {
         // PE sintético: 1 import inexistente + 1 existente.
         // (`CreateFileW` já foi esse exemplo — virou implementado em v0.3;
-        // `FindFirstFileW` segue em demanda. A troca é intencional.)
+        // `FindFirstFileA` segue em demanda. A troca é intencional.)
         let r =
-            pe::builder::build_rdata_generic("KERNEL32.dll", &["FindFirstFileW", "WriteFile"], &[]);
+            pe::builder::build_rdata_generic("KERNEL32.dll", &["FindFirstFileA", "WriteFile"], &[]);
         let mut code = vec![0xC3u8];
         while code.len() < 0x200 {
             code.push(0xCC);
@@ -399,7 +399,7 @@ mod tests {
         let missing = missing_imports(&bytes).unwrap();
         assert_eq!(
             missing,
-            vec![("KERNEL32.dll".to_string(), "FindFirstFileW".to_string())]
+            vec![("KERNEL32.dll".to_string(), "FindFirstFileA".to_string())]
         );
         // WriteFile resolve → fora da lista. Suite real: lista vazia.
         let suite = pe::builder::build_suite_exe();

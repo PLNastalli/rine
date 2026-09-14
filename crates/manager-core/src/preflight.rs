@@ -88,8 +88,8 @@ mod tests {
     #[test]
     fn unknown_import_blocks_with_list() {
         // (`CreateFileW` já foi esse exemplo — virou implementado em v0.3;
-        // `FindFirstFileW` segue em demanda. A troca é intencional.)
-        let r = pe::builder::build_rdata_generic("KERNEL32.dll", &["FindFirstFileW"], &[]);
+        // `FindFirstFileA` segue em demanda. A troca é intencional.)
+        let r = pe::builder::build_rdata_generic("KERNEL32.dll", &["FindFirstFileA"], &[]);
         let mut code = vec![0xC3u8];
         while code.len() < 0x200 {
             code.push(0xCC);
@@ -100,7 +100,7 @@ mod tests {
         assert_eq!(rep.verdict, PreflightVerdict::LikelyBlocked);
         assert_eq!(
             rep.missing,
-            vec![("KERNEL32.dll".to_string(), "FindFirstFileW".to_string())]
+            vec![("KERNEL32.dll".to_string(), "FindFirstFileA".to_string())]
         );
     }
 }

@@ -481,7 +481,7 @@ pub fn suite_exe_name() -> &'static str {
 
 /// `suite.exe`: TODAS as APIs v0.x em cadeia, com verificação no guest.
 /// Console→arquivo(write/read+compare)→memória(alloc/protect/free)→cmdline.
-/// Exit 0 = tudo passou; 41–48/63–120 = estágio que falhou (ver corpo).
+/// Exit 0 = tudo passou; 41–48/63–124 = estágio que falhou (ver corpo).
 /// REGRA STANDING (testing-strategy): toda API nova entra neste EXE.
 pub fn build_suite_exe() -> Vec<u8> {
     let funcs = [
@@ -520,6 +520,9 @@ pub fn build_suite_exe() -> Vec<u8> {
         "DeleteFileW",
         "MoveFileExW",
         "RemoveDirectoryW",
+        "FindFirstFileW",
+        "FindNextFileW",
+        "FindClose",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -559,6 +562,10 @@ pub fn build_suite_exe() -> Vec<u8> {
                 b"C\x00:\x00\\\x00s\x00u\x00i\x00t\x00e\x00d\x00i\x00r\x00\\\x00f\x002\x00.\x00t\x00x\x00t\x00\x00\x00",
             ),
             (
+                "wfind",
+                b"C\x00:\x00\\\x00s\x00u\x00i\x00t\x00e\x00d\x00i\x00r\x00\\\x00*\x00.\x00t\x00x\x00t\x00\x00\x00",
+            ),
+            (
                 "nt_wide",
                 b"N\x00T\x00D\x00L\x00L\x00.\x00D\x00L\x00L\x00\x00\x00",
             ),
@@ -587,12 +594,13 @@ pub fn build_suite_exe() -> Vec<u8> {
         r.iat(19),
         r.iat(20),
         r.iat(21),
-        r.iat(35),
+        r.iat(38),
     );
     let (i_gmh_a, i_gmh_w, i_ll_a, i_ll_w, i_free_lib) =
         (r.iat(22), r.iat(23), r.iat(24), r.iat(25), r.iat(26));
     let (i_open_w, i_attr_w, i_seek, i_size) = (r.iat(27), r.iat(28), r.iat(29), r.iat(30));
     let (i_mkdir_w, i_del_w, i_move_w, i_rmdir_w) = (r.iat(31), r.iat(32), r.iat(33), r.iat(34));
+    let (i_find_first, i_find_next, i_find_close) = (r.iat(35), r.iat(36), r.iat(37));
     let (m_start, m_ok, m_fmsg, m_fname) = (
         r.blob("start"),
         r.blob("ok"),
@@ -604,8 +612,9 @@ pub fn build_suite_exe() -> Vec<u8> {
     let (m_nt_wide, m_k32_wide, m_wbad) = (r.blob("nt_wide"), r.blob("k32_wide"), r.blob("wbad"));
     let (m_wfname, m_wfname2, m_wzpath) = (r.blob("wfname"), r.blob("wfname2"), r.blob("wzpath"));
     let (m_wdir, m_wfile1, m_wfile2) = (r.blob("wdir"), r.blob("wfile1"), r.blob("wfile2"));
+    let m_wfind = r.blob("wfind");
     let mut c: Vec<u8> = Vec::new();
-    emit_sub_rsp(&mut c, 0x108); // frame: shadow + args + locais + CS[0xA8..0xD8] + MBI[0xD8..0x108]
+    emit_sub_rsp(&mut c, 0x378); // + WIN32_FIND_DATAW[0x108..0x358]; mantém alinhamento Win64
                                  // Helper local: exit(code) — 5+6 bytes.
                                  // (expandido inline abaixo via fail_to.)
                                  // --- 1. console ---
@@ -961,6 +970,25 @@ pub fn build_suite_exe() -> Vec<u8> {
     emit_call(&mut c, i_close);
     c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (TRUE esperado)
     emit_fail_unless_not_equal(&mut c, i_exit, 114);
+    // --- 16. Enumeração W: FindFirst(*.txt) → único f1 → NO_MORE_FILES → FindClose.
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfind);
+    c.extend_from_slice(&[0x48, 0x8D, 0x94, 0x24, 0x08, 0x01, 0x00, 0x00]); // lea rdx,[rsp+0x108]
+    emit_call(&mut c, i_find_first);
+    c.extend_from_slice(&[0x48, 0x89, 0xC3]); // mov rbx,rax
+    c.extend_from_slice(&[0x48, 0x83, 0xFB, 0xFF]); // cmp rbx,-1
+    emit_fail_unless_not_equal(&mut c, i_exit, 121);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    c.extend_from_slice(&[0x48, 0x8D, 0x94, 0x24, 0x08, 0x01, 0x00, 0x00]); // out buffer
+    emit_call(&mut c, i_find_next);
+    c.extend_from_slice(&[0x85, 0xC0]); // FALSE esperado: só existe f1.txt
+    emit_fail_unless_equal(&mut c, i_exit, 122);
+    emit_call(&mut c, i_err);
+    c.extend_from_slice(&[0x83, 0xF8, 0x12]); // ERROR_NO_MORE_FILES = 18
+    emit_fail_unless_equal(&mut c, i_exit, 123);
+    c.extend_from_slice(&[0x48, 0x89, 0xD9]); // mov rcx,rbx
+    emit_call(&mut c, i_find_close);
+    c.extend_from_slice(&[0x85, 0xC0]); // TRUE esperado
+    emit_fail_unless_not_equal(&mut c, i_exit, 124);
     emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wfile1); // move f1 → f2
     emit_lea_rip(&mut c, [0x48, 0x8D, 0x15], m_wfile2);
     c.extend_from_slice(&[0x41, 0xB8, 0x01, 0x00, 0x00, 0x00]); // mov r8d,1 (REPLACE)
@@ -987,7 +1015,7 @@ pub fn build_suite_exe() -> Vec<u8> {
     emit_call(&mut c, i_rmdir_w);
     c.extend_from_slice(&[0x85, 0xC0]); // test eax,eax (FALSE esperado)
     emit_fail_unless_equal(&mut c, i_exit, 120);
-    // --- 16. OK final ---
+    // --- 17. OK final ---
     c.extend_from_slice(&[0xB9, 0xF5, 0xFF, 0xFF, 0xFF]);
     emit_call(&mut c, i_std);
     c.extend_from_slice(&[0x48, 0x89, 0xC1]); // mov rcx,rax
@@ -1166,9 +1194,9 @@ pub fn build_args_exe() -> Vec<u8> {
     assemble(&c, &r.bytes, vsize, r.import_dir, 40, r.iats[0], iat_size)
 }
 
-/// `evil.exe`: robustez — 17 abusos que DEVEM falhar limpo.
+/// `evil.exe`: robustez — 33 abusos que DEVEM falhar limpo.
 /// Cada estágio espera recusa (FALSE/NULL/INVALID); aceitar = bug do runtime.
-/// Exit 0 = tudo contido; 51–67 = estágio que se comportou mal.
+/// Exit 0 = tudo contido; 51–83 = estágio que se comportou mal.
 /// FRONTEIRA DOCUMENTADA: ponteiros selvagens NÃO estão aqui (sem SEH até
 /// v0.3, falhariam o host — ver testing-strategy); só valores/handles/flags.
 pub fn build_evil_exe() -> Vec<u8> {
@@ -1196,6 +1224,9 @@ pub fn build_evil_exe() -> Vec<u8> {
         "DeleteFileW",
         "MoveFileExW",
         "RemoveDirectoryW",
+        "FindFirstFileW",
+        "FindNextFileW",
+        "FindClose",
         "ExitProcess",
     ];
     let r = build_rdata_generic(
@@ -1228,11 +1259,12 @@ pub fn build_evil_exe() -> Vec<u8> {
         r.iat(9),
         r.iat(10),
         r.iat(11),
-        r.iat(23),
+        r.iat(26),
     );
     let (i_ll_a, i_free_lib, i_gmh_a) = (r.iat(12), r.iat(13), r.iat(14));
     let (i_open_w, i_attr_w, i_seek, i_size) = (r.iat(15), r.iat(16), r.iat(17), r.iat(18));
     let (i_mkdir_w, i_del_w, i_move_w, i_rmdir_w) = (r.iat(19), r.iat(20), r.iat(21), r.iat(22));
+    let (i_find_first, i_find_next, i_find_close) = (r.iat(23), r.iat(24), r.iat(25));
     let (m_msg, m_zpath, m_fname) = (r.blob("msg"), r.blob("zpath"), r.blob("fname"));
     let m_gpa_bad = r.blob("gpa_bad");
     let m_mod_bad = r.blob("mod_bad");
@@ -1423,6 +1455,21 @@ pub fn build_evil_exe() -> Vec<u8> {
     emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wzpath);
     emit_call(&mut c, i_rmdir_w);
     evil_expect_zero(&mut c, i_exit, 80);
+    // 31. FindNextFileW(handle selvagem, buffer válido) → FALSE (81).
+    c.extend_from_slice(&[0x48, 0xB9, 0xEF, 0xBE, 0xAD, 0xDE, 0x00, 0x00, 0x00, 0x00]);
+    c.extend_from_slice(&[0x48, 0x8D, 0x54, 0x24, 0x38]);
+    emit_call(&mut c, i_find_next);
+    evil_expect_zero(&mut c, i_exit, 81);
+    // 32. FindClose(handle selvagem) → FALSE (82).
+    c.extend_from_slice(&[0x48, 0xB9, 0xEF, 0xBE, 0xAD, 0xDE, 0x00, 0x00, 0x00, 0x00]);
+    emit_call(&mut c, i_find_close);
+    evil_expect_zero(&mut c, i_exit, 82);
+    // 33. FindFirstFileW(path, NULL output) → INVALID_HANDLE_VALUE (83).
+    emit_lea_rip(&mut c, [0x48, 0x8D, 0x0D], m_wzpath);
+    c.extend_from_slice(&[0x31, 0xD2]); // xor edx,edx
+    emit_call(&mut c, i_find_first);
+    c.extend_from_slice(&[0x48, 0x83, 0xF8, 0xFF]);
+    evil_expect_equal(&mut c, i_exit, 83);
     // Tudo contido:
     c.extend_from_slice(&[0x31, 0xC9]);
     emit_call(&mut c, i_exit);
@@ -1538,6 +1585,9 @@ mod tests {
                     "DeleteFileW",
                     "EnterCriticalSection",
                     "ExitProcess",
+                    "FindClose",
+                    "FindFirstFileW",
+                    "FindNextFileW",
                     "FreeLibrary",
                     "GetCommandLineW",
                     "GetFileAttributesW",
@@ -1577,6 +1627,9 @@ mod tests {
                     "CreateFileW",
                     "DeleteFileW",
                     "ExitProcess",
+                    "FindClose",
+                    "FindFirstFileW",
+                    "FindNextFileW",
                     "FreeLibrary",
                     "GetFileAttributesW",
                     "GetFileSizeEx",
