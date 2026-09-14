@@ -12,6 +12,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+      - name: focused kernel32 regression
+        run: cargo test -p kernel32 --test find_file_exports
       - name: linux dependencies
         run: |
           sudo apt-get update
