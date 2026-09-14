@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   gates:
     runs-on: ubuntu-latest
@@ -12,6 +15,16 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+      - name: apply find-file implementation
+        if: startsWith(github.event.head_commit.message, '[apply-find-file]')
+        run: |
+          python3 .github/apply_find_file.py
+          cargo fmt
+          git config user.name "Rine CI"
+          git config user.email "rine-ci@users.noreply.github.com"
+          git add crates/winabi crates/nt-object crates/nt-file crates/ntdll crates/kernelbase crates/kernel32
+          git commit -m "feat: implement Win32 directory enumeration"
+          git push
       - name: focused find-file regressions
         run: |
           cargo test -p winabi --test find_data_abi
