@@ -1,4 +1,4 @@
-use nt_file::{find_close, find_first_file, find_next_file, DriveMap};
+use nt_file::{close_handle, find_close, find_first_file, find_next_file, DriveMap};
 use nt_object::HandleTable;
 use std::collections::HashMap;
 use winabi::{NtStatus, Win32FindDataW};
@@ -37,6 +37,8 @@ fn find_file_wildcards_are_case_insensitive_and_handles_close() {
     assert_eq!(names, ["a.txt", "B.TXT"]);
     assert_eq!(find_next_file(&table, handle), Err(NtStatus::NO_MORE_FILES));
 
+    // Windows requires FindClose for search handles; CloseHandle must reject it.
+    assert_eq!(close_handle(&table, handle), Err(NtStatus::INVALID_HANDLE));
     find_close(&table, handle).unwrap();
     assert_eq!(
         find_next_file(&table, handle),
