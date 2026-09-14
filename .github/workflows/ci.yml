@@ -12,8 +12,11 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-      - name: focused kernel32 regression
-        run: cargo test -p kernel32 --test find_file_exports
+      - name: focused find-file regressions
+        run: |
+          cargo test -p winabi --test find_data_abi
+          cargo test -p nt-file --test find_file
+          cargo test -p kernel32 --test find_file_exports
       - name: linux dependencies
         run: |
           sudo apt-get update
