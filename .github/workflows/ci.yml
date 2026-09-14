@@ -16,14 +16,14 @@ jobs:
         with:
           components: rustfmt, clippy
       - name: apply targeted repair
-        if: startsWith(github.event.head_commit.message, '[fix-find-data]')
+        if: startsWith(github.event.head_commit.message, '[fix-nt-file]')
         run: |
-          python3 .github/fix_find_data_default.py
+          python3 .github/fix_nt_file.py
           cargo fmt
           git config user.name "Rine CI"
           git config user.email "rine-ci@users.noreply.github.com"
-          git add crates/winabi/src/lib.rs
-          git commit -m "fix: initialize WIN32_FIND_DATAW explicitly"
+          git add crates/nt-file/src/lib.rs
+          git commit -m "fix: enforce FindClose semantics and clippy gates"
           git push
       - name: focused find-file regressions
         run: |
