@@ -493,7 +493,7 @@ fn split_find_pattern(win_pattern: &str) -> Result<(&str, &str), NtStatus> {
     if win_pattern.is_empty() {
         return Err(NtStatus::INVALID_PARAMETER);
     }
-    let Some(pos) = win_pattern.rfind(|c| c == '\\' || c == '/') else {
+    let Some(pos) = win_pattern.rfind(['\\', '/']) else {
         return Ok((".", win_pattern));
     };
     let pattern = &win_pattern[pos + 1..];
@@ -544,11 +544,13 @@ fn find_data_from_entry(name: &str, entry: &std::fs::DirEntry) -> Result<Win32Fi
     if encoded.len() >= 260 {
         return Err(NtStatus::NOT_IMPLEMENTED);
     }
-    let mut data = Win32FindDataW::default();
-    data.dw_file_attributes = if md.is_dir() {
-        winabi::file_attr::DIRECTORY
-    } else {
-        winabi::file_attr::NORMAL
+    let mut data = Win32FindDataW {
+        dw_file_attributes: if md.is_dir() {
+            winabi::file_attr::DIRECTORY
+        } else {
+            winabi::file_attr::NORMAL
+        },
+        ..Default::default()
     };
     if md.permissions().readonly() {
         data.dw_file_attributes |= winabi::file_attr::READONLY;
@@ -595,19 +597,16 @@ fn dir_io_to_status(e: std::io::Error) -> NtStatus {
 /// fds 1/2 do console (`owns_fd=false`) nunca são fechados (são do host).
 pub fn close_handle(table: &HandleTable, handle: WindowsHandle) -> Result<(), NtStatus> {
     let obj = table.lookup(handle)?;
-    let owned_fd = if obj.typ == ObjectType::File {
-        let guard = obj.payload.lock().unwrap();
+    if obj.typ != ObjectType::File {
+        return Err(NtStatus::INVALID_HANDLE);
+    }
+    let owned_fd = {
+        let guard = obj.payload.lock().map_err(|_| NtStatus::UNSUCCESSFUL)?;
         let f = match &*guard {
             ObjectPayload::File(f) => f,
             _ => return Err(NtStatus::INVALID_HANDLE),
         };
-        if f.owns_fd {
-            Some(f.fd)
-        } else {
-            None
-        }
-    } else {
-        None
+        f.owns_fd.then_some(f.fd)
     };
     table.close(handle)?;
     if let Some(fd) = owned_fd {
