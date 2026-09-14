@@ -18,6 +18,7 @@ jobs:
       - name: apply find-file implementation
         if: startsWith(github.event.head_commit.message, '[apply-find-file]')
         run: |
+          if [ -f .github/fix_apply_find_file.py ]; then python3 .github/fix_apply_find_file.py; fi
           python3 .github/apply_find_file.py
           cargo fmt
           git config user.name "Rine CI"
