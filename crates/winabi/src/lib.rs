@@ -278,7 +278,7 @@ pub struct FileTime {
 }
 
 /// `WIN32_FIND_DATAW` x86_64. The struct is 592 bytes with 4-byte alignment.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(C)]
 pub struct Win32FindDataW {
     pub dw_file_attributes: u32,
@@ -291,6 +291,23 @@ pub struct Win32FindDataW {
     pub dw_reserved1: u32,
     pub c_file_name: [u16; 260],
     pub c_alternate_file_name: [u16; 14],
+}
+
+impl Default for Win32FindDataW {
+    fn default() -> Self {
+        Self {
+            dw_file_attributes: 0,
+            ft_creation_time: FileTime::default(),
+            ft_last_access_time: FileTime::default(),
+            ft_last_write_time: FileTime::default(),
+            n_file_size_high: 0,
+            n_file_size_low: 0,
+            dw_reserved0: 0,
+            dw_reserved1: 0,
+            c_file_name: [0; 260],
+            c_alternate_file_name: [0; 14],
+        }
+    }
 }
 
 /// `MEMORY_BASIC_INFORMATION` x86_64 (48 bytes, layout exato `winnt.h`).
