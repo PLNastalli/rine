@@ -38,7 +38,10 @@ fn find_file_wildcards_are_case_insensitive_and_handles_close() {
     assert_eq!(find_next_file(&table, handle), Err(NtStatus::NO_MORE_FILES));
 
     find_close(&table, handle).unwrap();
-    assert_eq!(find_next_file(&table, handle), Err(NtStatus::INVALID_HANDLE));
+    assert_eq!(
+        find_next_file(&table, handle),
+        Err(NtStatus::INVALID_HANDLE)
+    );
     assert_eq!(find_close(&table, handle), Err(NtStatus::INVALID_HANDLE));
 
     std::fs::remove_dir_all(&root).unwrap();

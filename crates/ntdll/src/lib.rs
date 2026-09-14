@@ -114,6 +114,26 @@ pub fn nt_file_attributes(win_path: &str) -> Result<u32, NtStatus> {
     nt_file::file_attributes(&ctx.fsys, win_path)
 }
 
+/// Starts a Win32 directory enumeration.
+pub fn nt_find_first_file(
+    win_pattern: &str,
+) -> Result<(WindowsHandle, winabi::Win32FindDataW), NtStatus> {
+    let ctx = require_context();
+    nt_file::find_first_file(&ctx.table, &ctx.fsys, win_pattern)
+}
+
+/// Advances a directory enumeration.
+pub fn nt_find_next_file(handle: WindowsHandle) -> Result<winabi::Win32FindDataW, NtStatus> {
+    let ctx = require_context();
+    nt_file::find_next_file(&ctx.table, handle)
+}
+
+/// Closes a directory enumeration handle.
+pub fn nt_find_close(handle: WindowsHandle) -> Result<(), NtStatus> {
+    let ctx = require_context();
+    nt_file::find_close(&ctx.table, handle)
+}
+
 /// `NtClose` interno (fecha handle + fd possuído).
 pub fn nt_close(handle: WindowsHandle) -> NtStatus {
     let ctx = match process_context() {

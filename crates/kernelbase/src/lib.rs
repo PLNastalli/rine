@@ -17,6 +17,8 @@ fn nt_to_win32(s: NtStatus) -> Win32Error {
         NtStatus::INVALID_PARAMETER => Win32Error::INVALID_PARAMETER,
         NtStatus::ACCESS_DENIED => Win32Error::ACCESS_DENIED,
         NtStatus::OBJECT_NAME_NOT_FOUND => ERROR_FILE_NOT_FOUND,
+        NtStatus::OBJECT_PATH_NOT_FOUND => Win32Error::PATH_NOT_FOUND,
+        NtStatus::NO_MORE_FILES => Win32Error::NO_MORE_FILES,
         NtStatus::OBJECT_NAME_COLLISION => ERROR_FILE_EXISTS,
         _ => Win32Error::NOT_SUPPORTED,
     }
@@ -131,6 +133,24 @@ pub fn remove_directory_w(path_wide: &[u16]) -> Result<(), Win32Error> {
     let path = wide_to_string(cut_nul_w(path_wide)?)?;
     let ctx = ntdll::require_context();
     nt_file::remove_directory(&ctx.fsys, &path).map_err(nt_to_win32)
+}
+
+/// `FindFirstFileW(pattern)` -> search handle + first result.
+pub fn find_first_file_w(
+    pattern_wide: &[u16],
+) -> Result<(WindowsHandle, winabi::Win32FindDataW), Win32Error> {
+    let pattern = wide_to_string(cut_nul_w(pattern_wide)?)?;
+    ntdll::nt_find_first_file(&pattern).map_err(nt_to_win32)
+}
+
+/// `FindNextFileW(handle)` -> next result.
+pub fn find_next_file_w(handle: WindowsHandle) -> Result<winabi::Win32FindDataW, Win32Error> {
+    ntdll::nt_find_next_file(handle).map_err(nt_to_win32)
+}
+
+/// `FindClose(handle)`.
+pub fn find_close(handle: WindowsHandle) -> Result<(), Win32Error> {
+    ntdll::nt_find_close(handle).map_err(nt_to_win32)
 }
 
 /// Corta no primeiro NUL (limite 32768 já garantido por `wide_slice`).

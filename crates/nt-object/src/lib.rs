@@ -11,6 +11,7 @@ use winabi::{NtStatus, WindowsHandle};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ObjectType {
     File,
+    FileSearch,
     Event,
     Mutex,
     Semaphore,
@@ -26,6 +27,7 @@ impl ObjectType {
     pub fn name(self) -> &'static str {
         match self {
             Self::File => "File",
+            Self::FileSearch => "FileSearch",
             Self::Event => "Event",
             Self::Mutex => "Mutant",
             Self::Semaphore => "Semaphore",
@@ -44,6 +46,13 @@ impl ObjectType {
 #[derive(Debug)]
 pub enum ObjectPayload {
     File(FileObject),
+    FileSearch(FileSearchObject),
+}
+
+#[derive(Debug)]
+pub struct FileSearchObject {
+    pub entries: Vec<winabi::Win32FindDataW>,
+    pub next_index: usize,
 }
 
 #[derive(Debug)]

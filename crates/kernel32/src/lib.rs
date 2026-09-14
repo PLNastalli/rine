@@ -565,6 +565,75 @@ pub extern "win64" fn RemoveDirectoryW_impl(lp_path_name: *const u16) -> i32 {
     bool_wide_path(lp_path_name, kernelbase::remove_directory_w)
 }
 
+/// `HANDLE FindFirstFileW(LPCWSTR, LPWIN32_FIND_DATAW)`.
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn FindFirstFileW_impl(
+    lp_file_name: *const u16,
+    lp_find_file_data: *mut winabi::Win32FindDataW,
+) -> u64 {
+    if lp_find_file_data.is_null() {
+        nt_thread::set_last_error(winabi::Win32Error::INVALID_PARAMETER);
+        return WindowsHandle::INVALID.0;
+    }
+    let pattern = match wide_slice(lp_file_name) {
+        Ok(p) => p,
+        Err(e) => {
+            nt_thread::set_last_error(e);
+            return WindowsHandle::INVALID.0;
+        }
+    };
+    match kernelbase::find_first_file_w(pattern) {
+        Ok((handle, data)) => {
+            // SAFETY: output buffer is writable for one WIN32_FIND_DATAW by contract.
+            unsafe { *lp_find_file_data = data };
+            nt_thread::set_last_error(winabi::Win32Error::SUCCESS);
+            handle.0
+        }
+        Err(e) => {
+            nt_thread::set_last_error(e);
+            WindowsHandle::INVALID.0
+        }
+    }
+}
+
+/// `BOOL FindNextFileW(HANDLE, LPWIN32_FIND_DATAW)`.
+#[allow(clippy::not_unsafe_ptr_arg_deref)]
+pub extern "win64" fn FindNextFileW_impl(
+    h_find_file: u64,
+    lp_find_file_data: *mut winabi::Win32FindDataW,
+) -> i32 {
+    if lp_find_file_data.is_null() {
+        nt_thread::set_last_error(winabi::Win32Error::INVALID_PARAMETER);
+        return 0;
+    }
+    match kernelbase::find_next_file_w(WindowsHandle(h_find_file)) {
+        Ok(data) => {
+            // SAFETY: output buffer is writable for one WIN32_FIND_DATAW by contract.
+            unsafe { *lp_find_file_data = data };
+            nt_thread::set_last_error(winabi::Win32Error::SUCCESS);
+            1
+        }
+        Err(e) => {
+            nt_thread::set_last_error(e);
+            0
+        }
+    }
+}
+
+/// `BOOL FindClose(HANDLE)`.
+pub extern "win64" fn FindClose_impl(h_find_file: u64) -> i32 {
+    match kernelbase::find_close(WindowsHandle(h_find_file)) {
+        Ok(()) => {
+            nt_thread::set_last_error(winabi::Win32Error::SUCCESS);
+            1
+        }
+        Err(e) => {
+            nt_thread::set_last_error(e);
+            0
+        }
+    }
+}
+
 /// `BOOL MoveFileExW(LPCWSTR, LPCWSTR, DWORD)` — 3 args, sem out-pointer.
 #[allow(clippy::not_unsafe_ptr_arg_deref)]
 pub extern "win64" fn MoveFileExW_impl(
@@ -811,6 +880,9 @@ pub const EXPORTS: &[&str] = &[
     "MoveFileExW",
     "CreateDirectoryW",
     "RemoveDirectoryW",
+    "FindFirstFileW",
+    "FindNextFileW",
+    "FindClose",
     "CloseHandle",
     "VirtualAlloc",
     "VirtualFree",
@@ -859,6 +931,9 @@ pub fn resolve(dll: &str, name: &str) -> Option<u64> {
         "MoveFileExW" => Some(MoveFileExW_impl as *const () as u64),
         "CreateDirectoryW" => Some(CreateDirectoryW_impl as *const () as u64),
         "RemoveDirectoryW" => Some(RemoveDirectoryW_impl as *const () as u64),
+        "FindFirstFileW" => Some(FindFirstFileW_impl as *const () as u64),
+        "FindNextFileW" => Some(FindNextFileW_impl as *const () as u64),
+        "FindClose" => Some(FindClose_impl as *const () as u64),
         "CloseHandle" => Some(CloseHandle_impl as *const () as u64),
         "VirtualAlloc" => Some(VirtualAlloc_impl as *const () as u64),
         "VirtualFree" => Some(VirtualFree_impl as *const () as u64),

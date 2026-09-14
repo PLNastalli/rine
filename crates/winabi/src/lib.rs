@@ -31,6 +31,8 @@ impl NtStatus {
     pub const OBJECT_NAME_COLLISION: Self = Self(0xC0000035);
     pub const OBJECT_PATH_INVALID: Self = Self(0xC0000039);
     pub const END_OF_FILE: Self = Self(0xC0000011);
+    pub const NO_MORE_FILES: Self = Self(0x80000006);
+    pub const OBJECT_PATH_NOT_FOUND: Self = Self(0xC000003A);
     pub const IMAGE_NOT_AT_BASE: Self = Self(0x40000003);
 
     /// `true` se `severity >= ERROR` (bit 31).
@@ -75,6 +77,8 @@ impl Win32Error {
     pub const ACCESS_DENIED: Self = Self(5);
     pub const NOT_SUPPORTED: Self = Self(50);
     pub const FILE_NOT_FOUND: Self = Self(2);
+    pub const PATH_NOT_FOUND: Self = Self(3);
+    pub const NO_MORE_FILES: Self = Self(18);
     /// `ERROR_MOD_NOT_FOUND` (126): módulo desconhecido em `GetProcAddress`.
     pub const MOD_NOT_FOUND: Self = Self(126);
     /// `ERROR_PROC_NOT_FOUND` (127): símbolo/ordinal ausente em `GetProcAddress`.
@@ -264,6 +268,30 @@ pub mod file_attr {
 
 /// Retorno de `GetFileAttributesW` em falha (nunca um atributo real).
 pub const INVALID_FILE_ATTRIBUTES: u32 = 0xFFFF_FFFF;
+
+/// `FILETIME` (100-ns ticks since 1601-01-01 UTC).
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct FileTime {
+    pub low_date_time: u32,
+    pub high_date_time: u32,
+}
+
+/// `WIN32_FIND_DATAW` x86_64. The struct is 592 bytes with 4-byte alignment.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub struct Win32FindDataW {
+    pub dw_file_attributes: u32,
+    pub ft_creation_time: FileTime,
+    pub ft_last_access_time: FileTime,
+    pub ft_last_write_time: FileTime,
+    pub n_file_size_high: u32,
+    pub n_file_size_low: u32,
+    pub dw_reserved0: u32,
+    pub dw_reserved1: u32,
+    pub c_file_name: [u16; 260],
+    pub c_alternate_file_name: [u16; 14],
+}
 
 /// `MEMORY_BASIC_INFORMATION` x86_64 (48 bytes, layout exato `winnt.h`).
 ///

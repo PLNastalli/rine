@@ -5,11 +5,13 @@
 //! wrapper `openat2` direto em `host-linux` chega em v0.3 com `dirfd`/`flags`
 //! explícitos). Leitura/escrita sempre via `host-linux` (fronteira auditável).
 
-use nt_object::{FileObject, HandleTable, KernelObject, ObjectPayload, ObjectType};
+use nt_object::{
+    FileObject, FileSearchObject, HandleTable, KernelObject, ObjectPayload, ObjectType,
+};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
-use winabi::{NtStatus, WindowsHandle};
+use winabi::{NtStatus, Win32FindDataW, WindowsHandle};
 
 /// Visão resolvida do filesystem da Capsule (snapshot construído no load;
 /// ver `runtime::Emulator`). Fonte única da tradução de paths.
@@ -219,7 +221,10 @@ pub fn write_file(table: &HandleTable, handle: WindowsHandle, buf: &[u8]) -> Res
         return Err(NtStatus::INVALID_HANDLE);
     }
     let guard = obj.payload.lock().unwrap();
-    let ObjectPayload::File(f) = &*guard;
+    let f = match &*guard {
+        ObjectPayload::File(f) => f,
+        _ => return Err(NtStatus::INVALID_HANDLE),
+    };
     let (fd, writable) = (f.fd, f.writable);
     drop(guard);
     if !writable {
@@ -241,7 +246,10 @@ pub fn read_file(
         return Err(NtStatus::INVALID_HANDLE);
     }
     let guard = obj.payload.lock().unwrap();
-    let ObjectPayload::File(f) = &*guard;
+    let f = match &*guard {
+        ObjectPayload::File(f) => f,
+        _ => return Err(NtStatus::INVALID_HANDLE),
+    };
     let (fd, readable) = (f.fd, f.readable);
     drop(guard);
     // Windows nega leitura sem GENERIC_READ (o Rine deixava passar — bug
@@ -294,7 +302,10 @@ fn file_fd(table: &HandleTable, handle: WindowsHandle) -> Result<i32, NtStatus> 
         return Err(NtStatus::INVALID_HANDLE);
     }
     let guard = obj.payload.lock().unwrap();
-    let ObjectPayload::File(f) = &*guard;
+    let f = match &*guard {
+        ObjectPayload::File(f) => f,
+        _ => return Err(NtStatus::INVALID_HANDLE),
+    };
     Ok(f.fd)
 }
 
@@ -396,13 +407,200 @@ pub fn remove_directory(fsys: &DriveMap, win_path: &str) -> Result<(), NtStatus>
     std::fs::remove_dir(&path).map_err(|e| io_to_status(e, 3))
 }
 
+/// Starts a `FindFirstFileW` enumeration and returns the first matching entry.
+/// The returned handle is a real generational object handle and must be closed
+/// with `find_close`/`FindClose`, not generic `CloseHandle`.
+pub fn find_first_file(
+    table: &HandleTable,
+    fsys: &DriveMap,
+    win_pattern: &str,
+) -> Result<(WindowsHandle, Win32FindDataW), NtStatus> {
+    let (dir_win, pattern) = split_find_pattern(win_pattern)?;
+    let dir = fsys.translate(dir_win)?;
+    let read_dir = std::fs::read_dir(&dir).map_err(dir_io_to_status)?;
+    let mut matches = Vec::new();
+
+    for item in read_dir {
+        let entry = item.map_err(dir_io_to_status)?;
+        let name = entry
+            .file_name()
+            .into_string()
+            .map_err(|_| NtStatus::NOT_IMPLEMENTED)?;
+        if wildcard_match(pattern, &name) {
+            matches.push((name, entry));
+        }
+    }
+    matches.sort_by(|(a, _), (b, _)| {
+        a.to_lowercase()
+            .cmp(&b.to_lowercase())
+            .then_with(|| a.cmp(b))
+    });
+
+    let mut entries = Vec::with_capacity(matches.len());
+    for (name, entry) in matches {
+        entries.push(find_data_from_entry(&name, &entry)?);
+    }
+    let first = entries
+        .first()
+        .copied()
+        .ok_or(NtStatus::OBJECT_NAME_NOT_FOUND)?;
+
+    let obj = Arc::new(KernelObject {
+        typ: ObjectType::FileSearch,
+        name: None,
+        rights: 0,
+        payload: std::sync::Mutex::new(ObjectPayload::FileSearch(FileSearchObject {
+            entries,
+            next_index: 1,
+        })),
+    });
+    Ok((table.insert(obj), first))
+}
+
+/// Advances a directory enumeration. Exhaustion is `STATUS_NO_MORE_FILES`.
+pub fn find_next_file(
+    table: &HandleTable,
+    handle: WindowsHandle,
+) -> Result<Win32FindDataW, NtStatus> {
+    let obj = table.lookup(handle)?;
+    if obj.typ != ObjectType::FileSearch {
+        return Err(NtStatus::INVALID_HANDLE);
+    }
+    let mut guard = obj.payload.lock().map_err(|_| NtStatus::UNSUCCESSFUL)?;
+    let search = match &mut *guard {
+        ObjectPayload::FileSearch(search) => search,
+        _ => return Err(NtStatus::INVALID_HANDLE),
+    };
+    let data = search
+        .entries
+        .get(search.next_index)
+        .copied()
+        .ok_or(NtStatus::NO_MORE_FILES)?;
+    search.next_index += 1;
+    Ok(data)
+}
+
+/// Closes only a search handle. A stale/double-close is `INVALID_HANDLE`.
+pub fn find_close(table: &HandleTable, handle: WindowsHandle) -> Result<(), NtStatus> {
+    let obj = table.lookup(handle)?;
+    if obj.typ != ObjectType::FileSearch {
+        return Err(NtStatus::INVALID_HANDLE);
+    }
+    table.close(handle)
+}
+
+fn split_find_pattern(win_pattern: &str) -> Result<(&str, &str), NtStatus> {
+    if win_pattern.is_empty() {
+        return Err(NtStatus::INVALID_PARAMETER);
+    }
+    let Some(pos) = win_pattern.rfind(|c| c == '\\' || c == '/') else {
+        return Ok((".", win_pattern));
+    };
+    let pattern = &win_pattern[pos + 1..];
+    if pattern.is_empty() {
+        return Err(NtStatus::INVALID_PARAMETER);
+    }
+    let bytes = win_pattern.as_bytes();
+    let dir = if pos == 2 && bytes.get(1) == Some(&b':') {
+        &win_pattern[..=pos]
+    } else if pos == 0 {
+        return Err(NtStatus::NOT_IMPLEMENTED);
+    } else {
+        &win_pattern[..pos]
+    };
+    Ok((dir, pattern))
+}
+
+fn wildcard_match(pattern: &str, name: &str) -> bool {
+    let normalized = if pattern.eq_ignore_ascii_case("*.*") {
+        "*"
+    } else {
+        pattern
+    };
+    let p: Vec<char> = normalized.to_lowercase().chars().collect();
+    let n: Vec<char> = name.to_lowercase().chars().collect();
+    let mut prev = vec![false; n.len() + 1];
+    prev[0] = true;
+    for pc in p {
+        let mut cur = vec![false; n.len() + 1];
+        if pc == '*' {
+            cur[0] = prev[0];
+            for j in 1..=n.len() {
+                cur[j] = cur[j - 1] || prev[j];
+            }
+        } else {
+            for j in 1..=n.len() {
+                cur[j] = prev[j - 1] && (pc == '?' || pc == n[j - 1]);
+            }
+        }
+        prev = cur;
+    }
+    prev[n.len()]
+}
+
+fn find_data_from_entry(name: &str, entry: &std::fs::DirEntry) -> Result<Win32FindDataW, NtStatus> {
+    let md = entry.metadata().map_err(|e| io_to_status(e, 3))?;
+    let encoded: Vec<u16> = name.encode_utf16().collect();
+    if encoded.len() >= 260 {
+        return Err(NtStatus::NOT_IMPLEMENTED);
+    }
+    let mut data = Win32FindDataW::default();
+    data.dw_file_attributes = if md.is_dir() {
+        winabi::file_attr::DIRECTORY
+    } else {
+        winabi::file_attr::NORMAL
+    };
+    if md.permissions().readonly() {
+        data.dw_file_attributes |= winabi::file_attr::READONLY;
+    }
+    data.ft_creation_time = host_time_to_filetime(md.created());
+    data.ft_last_access_time = host_time_to_filetime(md.accessed());
+    data.ft_last_write_time = host_time_to_filetime(md.modified());
+    let size = if md.is_file() { md.len() } else { 0 };
+    data.n_file_size_high = (size >> 32) as u32;
+    data.n_file_size_low = size as u32;
+    data.c_file_name[..encoded.len()].copy_from_slice(&encoded);
+    Ok(data)
+}
+
+fn host_time_to_filetime(time: std::io::Result<std::time::SystemTime>) -> winabi::FileTime {
+    const WINDOWS_TO_UNIX_SECONDS: u128 = 11_644_473_600;
+    let Ok(time) = time else {
+        return winabi::FileTime::default();
+    };
+    let Ok(since_unix) = time.duration_since(std::time::UNIX_EPOCH) else {
+        return winabi::FileTime::default();
+    };
+    let ticks = (WINDOWS_TO_UNIX_SECONDS + since_unix.as_secs() as u128)
+        .saturating_mul(10_000_000)
+        .saturating_add((since_unix.subsec_nanos() as u128) / 100)
+        .min(u64::MAX as u128) as u64;
+    winabi::FileTime {
+        low_date_time: ticks as u32,
+        high_date_time: (ticks >> 32) as u32,
+    }
+}
+
+fn dir_io_to_status(e: std::io::Error) -> NtStatus {
+    use std::io::ErrorKind;
+    match e.kind() {
+        ErrorKind::NotFound => NtStatus::OBJECT_PATH_NOT_FOUND,
+        ErrorKind::PermissionDenied => NtStatus::ACCESS_DENIED,
+        ErrorKind::InvalidInput => NtStatus::INVALID_PARAMETER,
+        _ => NtStatus::UNSUCCESSFUL,
+    }
+}
+
 /// Fecha handle; se o objeto for `File` com fd possuído, fecha o fd.
 /// fds 1/2 do console (`owns_fd=false`) nunca são fechados (são do host).
 pub fn close_handle(table: &HandleTable, handle: WindowsHandle) -> Result<(), NtStatus> {
     let obj = table.lookup(handle)?;
     let owned_fd = if obj.typ == ObjectType::File {
         let guard = obj.payload.lock().unwrap();
-        let ObjectPayload::File(f) = &*guard;
+        let f = match &*guard {
+            ObjectPayload::File(f) => f,
+            _ => return Err(NtStatus::INVALID_HANDLE),
+        };
         if f.owns_fd {
             Some(f.fd)
         } else {
