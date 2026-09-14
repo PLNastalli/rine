@@ -19,6 +19,8 @@ jobs:
             libwebkit2gtk-4.1-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
+      - name: manager sidecar
+        run: crates/manager-tauri/pack-sidecar.sh --debug
       - name: fmt
         run: cargo fmt --check
       - name: clippy
